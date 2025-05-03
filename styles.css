@@ -52,6 +52,7 @@ main{
     padding: 5px;
     background-color: #FFF;
     border-radius: 18px;
+    height: 650px;
 }
 
 footer{
@@ -63,54 +64,55 @@ footer{
     border-radius: 18px;
 }
 
-#botao-suporte {
+/* Estilo do botão de suporte */
+.suporte-btn {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #007bff;
+    background-color: #0080ff;
     color: white;
-    padding: 15px;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: bold;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 20px;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.4s ease-in-out;
-    overflow: hidden;
-    white-space: nowrap;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: all 0.3s ease;
 }
 
-#botao-suporte:hover {
-    width: 180px;
-    border-radius: 25px;
-    justify-content: start;
-    padding-left: 15px;
+.suporte-btn:hover {
+    background-color: #adb300;
+    color: black;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-.icone {
-    width: 30px;
-    height: 30px;
-    transition: all 0.3s ease-in-out;
+.suporte-btn .icone {
+    width: 48px;
+    height: 48px;
+    margin-right: 10px;
 }
 
-.texto {
-    opacity: 0;
-    margin-left: 10px;
-    transition: opacity 0.3s ease-in-out;
+.suporte-btn .texto {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
 }
 
-#botao-suporte:hover .texto {
-    opacity: 1;
-}
-
-#botao-suporte:hover .icone {
-    width: 25px;
-    height: 25px;
+@media (max-width: 768px) {
+    .suporte-btn .icone {
+        width: 24px;
+        height: 24px;
+        margin-right: 5px;
+    }
+    header hr {
+        height: 1px;
+        margin-top: -5px;
+    }
+    header img {
+        width: 100px;
+    }
 }
 
 /* Estilos para o formulário de login */

@@ -2,13 +2,9 @@
     <footer>
         <p>&copy; <?php echo CURRENT_YEAR; ?> - <?php echo SITE_NAME; ?></p>
     </footer>
-    <div> 
-    <a href="suporte.html" id="botao-suporte">
-        <div class="icone-container">
-            <img src="./im" alt="Suporte" class="icone">
-        </div>
-        <span class="texto">Fale com suporte</span>
-    </a>
-    </div>
+    <button class="suporte-btn">
+        <img src="./img/suporte.png" alt="Suporte" class="icone">
+        <span class="texto">Precisa de ajuda?</span>
+    </button>
 </body>
 </html>
