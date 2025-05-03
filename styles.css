@@ -63,6 +63,56 @@ footer{
     border-radius: 18px;
 }
 
+#botao-suporte {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease-in-out;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#botao-suporte:hover {
+    width: 180px;
+    border-radius: 25px;
+    justify-content: start;
+    padding-left: 15px;
+}
+
+.icone {
+    width: 30px;
+    height: 30px;
+    transition: all 0.3s ease-in-out;
+}
+
+.texto {
+    opacity: 0;
+    margin-left: 10px;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#botao-suporte:hover .texto {
+    opacity: 1;
+}
+
+#botao-suporte:hover .icone {
+    width: 25px;
+    height: 25px;
+}
+
 /* Estilos para o formulário de login */
 .login-container {
     max-width: 400px;

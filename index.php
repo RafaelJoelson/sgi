@@ -45,7 +45,16 @@ require_once 'includes/nav.php';
         
         <div class="login-links">
             <a href="forgot-password.php">Esqueci minha senha</a>
-            <a href="register.php">Criar conta</a>
+        </div>
+    </section>
+    <section>
+        <div>
+            <div>
+                <img src="" alt="">
+            </div>
+            <div>
+                <h2></h2>
+            </div>
         </div>
     </section>
 </main>
