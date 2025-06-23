@@ -1,63 +1,90 @@
 <?php
-// Inclui configurações
+session_start(); // Adicione no topo para gerenciar mensagens de erro
+
+// Inclui configurações de conexão
 require_once 'includes/config.php';
 
 // Define o título da página
-$pageTitle = 'Página Inicial';
+$pageTitle = 'Login - Sistema de Impressões';
 
 // Inclui o cabeçalho
 require_once 'includes/header.php';
 
-// Inclui a navegação
+// Inclui a navegação (se necessário)
 require_once 'includes/nav.php';
 ?>
 
-<main>
-    <section class="login-container">
-        <h2>Login</h2>
-        
-        <?php if (isset($_GET['error'])): ?>
-            <div class="alert error">
-                <?php
-                $errors = [
-                    'invalid' => 'Usuário ou senha inválidos',
-                    'empty' => 'Preencha todos os campos',
-                    'restricted' => 'Área restrita - faça login'
-                ];
-                echo $errors[$_GET['error']] ?? 'Erro ao fazer login';
-                ?>
-            </div>
-        <?php endif; ?>
+<main class="container">
+    <section class="row justify-content-center">
+        <div class="col-md-6 login-container">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="text-center mb-0">Login do Sistema</h2>
+                </div>
+                
+                <div class="card-body">
+                    <?php if (isset($_SESSION['login_erro'])): ?>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <?= htmlspecialchars($_SESSION['login_erro']) ?>
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <?php unset($_SESSION['login_erro']); ?>
+                    <?php endif; ?>
 
-        <form action="includes/login-process.php" method="POST">
-            <div class="form-group">
-                <label for="username">Usuário:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Senha:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            
-            <button type="submit" class="btn-login">Entrar</button>
-        </form>
-        
-        <div class="login-links">
-            <a href="forgot-password.php">Esqueci minha senha</a>
-        </div>
-    </section>
-    <section>
-        <div>
-            <div>
-                <img src="" alt="">
-            </div>
-            <div>
-                <h2></h2>
+                    <form action="./includes/login_process.php" method="POST">
+                        <div class="form-group">
+                            <label for="cpf">CPF (apenas números):</label>
+                            <input type="text" id="cpf" name="cpf" 
+                                   class="form-control" 
+                                   pattern="\d{11}" 
+                                   title="Digite os 11 números do CPF"
+                                   required>
+                            <small class="form-text text-muted">Ex: 12345678901</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Senha:</label>
+                            <input type="password" id="password" name="senha" 
+                                   class="form-control" 
+                                   minlength="6"
+                                   required>
+                        </div>
+                        
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary btn-block, btn-login">
+                                <i class="fas fa-sign-in-alt"></i> Entrar
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                        <a href="forgot-password.php" class="text-secondary">
+                            <i class="fas fa-key"></i> Esqueci minha senha
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card-footer text-center">
+                    <small class="text-muted">
+                        Servidores terceirizados: 
+                        <a href="reprografia/login.php">Acessar portal da reprografia</a>
+                    </small>
+                </div>
             </div>
         </div>
     </section>
 </main>
+
+<script>
+// Máscara para CPF (opcional)
+document.getElementById('cpf').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    e.target.value = value;
+});
+</script>
+
 <?php
 // Inclui o rodapé
 require_once 'includes/footer.php';
