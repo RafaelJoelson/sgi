@@ -1,0 +1,167 @@
+.dashboard-container {
+  display: flex;
+  margin: 5px;
+  padding: 5px;
+  width: 100%;
+}
+
+aside {
+  width: 40%;
+  height: 640px;
+  margin-left: 5px;
+}
+
+/* Dashboard cards */
+.dashboard-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    justify-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  aside{
+    width: 100%;
+    height: 180px;
+    font-size: 12px;
+  }
+  aside h1 {
+    font-size: 14px;
+  }
+  .dashboard-cards{
+    flex-direction: row;
+  }
+}
+.card {
+  background-color: #f9f9f9;
+  border-left: 5px solid #0b5ed7;
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.busca-form,.filter-form {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.busca-form input,
+.busca-form select,
+.busca-form button,
+.filter-form select,
+.filter-form button {
+  padding: 0.2rem;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .busca-form {
+    display: flex;
+    flex-direction: column;
+  }
+  .filter-form {
+    display: flex;
+    flex-direction: column;
+  }
+  .busca-form input,
+  .busca-form select,
+  .busca-form button,
+  .filter-form select,
+  .filter-form button {
+    padding: 0.2rem;
+    margin: 5px;
+    width: 95%;
+    font-size: 12px;
+  }
+}
+
+/* Tabela responsiva */
+.responsive-table {
+  overflow-x: auto;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+thead {
+  background-color: #eee;
+}
+
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+@media (max-width: 767px) {
+  table, thead, tbody, tr, th, td {
+    padding: 0.50rem;
+    font-size: 10px;
+  }
+
+  .responsive-table {
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  tr {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #fdfdfd;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+  }
+
+  td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 1rem;
+  }
+}
+
+/* Botões de ação */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+@media (max-width: 500px) {
+  .action-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+.action-buttons a {
+  background: #0b5ed7;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.action-buttons a:hover {
+  background: #094caa;
+}

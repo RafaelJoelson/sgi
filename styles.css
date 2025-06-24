@@ -16,10 +16,6 @@ header {
     border-radius: 18px;
 }
 
-header .header-title{
-    
-}
-
 header img{
     width: 250px;
     margin: 10px;
@@ -33,7 +29,8 @@ header hr {
 }
 
 @media (max-width: 768px) {
-    h1 {
+    header h1 {
+        text-align: center;
         font-size: 12px;
     }
     header hr {
@@ -197,3 +194,4 @@ footer{
     color: #c62828;
     border: 1px solid #ef9a9a;
 }
+

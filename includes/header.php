@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= SITE_NAME ?> - <?= $pageTitle ?? 'Página' ?></title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/styles.css">
+    <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
 <header>
