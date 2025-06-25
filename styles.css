@@ -28,6 +28,19 @@ header hr {
     margin-top: -20px;
 }
 
+a {
+    text-decoration: none;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: -24px;
+    margin-bottom: -24px;
+}
+
 @media (max-width: 768px) {
     header h1 {
         text-align: center;
@@ -40,6 +53,11 @@ header hr {
     header img {
         width: 100px;
     }
+    .user-info {
+        font-size: 10px;
+        margin-top: -15px;
+        margin-bottom: -5px;
+    }
 }
 
 main{
@@ -49,7 +67,7 @@ main{
     padding: 5px;
     background-color: #FFF;
     border-radius: 18px;
-    height: 650px;
+    min-height: 650px;
 }
 
 footer{

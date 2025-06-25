@@ -65,13 +65,6 @@ require_once 'includes/nav.php';
                         </a>
                     </div>
                 </div>
-                
-                <div class="card-footer text-center">
-                    <small class="text-muted">
-                        Servidores terceirizados: 
-                        <a href="reprografia/login.php">Acessar portal da reprografia</a>
-                    </small>
-                </div>
             </div>
         </div>
     </section>

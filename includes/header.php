@@ -6,6 +6,8 @@
     <title><?= SITE_NAME ?> - <?= $pageTitle ?? 'Página' ?></title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/styles.css">
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="form_aluno.css">
+    <link rel="stylesheet" href="gerenciar_cotas.css">
 </head>
 <body>
 <header>
@@ -15,5 +17,11 @@
     <div class="header-title">
         <h1><?= SITE_NAME ?></h1>
         <hr>
+        <?php if (isset($_SESSION['usuario']) && !empty($_SESSION['usuario'])): ?>
+            <div class="user-info">
+                <h4>Bem-vindo: <?= htmlspecialchars($_SESSION['usuario']['nome']) ?></h4>
+                <a href="<?= BASE_URL ?>/includes/logout.php"><h4>SAIR</h4></a>
+            </div>
+        <?php endif; ?>
     </div>
 </header>

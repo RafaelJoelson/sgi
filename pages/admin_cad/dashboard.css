@@ -5,10 +5,26 @@
   width: 100%;
 }
 
+.dashboard-header {
+  text-align: center;
+}
+
+.btn-logout {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  margin-top: 20px;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
 aside {
   width: 40%;
-  height: 640px;
   margin-left: 5px;
+}
+aside h1 {
+  font-size: 18px;
 }
 
 /* Dashboard cards */
@@ -26,9 +42,12 @@ aside {
     flex-direction: column;
     width: 100%;
   }
+  .dashboard-menu, .dashboard-logout {
+    text-align: center;
+  } 
   aside{
     width: 100%;
-    height: 180px;
+    min-height: 100px;
     font-size: 12px;
   }
   aside h1 {
@@ -39,18 +58,22 @@ aside {
   }
 }
 .card {
+  width: 85%;
   background-color: #f9f9f9;
-  border-left: 5px solid #0b5ed7;
-  padding: 1rem;
+  border-left: 5px solid #0080ff;
+  padding: 0.8rem;
   border-radius: 8px;
   font-weight: 600;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .busca-form,.filter-form {
-  flex-direction: row;
   align-items: center;
+  display: flex;
+  flex-direction: row;
   gap: 0.5rem;
+  width: 90%;
+  max-width: 600px;
   margin-bottom: 1rem;
 }
 
@@ -59,35 +82,67 @@ aside {
 .busca-form button,
 .filter-form select,
 .filter-form button {
-  padding: 0.2rem;
+  padding: 0.5rem;
   font-size: 1rem;
+  margin-top: 0.3rem;
 }
 
+.btn-menu {
+  color: #FFF;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  background-color: #0080ff;
+}
+
+.btn-menu:hover {
+  background-color: #359aff;
+  cursor: pointer;
+}
+
+.busca-form button , .filter-form button {
+  background-color: #0080ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.busca-form button:hover, .filter-form button:hover {
+  background-color: #359aff;
+}
+
+
 @media (max-width: 768px) {
-  .busca-form {
-    display: flex;
-    flex-direction: column;
-  }
-  .filter-form {
-    display: flex;
-    flex-direction: column;
+  .busca-form label {
+    display: none;
   }
   .busca-form input,
   .busca-form select,
   .busca-form button,
   .filter-form select,
   .filter-form button {
-    padding: 0.2rem;
-    margin: 5px;
-    width: 95%;
+    padding: 0.4rem;
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+  }
+  .btn-menu {
+    padding: 0.5rem;
+    font-size: 12px;
+  }
+  .btn-logout {
+    padding: 0.5rem;
     font-size: 12px;
   }
 }
 
 /* Tabela responsiva */
 .responsive-table {
+  margin-top: 20px;
   overflow-x: auto;
   width: 100%;
+  min-height: 650px;
 }
 
 table {
@@ -110,6 +165,10 @@ th, td {
   table, thead, tbody, tr, th, td {
     padding: 0.50rem;
     font-size: 10px;
+  }
+
+  thead {
+    display: none;
   }
 
   .responsive-table {
@@ -153,7 +212,7 @@ th, td {
 }
 
 .action-buttons a {
-  background: #0b5ed7;
+  background: #0080ff;
   color: white;
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
@@ -164,4 +223,24 @@ th, td {
 
 .action-buttons a:hover {
   background: #094caa;
+}
+.paginacao {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.paginacao a {
+    margin: 0 5px;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    text-decoration: none;
+    border-radius: 4px;
+    color: #333;
+}
+
+.paginacao .pagina-ativa {
+    background: #00552e;
+    color: white;
+    font-weight: bold;
 }
