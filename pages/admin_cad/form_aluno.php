@@ -2,7 +2,6 @@
 require_once '../../includes/config.php';
 session_start();
 
-// Verifica permissão
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor') {
     header('Location: ../../index.php');
     exit;
@@ -18,6 +17,10 @@ if ($modo_edicao) {
     $stmt->execute();
     $aluno = $stmt->fetch();
 }
+
+// Buscar cotas disponíveis
+$stmt = $conn->query("SELECT id, turma, periodo FROM CotaAluno ORDER BY periodo DESC, turma ASC");
+$cotas = $stmt->fetchAll();
 ?>
 
 <?php include_once '../../includes/header.php'; ?>
@@ -54,17 +57,21 @@ if ($modo_edicao) {
 
     <label>Cargo
       <select name="cargo" required>
+        <option value="Nenhum" <?= isset($aluno) && $aluno->cargo === 'Nenhum' ? 'selected' : '' ?>>Nenhum</option>
         <option value="Líder" <?= isset($aluno) && $aluno->cargo === 'Líder' ? 'selected' : '' ?>>Líder</option>
         <option value="Vice-líder" <?= isset($aluno) && $aluno->cargo === 'Vice-líder' ? 'selected' : '' ?>>Vice-líder</option>
       </select>
     </label>
 
-    <label>Turma
-      <input type="text" name="turma" required value="<?= $aluno->turma ?? '' ?>">
-    </label>
-
-    <label>Período
-      <input type="text" name="periodo" required value="<?= $aluno->periodo ?? '' ?>">
+    <label>Cota (Turma / Período)
+      <select name="cota_id" required>
+        <option value="" disabled <?= !isset($aluno->cota_id) ? 'selected' : '' ?>>Selecione uma cota</option>
+        <?php foreach ($cotas as $cota): ?>
+          <option value="<?= $cota->id ?>" <?= isset($aluno) && $aluno->cota_id == $cota->id ? 'selected' : '' ?>>
+            <?= $cota->turma ?> - <?= $cota->periodo ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
     </label>
 
     <label>Data Fim da Validade

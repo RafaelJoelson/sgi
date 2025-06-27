@@ -61,7 +61,7 @@ $stmt->execute();
 $alunos = $stmt->fetchAll();
 
 // Totais para os cards
-$total_turmas = $conn->query("SELECT COUNT(DISTINCT turma, periodo) AS total FROM CotaAluno")->fetch()->total ?? 0;
+$total_turmas = $conn->query("SELECT COUNT(*) AS total FROM CotaAluno")->fetch()->total ?? 0;
 $total_alunos = $conn->query("SELECT COUNT(*) AS total FROM Aluno")->fetch()->total ?? 0;
 
 include_once '../../includes/header.php';
@@ -70,18 +70,19 @@ include_once '../../includes/header.php';
 <main class="container">
     <div class="dashboard-container">
         <aside>
-          <section class="dashboard-header">
-            <h1>Coordenação de Apoio ao Discente</h1>
-          </section>        
+            <section class="dashboard-header">
+                <h1>Coordenação de Apoio ao Discente</h1>
+            </section>
             <!-- Cards -->
-          <section class="dashboard-cards">
-            <div class="card">Turmas Ativas: <?= $total_turmas ?></div>
-            <div class="card">Alunos Ativos: <?= $total_alunos ?></div>
-          </section>
-          <section class="dashboard-menu">
-            <a class="btn-menu" href="form_aluno.php">Cadastrar novo aluno</a>
-            <a class="btn-menu" href="gerenciar_cotas.php">Gerenciar Cotas</a>
-          </section>
+            <section class="dashboard-cards">
+                <div class="card">Turmas Ativas: <?= $total_turmas ?></div>
+                <div class="card">Alunos Ativos: <?= $total_alunos ?></div>
+            </section>
+            <section class="dashboard-menu">
+                <a class="btn-menu" href="form_aluno.php">Cadastrar novo aluno</a>
+                <a class="btn-menu" href="gerenciar_cotas.php">Gerenciar Cotas</a>
+                <a class="btn-menu" href="gerenciar_turmas.php">Gerenciar Turmas</a>
+            </section>
         </aside>
         <!-- Tabela de alunos -->
         <div class="responsive-table">
@@ -92,12 +93,9 @@ include_once '../../includes/header.php';
                     <option value="cpf" <?= isset($_GET['tipo_busca']) && $_GET['tipo_busca'] === 'cpf' ? 'selected' : '' ?>>CPF</option>
                     <option value="matricula" <?= isset($_GET['tipo_busca']) && $_GET['tipo_busca'] === 'matricula' ? 'selected' : '' ?>>Matrícula</option>
                 </select>
-
                 <input type="text" name="valor_busca" placeholder="Digite o CPF ou matrícula" value="<?= htmlspecialchars($_GET['valor_busca'] ?? '') ?>" required>
-
                 <button type="submit">Buscar</button>
             </form>
-
             <!-- Filtro por turma -->
             <form method="GET" class="filter-form">
                 <select name="turma">
@@ -135,7 +133,11 @@ include_once '../../includes/header.php';
                             <td data-label="Ações">
                                 <div class="action-buttons">
                                     <a href="form_aluno.php?matricula=<?= $aluno->matricula ?>">Editar/Renovar</a>
-                                    <a href="excluir.php?matricula=<?= $aluno->matricula ?>">Excluir</a>
+                                    <a href="#" class="btn-redefinir" data-matricula="<?= $aluno->matricula ?>">Redefinir Senha</a>
+                                    <a href="excluir.php?matricula=<?= $aluno->matricula ?>" 
+                                        onclick="return confirm('Tem certeza que deseja excluir o aluno <?= $aluno->nome ?>?')">
+                                        Excluir
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -143,17 +145,75 @@ include_once '../../includes/header.php';
                 </tbody>
             </table>
             <?php if ($total_paginas > 1): ?>
-              <nav class="paginacao">
-                  <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
-                      <a class="<?= $i === $pagina ? 'pagina-ativa' : '' ?>"
-                        href="?<?= http_build_query(array_merge($_GET, ['pagina' => $i])) ?>">
-                          <?= $i ?>
-                      </a>
-                  <?php endfor; ?>
-              </nav>
+                <nav class="paginacao">
+                    <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
+                        <a class="<?= $i === $pagina ? 'pagina-ativa' : '' ?>"
+                            href="?<?= http_build_query(array_merge($_GET, ['pagina' => $i])) ?>">
+                            <?= $i ?>
+                        </a>
+                    <?php endfor; ?>
+                </nav>
             <?php endif; ?>
         </div>
     </div>
+    <?php if (!empty($_SESSION['mensagem'])): ?>
+        <div id="toast-mensagem" class="mensagem-sucesso">
+            <?= htmlspecialchars($_SESSION['mensagem']) ?>
+        </div>
+        <?php unset($_SESSION['mensagem']); ?>
+    <?php endif; ?>
+    <div id="modal-redefinir" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Redefinir Senha do Aluno</h2>
+            <form method="POST" action="redefinir_senha.php">
+            <input type="hidden" name="matricula" id="matricula-modal">
+            <label>Nova Senha
+                <input type="password" name="nova_senha" required>
+            </label>
+            <button type="submit">Salvar Nova Senha</button>
+            </form>
+        </div>
+    </div>
 </main>
+<script>
+    document.querySelectorAll('.btn-redefinir').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const matricula = this.getAttribute('data-matricula');
+        document.getElementById('matricula-modal').value = matricula;
+        document.getElementById('modal-redefinir').style.display = 'block';
+    });
+    });
 
+    document.querySelector('.modal .close').addEventListener('click', function () {
+    document.getElementById('modal-redefinir').style.display = 'none';
+    });
+
+    window.addEventListener('click', function (e) {
+    const modal = document.getElementById('modal-redefinir');
+    if (e.target === modal) modal.style.display = 'none';
+    });
+</script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const toast = document.getElementById('toast-mensagem');
+  if (toast) {
+    // Adiciona classe para mostrar com fade in
+    toast.classList.add('show');
+
+    // Após 4 segundos, começa fade out
+    setTimeout(() => {
+      toast.classList.remove('show');
+
+      // Depois do tempo da transição, remove o elemento da página
+      setTimeout(() => {
+        if(toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 600); // mesmo tempo da transição CSS
+    }, 4000); // tempo visível da notificação
+  }
+});
+</script>
 <?php include_once '../../includes/footer.php'; ?>

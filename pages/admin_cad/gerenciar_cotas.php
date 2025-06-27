@@ -9,27 +9,32 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor')
 
 // Adicionar ou editar cota
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $turma = trim($_POST['turma']);
+    $turma = strtoupper(trim($_POST['turma']));
     $periodo = trim($_POST['periodo']);
-    $cota_total = intval($_POST['cota_total']);
+    $valor_cota = intval($_POST['cota_total']); // pode ser positivo ou negativo
 
     $stmt = $conn->prepare("SELECT * FROM CotaAluno WHERE turma = :turma AND periodo = :periodo");
     $stmt->execute([':turma' => $turma, ':periodo' => $periodo]);
+    $cotaAtual = $stmt->fetch();
 
-    if ($stmt->rowCount() > 0) {
-        // Atualiza
+    if ($cotaAtual) {
+        $novoTotal = $cotaAtual->cota_total + $valor_cota;
+        if ($novoTotal < 0) $novoTotal = 0; // evita total negativo
+
         $update = $conn->prepare("UPDATE CotaAluno SET cota_total = :total WHERE turma = :turma AND periodo = :periodo");
-        $update->execute([':total' => $cota_total, ':turma' => $turma, ':periodo' => $periodo]);
+        $update->execute([':total' => $novoTotal, ':turma' => $turma, ':periodo' => $periodo]);
     } else {
-        // Insere
-        $insert = $conn->prepare("INSERT INTO CotaAluno (turma, periodo, cota_total, cota_usada) VALUES (:turma, :periodo, :total, 0)");
-        $insert->execute([':turma' => $turma, ':periodo' => $periodo, ':total' => $cota_total]);
+        // Se não existir, só insere se o valor for positivo
+        if ($valor_cota > 0) {
+            $insert = $conn->prepare("INSERT INTO CotaAluno (turma, periodo, cota_total, cota_usada) VALUES (:turma, :periodo, :total, 0)");
+            $insert->execute([':turma' => $turma, ':periodo' => $periodo, ':total' => $valor_cota]);
+        }
+        // Se valor for negativo e não existe cota, pode ignorar ou dar erro
     }
 
     header('Location: gerenciar_cotas.php');
     exit;
 }
-
 // Buscar cotas existentes
 $stmt = $conn->query("SELECT * FROM CotaAluno ORDER BY periodo DESC, turma ASC");
 $cotas = $stmt->fetchAll();
@@ -53,11 +58,14 @@ include_once '../../includes/header.php';
         <option value="GTEAD">Tecnologia em Gestão do Turismo EAD</option>
     </select>
     <input type="text" name="periodo" placeholder="Período (ex: 2025.2)" pattern="^[0-9]{4}\.[12]$" title="Formato: 2025.1 ou 2025.2" required>
-    <input type="number" name="cota_total" placeholder="Cota total" min="0" required>
+    <input type="number" name="cota_total" placeholder="Valor para adicionar (+) ou subtrair (-)" required>
+    <small>Use número negativo para diminuir a cota total.</small>
     <button type="submit">Salvar</button>
   </form>
-
-  <a href="gerar_relatorio_pdf.php" target="_blank" style="display:inline-block;margin-bottom:1rem;">📄 Gerar Relatório PDF (Cotas x Alunos)</a>
+  <div class="btn-container">
+    <a class="btn-cotas" href="gerar_relatorio_pdf.php">Gerar Relatório PDF (Cotas x Alunos)</a>
+    <a class="btn-cotas" href="javascript:history.back()">Voltar</a>
+  </div> 
   </aside>
 
 
