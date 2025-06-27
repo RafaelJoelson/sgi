@@ -7,36 +7,37 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor')
     exit;
 }
 
+// Buscar turmas disponíveis (JOIN com Curso para pegar sigla e nome)
+$stmtTurmas = $conn->query("SELECT t.id, t.periodo, c.sigla, c.nome_completo FROM Turma t JOIN Curso c ON t.curso_id = c.id ORDER BY c.nome_completo ASC, t.periodo ASC");
+$turmas = $stmtTurmas->fetchAll();
+
 // Adicionar ou editar cota
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $turma = strtoupper(trim($_POST['turma']));
-    $periodo = trim($_POST['periodo']);
-    $valor_cota = intval($_POST['cota_total']); // pode ser positivo ou negativo
+    $turma_id = intval($_POST['turma']);
+    $valor_cota = intval($_POST['cota_total']);
 
-    $stmt = $conn->prepare("SELECT * FROM CotaAluno WHERE turma = :turma AND periodo = :periodo");
-    $stmt->execute([':turma' => $turma, ':periodo' => $periodo]);
+    $stmt = $conn->prepare("SELECT * FROM CotaAluno WHERE turma_id = :turma_id");
+    $stmt->execute([':turma_id' => $turma_id]);
     $cotaAtual = $stmt->fetch();
 
     if ($cotaAtual) {
         $novoTotal = $cotaAtual->cota_total + $valor_cota;
-        if ($novoTotal < 0) $novoTotal = 0; // evita total negativo
-
-        $update = $conn->prepare("UPDATE CotaAluno SET cota_total = :total WHERE turma = :turma AND periodo = :periodo");
-        $update->execute([':total' => $novoTotal, ':turma' => $turma, ':periodo' => $periodo]);
-    } else {
-        // Se não existir, só insere se o valor for positivo
-        if ($valor_cota > 0) {
-            $insert = $conn->prepare("INSERT INTO CotaAluno (turma, periodo, cota_total, cota_usada) VALUES (:turma, :periodo, :total, 0)");
-            $insert->execute([':turma' => $turma, ':periodo' => $periodo, ':total' => $valor_cota]);
-        }
-        // Se valor for negativo e não existe cota, pode ignorar ou dar erro
+        if ($novoTotal < 0) $novoTotal = 0;
+        $update = $conn->prepare("UPDATE CotaAluno SET cota_total = :total WHERE turma_id = :turma_id");
+        $update->execute([':total' => $novoTotal, ':turma_id' => $turma_id]);
+    } else if ($valor_cota > 0) {
+        $insert = $conn->prepare("INSERT INTO CotaAluno (turma_id, cota_total, cota_usada) VALUES (:turma_id, :total, 0)");
+        $insert->execute([':turma_id' => $turma_id, ':total' => $valor_cota]);
     }
-
     header('Location: gerenciar_cotas.php');
     exit;
 }
 // Buscar cotas existentes
-$stmt = $conn->query("SELECT * FROM CotaAluno ORDER BY periodo DESC, turma ASC");
+$stmt = $conn->query("SELECT ca.*, c.sigla, c.nome_completo, t.periodo 
+                      FROM CotaAluno ca 
+                      JOIN Turma t ON ca.turma_id = t.id 
+                      JOIN Curso c ON t.curso_id = c.id 
+                      ORDER BY t.periodo DESC, c.sigla ASC");
 $cotas = $stmt->fetchAll();
 
 include_once '../../includes/header.php';
@@ -49,15 +50,11 @@ include_once '../../includes/header.php';
 
   <form method="POST" class="form-cotas">
     <select name="turma" required>
-        <option value="" disabled selected>Selecione a turma</option>
-        <option value="LET">Letras (Habilitação Português/Espanhol)</option>
-        <option value="GRH">Tecnologia em Gestão de Recursos Humanos</option>
-        <option value="LOG">Tecnologia em Logística</option>
-        <option value="GTI">Tecnologia em Gestão da Tecnologia da Informação</option>
-        <option value="GA">Tecnologia em Gestão Ambiental</option>
-        <option value="GTEAD">Tecnologia em Gestão do Turismo EAD</option>
+      <option value="" disabled selected>Selecione a turma</option>
+      <?php foreach ($turmas as $turma): ?>
+        <option value="<?= $turma->id ?>"><?= htmlspecialchars($turma->nome_completo . ' - ' . $turma->periodo) ?></option>
+      <?php endforeach; ?>
     </select>
-    <input type="text" name="periodo" placeholder="Período (ex: 2025.2)" pattern="^[0-9]{4}\.[12]$" title="Formato: 2025.1 ou 2025.2" required>
     <input type="number" name="cota_total" placeholder="Valor para adicionar (+) ou subtrair (-)" required>
     <small>Use número negativo para diminuir a cota total.</small>
     <button type="submit">Salvar</button>
@@ -83,8 +80,8 @@ include_once '../../includes/header.php';
       <tbody>
         <?php foreach ($cotas as $cota): ?>
         <tr>
-          <td data-label="Turma"><?= $cota->turma ?></td>
-          <td data-label="Período"><?= $cota->periodo ?></td>
+          <td data-label="Turma"><?= htmlspecialchars($cota->sigla) ?></td>
+          <td data-label="Período"><?= htmlspecialchars($cota->periodo) ?></td>
           <td data-label="Cota Total"><?= $cota->cota_total ?></td>
           <td data-label="Usada"><?= $cota->cota_usada ?></td>
           <td data-label="Restante"><?= $cota->cota_total - $cota->cota_usada ?></td>

@@ -1,13 +1,31 @@
--- COTA PARA ALUNOS POR TURMA
+-- TABELA CURSO
+
+CREATE TABLE Curso (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sigla VARCHAR(20) NOT NULL UNIQUE,
+    nome_completo VARCHAR(100) NOT NULL
+);
+
+-- TABELA TURMA
+
+CREATE TABLE Turma (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    curso_id INT NOT NULL,
+    periodo VARCHAR(20) NOT NULL,
+    UNIQUE (curso_id, periodo),
+    FOREIGN KEY (curso_id) REFERENCES Curso(id) ON DELETE CASCADE
+);
+
+-- TABELA PARA COTA DE ALUNOS
+
 CREATE TABLE CotaAluno (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    turma VARCHAR(20) NOT NULL,
-    turma_nome VARCHAR(100) NOT NULL,
-    periodo VARCHAR(10) NOT NULL,
+    turma_id INT NOT NULL,
     cota_total INT DEFAULT 0 NOT NULL,
     cota_usada INT DEFAULT 0 NOT NULL,
-    UNIQUE (turma, periodo)
+    FOREIGN KEY (turma_id) REFERENCES Turma(id) ON DELETE CASCADE
 );
+
 
 -- ALUNO
 CREATE TABLE Aluno (
@@ -127,55 +145,85 @@ END;
 //
 DELIMITER ;
 
--- CotaAluno
-INSERT INTO CotaAluno (id, turma, periodo, cota_total, cota_usada) VALUES
-(1, 'LET', '2025.1', 250, 200),
-(2, 'GRH', '2025.1', 250, 100),
-(3, 'LOG', '2025.1', 250, 50);
+-- CURSOS
+INSERT INTO Curso (id, sigla, nome_completo) VALUES
+(1, 'LET', 'Letras (Habilitação Português/Espanhol)'),
+(2, 'GRH', 'Tecnologia em Gestão de Recursos Humanos'),
+(3, 'LOG', 'Tecnologia em Logística'),
+(4, 'GTI', 'Tecnologia em Gestão da Tecnologia da Informação'),
+(5, 'GA', 'Tecnologia em Gestão Ambiental'),
+(6, 'GTEAD', 'Tecnologia em Gestão do Turismo EAD');
 
--- Servidor
+-- TURMAS (cada turma é uma oferta de curso em um período)
+INSERT INTO Turma (id, curso_id, periodo) VALUES
+(1, 1, '1° Período'),
+(2, 1, '2° Período'),
+(3, 1, '3° Período'),
+(4, 2, '1° Período'),
+(5, 2, '2° Período'),
+(6, 2, '3° Período'),
+(7, 3, '1° Período'),
+(8, 3, '2° Período'),
+(9, 3, '3° Período'),
+(10, 4, '1° Período'),
+(11, 4, '2° Período'),
+(12, 4, '3° Período'),
+(13, 5, '1° Período'),
+(14, 5, '2° Período'),
+(15, 5, '3° Período'),
+(16, 6, '1° Período'),
+(17, 6, '2° Período'),
+(18, 6, '3° Período');
+
+-- COTA ALUNO
+INSERT INTO CotaAluno (id, turma_id, cota_total, cota_usada) VALUES
+(1, 1, 250, 100),
+(2, 4, 200, 50),
+(3, 7, 180, 30),
+(4, 10, 220, 80),
+(5, 13, 150, 20),
+(6, 16, 170, 10);
+
+-- ALUNOS
+INSERT INTO Aluno (matricula, nome, sobrenome, cargo, email, cpf, senha, ativo, cota_id, data_fim_validade) VALUES
+('20250001', 'Ana', 'Silva', 'Líder', 'ana.silva@email.com', '12345678901', 'senha123', TRUE, 1, '2025-12-31'),
+('20250002', 'Bruno', 'Souza', 'Nenhum', 'bruno.souza@email.com', '23456789012', 'senha123', TRUE, 2, '2025-12-31'),
+('20250003', 'Carla', 'Oliveira', 'Vice-líder', 'carla.oliveira@email.com', '34567890123', 'senha123', TRUE, 3, '2025-12-31'),
+('20250004', 'Pedro', 'Oliveira', 'Vice-líder', 'pedro.oliveira@email.com', '34567890124', 'senha123', TRUE, 4, '2025-12-31'),
+('20250005', 'Lucas', 'Pereira', 'Nenhum', 'lucas.pereira@email.com', '45678901234', 'senha123', TRUE, 5, '2025-12-31'),
+('20250006', 'Mariana', 'Lima', 'Nenhum', 'mariana@email.com', '56789012345', 'senha123', TRUE, 6, '2025-12-31');
+
+-- SERVIDORES
 INSERT INTO Servidor (siap, nome, sobrenome, email, cpf, senha, is_admin, setor_admin, ativo, data_fim_validade) VALUES
 ('1001', 'João', 'Silva', 'joao.silva@if.edu', '45678901234', 'senha123', TRUE, 'CAD', TRUE, '2025-12-31'),
 ('1002', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '56789012345', 'senha123', FALSE, 'NENHUM', TRUE, '2025-12-31'),
 ('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', 'senha123', FALSE, 'COEN', TRUE, '2025-12-31');
 
--- CotaServidor
+-- COTA SERVIDOR
 INSERT INTO CotaServidor (siap, cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada) VALUES
 ('1001', 1000, 200, 100, 10),
 ('1002', 1000, 150, 100, 5),
 ('1003', 1000, 100, 100, 0);
 
--- Aluno
-INSERT INTO Aluno (matricula, nome, sobrenome, cargo, email, cpf, senha, ativo, cota_id, data_fim_validade) VALUES
-('20250001', 'Ana', 'Silva', 'Líder', 'ana.silva@email.com', '12345678901', 'senha123', TRUE, 1, '2025-12-31'),
-('20250002', 'Bruno', 'Souza', 'Nenhum', 'bruno.souza@email.com', '23456789012', 'senha123', TRUE, 2, '2025-12-31'),
-('20250003', 'Carla', 'Oliveira', 'Vice-líder', 'carla.oliveira@email.com', '34567890123', 'senha123', TRUE, 3, '2025-12-31'),
-('20250004', 'Pedro', 'Oliveira', 'Vice-líder', 'pedro.oliveira@email.com', '34567890124', 'senha123', TRUE, 3, '2025-12-31'),
-('20250005', 'Lucas', 'Pereira', 'Nenhum', 'lucas.pereira@email.com', '45678901234', 'senha123', TRUE, 1, '2025-12-31'),
-('20250006', 'Mariana', 'Lima', 'Nenhum', 'mariana@email.com', '56789012345', 'senha123', TRUE, 2, '2025-12-31'),
-('20250007', 'Roberto', 'Santos', 'Líder', 'roberto@email.com', '67890123456', 'senha123', TRUE, 1, '2025-12-31'),
-('20250008', 'Fernanda', 'Costa', 'Nenhum', 'fernanda@email.com', '78901234567', 'senha123', TRUE, 2, '2025-12-31'),
-('20250009', 'Juliana', 'Mendes', 'Nenhum', 'juliana@email.com', '89012345678', 'senha123', TRUE, 3, '2025-12-31'),
-('20250010', 'Ricardo', 'Almeida', 'Vice-líder', 'ricardo@email.com', '90123456789', 'senha123', TRUE, 1, '2025-12-31');
-
--- Reprografo
+-- REPROGRAFO
 INSERT INTO Reprografo (cpf, nome, sobrenome, email, senha) VALUES
 ('11111111111', 'Paulo', 'Lima', 'paulo.lima@if.edu', 'senha123'),
 ('22222222222', 'Fernanda', 'Costa', 'fernanda.costa@if.edu', 'senha123');
 
--- SolicitacaoImpressao
+-- SOLICITAÇÃO DE IMPRESSÃO
 INSERT INTO SolicitacaoImpressao (id, cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, colorida, status, data_criacao, cpf_reprografo) VALUES
-(1, '12345678901', 'Aluno', 'trabalho_ana.pdf', 10, FALSE, 'Nova', '2025-06-25 10:00:00', NULL),
-(2, '45678901234', 'Aluno', 'relatorio_lucas.pdf', 5, TRUE, 'Aceita', '2025-06-25 11:00:00', '11111111111'),
-(3, '1001', 'Servidor', 'oficio_joao.pdf', 3, FALSE, 'Lida', '2025-06-25 12:00:00', '22222222222');
+(1, '12345678901', 'Aluno', 'trabalho_ana.pdf', 10, FALSE, 'Nova', '2025-06-27 10:00:00', NULL),
+(2, '45678901234', 'Aluno', 'relatorio_lucas.pdf', 5, TRUE, 'Aceita', '2025-06-27 11:00:00', '11111111111'),
+(3, '1001', 'Servidor', 'oficio_joao.pdf', 3, FALSE, 'Lida', '2025-06-27 12:00:00', '22222222222');
 
--- Notificacao
+-- NOTIFICAÇÃO
 INSERT INTO Notificacao (solicitacao_id, destinatario_cpf, mensagem, visualizada, data_envio) VALUES
-(1, '12345678901', 'Sua solicitação foi recebida.', FALSE, '2025-06-25 10:05:00'),
-(2, '45678901234', 'Sua solicitação foi aceita.', TRUE, '2025-06-25 11:10:00'),
-(3, '1001', 'Sua solicitação foi lida.', FALSE, '2025-06-25 12:10:00');
+(1, '12345678901', 'Sua solicitação foi recebida.', FALSE, '2025-06-27 10:05:00'),
+(2, '45678901234', 'Sua solicitação foi aceita.', TRUE, '2025-06-27 11:10:00'),
+(3, '1001', 'Sua solicitação foi lida.', FALSE, '2025-06-27 12:10:00');
 
--- LogDecrementoCota
+-- LOG DE DECREMENTO DE COTAS
 INSERT INTO LogDecrementoCota (solicitacao_id, tipo_usuario, referencia, qtd_copias, data) VALUES
-(2, 'Aluno', '20250005', 5, '2025-06-25 11:15:00'),
-(3, 'Servidor', '1001', 3, '2025-06-25 12:15:00');
+(2, 'Aluno', '20250005', 5, '2025-06-27 11:15:00'),
+(3, 'Servidor', '1001', 3, '2025-06-27 12:15:00');
+

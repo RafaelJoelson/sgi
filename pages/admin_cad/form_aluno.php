@@ -19,8 +19,15 @@ if ($modo_edicao) {
 }
 
 // Buscar cotas disponíveis
-$stmt = $conn->query("SELECT id, turma, periodo FROM CotaAluno ORDER BY periodo DESC, turma ASC");
+$stmt = $conn->query("
+    SELECT ca.id, t.periodo, c.sigla, c.nome_completo 
+    FROM CotaAluno ca
+    JOIN Turma t ON ca.turma_id = t.id
+    JOIN Curso c ON t.curso_id = c.id
+    ORDER BY t.periodo DESC, c.sigla ASC
+");
 $cotas = $stmt->fetchAll();
+
 ?>
 
 <?php include_once '../../includes/header.php'; ?>
@@ -63,16 +70,17 @@ $cotas = $stmt->fetchAll();
       </select>
     </label>
 
-    <label>Cota (Turma / Período)
+    <label>Cota (Curso / Período)
       <select name="cota_id" required>
         <option value="" disabled <?= !isset($aluno->cota_id) ? 'selected' : '' ?>>Selecione uma cota</option>
         <?php foreach ($cotas as $cota): ?>
           <option value="<?= $cota->id ?>" <?= isset($aluno) && $aluno->cota_id == $cota->id ? 'selected' : '' ?>>
-            <?= $cota->turma ?> - <?= $cota->periodo ?>
+            <?= htmlspecialchars($cota->nome_completo) ?> (<?= htmlspecialchars($cota->sigla) ?>) - <?= htmlspecialchars($cota->periodo) ?>
           </option>
         <?php endforeach; ?>
       </select>
     </label>
+
 
     <label>Data Fim da Validade
       <input type="date" name="data_fim_validade" required value="<?= $aluno->data_fim_validade ?? '' ?>">
@@ -80,6 +88,7 @@ $cotas = $stmt->fetchAll();
 
     <button type="submit"><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Aluno' ?></button>
   </form>
+  <a class="btn-back" href="javascript:history.back()">Voltar</a>
 </main>
 
 <?php include_once '../../includes/footer.php'; ?>

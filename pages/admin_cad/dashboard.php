@@ -22,7 +22,9 @@ $filtro_turma = $_GET['turma'] ?? '';
 
 // Montagem da query base com JOIN
 $base_sql = "FROM Aluno a 
-             LEFT JOIN CotaAluno ca ON a.cota_id = ca.id";
+             LEFT JOIN CotaAluno ca ON a.cota_id = ca.id
+             LEFT JOIN Turma t ON ca.turma_id = t.id
+             LEFT JOIN Curso c ON t.curso_id = c.id";
 
 if (!empty($tipo_busca) && !empty($valor_busca)) {
     if ($tipo_busca === 'cpf') {
@@ -31,9 +33,10 @@ if (!empty($tipo_busca) && !empty($valor_busca)) {
         $condicoes[] = "a.matricula = :valor";
     }
     $params[':valor'] = $valor_busca;
-} elseif (!empty($filtro_turma)) {
-    $condicoes[] = "ca.turma = :turma";
-    $params[':turma'] = $filtro_turma;
+}
+if (!empty($filtro_turma)) {
+    $condicoes[] = "t.id = :turma_id";
+    $params[':turma_id'] = $filtro_turma;
 }
 
 $where_clause = !empty($condicoes) ? 'WHERE ' . implode(' AND ', $condicoes) : '';
@@ -46,7 +49,7 @@ $total_resultados = $stmt_count->fetch()->total ?? 0;
 $total_paginas = ceil($total_resultados / $limite);
 
 // Consulta principal com LIMIT e OFFSET
-$sql_alunos = "SELECT a.*, ca.turma, ca.periodo 
+$sql_alunos = "SELECT a.*, t.periodo, c.sigla, c.nome_completo 
                " . $base_sql . " " . $where_clause . " 
                ORDER BY a.nome ASC 
                LIMIT :limite OFFSET :offset";
@@ -61,8 +64,12 @@ $stmt->execute();
 $alunos = $stmt->fetchAll();
 
 // Totais para os cards
-$total_turmas = $conn->query("SELECT COUNT(*) AS total FROM CotaAluno")->fetch()->total ?? 0;
+$total_turmas = $conn->query("SELECT COUNT(DISTINCT turma_id) AS total FROM CotaAluno")->fetch()->total ?? 0;
 $total_alunos = $conn->query("SELECT COUNT(*) AS total FROM Aluno")->fetch()->total ?? 0;
+// Buscar turmas disponíveis (JOIN com Curso para pegar sigla e nome)
+$stmt_turmas = $conn->query("SELECT t.id, t.periodo, c.sigla, c.nome_completo FROM Turma t JOIN Curso c ON t.curso_id = c.id ORDER BY c.nome_completo ASC, t.periodo ASC");
+$turmas_disponiveis = $stmt_turmas->fetchAll();
+
 
 include_once '../../includes/header.php';
 ?>
@@ -100,15 +107,15 @@ include_once '../../includes/header.php';
             <form method="GET" class="filter-form">
                 <select name="turma">
                     <option value="">Todas as turmas</option>
-                    <option value="LET" <?= isset($_GET['turma']) && $_GET['turma'] === 'LET' ? 'selected' : '' ?>>Letras</option>
-                    <option value="GRH" <?= isset($_GET['turma']) && $_GET['turma'] === 'GRH' ? 'selected' : '' ?>>Gestão de Recursos Humanos</option>
-                    <option value="LOG" <?= isset($_GET['turma']) && $_GET['turma'] === 'LOG' ? 'selected' : '' ?>>Tecnologia em Logística</option>
-                    <option value="GTI" <?= isset($_GET['turma']) && $_GET['turma'] === 'GTI' ? 'selected' : '' ?>>Gestão da Tecnologia da Informação</option>
-                    <option value="GA" <?= isset($_GET['turma']) && $_GET['turma'] === 'GA' ? 'selected' : '' ?>>Gestão Ambiental</option>
-                    <option value="GTEAD" <?= isset($_GET['turma']) && $_GET['turma'] === 'GTEAD' ? 'selected' : '' ?>>Gestão do Turismo EAD</option>
+                    <?php foreach ($turmas_disponiveis as $turma): ?>
+                        <option value="<?= $turma->id ?>" <?= isset($_GET['turma']) && $_GET['turma'] == $turma->id ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($turma->nome_completo . ' - ' . $turma->periodo) ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
                 <button type="submit">Filtrar</button>
             </form>
+
             <table>
                 <thead>
                     <tr>
@@ -127,7 +134,7 @@ include_once '../../includes/header.php';
                             <td data-label="Matrícula"><?= $aluno->matricula ?></td>
                             <td data-label="Nome"><?= $aluno->nome ?></td>
                             <td data-label="Cargo"><?= $aluno->cargo ?></td>
-                            <td data-label="Turma"><?= htmlspecialchars($aluno->turma) ?></td>
+                            <td data-label="Turma"><?= htmlspecialchars($aluno->nome_completo) ?></td>
                             <td data-label="Período"><?= htmlspecialchars($aluno->periodo) ?></td>
                             <td data-label="Validade"><?= date('d/m/Y', strtotime($aluno->data_fim_validade)) ?></td>
                             <td data-label="Ações">
