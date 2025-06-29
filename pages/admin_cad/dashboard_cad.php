@@ -79,7 +79,7 @@ include_once '../../includes/header.php';
     <div class="dashboard-container">
         <aside>
             <section class="dashboard-header">
-                <h1>Dashboard CAD</h1>
+                <h1>Coordenação de Apoio ao Discente</h1>
             </section>
             <!-- Cards -->
             <section class="dashboard-cards">

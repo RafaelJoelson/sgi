@@ -62,7 +62,7 @@ include_once '../../includes/header.php';
     <div class="dashboard-container">
         <aside>
             <section class="dashboard-header">
-                <h1>Coordenação de Apoio ao Servidor (COEN)</h1>
+                <h1>Coordenação de Ensino (COEN)</h1>
             </section>
             <section class="dashboard-cards">
                 <div class="card">Servidores Ativos: <?= $total_servidores ?></div>
