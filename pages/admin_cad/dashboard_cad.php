@@ -2,7 +2,8 @@
 require_once '../../includes/config.php';
 session_start();
 
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor') {
+// Permissão: apenas servidor CAD pode acessar
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'CAD') {
     header('Location: ../../index.php');
     exit;
 }
@@ -78,7 +79,7 @@ include_once '../../includes/header.php';
     <div class="dashboard-container">
         <aside>
             <section class="dashboard-header">
-                <h1>Coordenação de Apoio ao Discente</h1>
+                <h1>Dashboard CAD</h1>
             </section>
             <!-- Cards -->
             <section class="dashboard-cards">
@@ -89,6 +90,7 @@ include_once '../../includes/header.php';
                 <a class="btn-menu" href="form_aluno.php">Cadastrar novo aluno</a>
                 <a class="btn-menu" href="gerenciar_cotas.php">Gerenciar Cotas</a>
                 <a class="btn-menu" href="gerenciar_turmas.php">Gerenciar Turmas</a>
+                <a class="btn-menu" href="configurar_semestre.php">Configurar Semestre Letivo</a>
             </section>
         </aside>
         <!-- Tabela de alunos -->

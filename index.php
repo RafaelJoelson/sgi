@@ -60,7 +60,7 @@ require_once 'includes/nav.php';
                     </form>
                     
                     <div class="text-center mt-3">
-                        <a href="gerar_senha.php" class="text-secondary">
+                        <a href="./pages/admin/gerar_senha.php" class="text-secondary">
                             <i class="fas fa-key"></i> Esqueci minha senha
                         </a>
                     </div>

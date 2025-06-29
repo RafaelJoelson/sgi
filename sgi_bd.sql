@@ -155,6 +155,24 @@ END;
 //
 DELIMITER ;
 
+-- EVENTO PARA RESETAR COTAS NO INÍCIO DE CADA SEMESTRE LETIVO
+DELIMITER //
+CREATE EVENT IF NOT EXISTS resetar_cotas_semestre
+ON SCHEDULE EVERY 1 DAY
+DO
+BEGIN
+  DECLARE prox_semestre_inicio DATE;
+  -- Busca o próximo semestre letivo que começa hoje
+  SELECT data_inicio INTO prox_semestre_inicio FROM SemestreLetivo WHERE data_inicio = CURDATE() LIMIT 1;
+  IF prox_semestre_inicio IS NOT NULL THEN
+    -- Reseta cotas de alunos: cada turma recebe 600 cópias, cota usada volta a 0
+    UPDATE CotaAluno SET cota_total = 600, cota_usada = 0;
+    -- Reseta cotas de servidores: 1000 PB e 100 coloridas, usadas voltam a 0
+    UPDATE CotaServidor SET cota_pb_total = 1000, cota_pb_usada = 0, cota_color_total = 100, cota_color_usada = 0;
+  END IF;
+END;//
+DELIMITER ;
+
 -- CURSOS
 INSERT INTO Curso (id, sigla, nome_completo) VALUES
 (1, 'LET', 'Letras (Habilitação Português/Espanhol)'),

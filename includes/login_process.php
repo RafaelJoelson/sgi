@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         [
             'tabela' => 'Aluno',
             'campo_id' => 'matricula',
-            'dashboard' => '../pages/aluno/dashboard.php',
+            'dashboard' => 'aluno/dashboard_aluno.php',
             'condicoes' => 'AND data_fim_validade >= CURDATE()' // aluno válido
         ],
         [
@@ -24,17 +24,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'campo_id' => 'siap',
             'dashboard' => function($user) {
                 if ($user->is_admin) {
-                    return ($user->setor_admin === 'CAD') 
-                        ? '../pages/admin_cad/dashboard.php'
-                        : '../pages/admin_coen/dashboard.php';
+                    if ($user->setor_admin === 'CAD') {
+                        return 'admin_cad/dashboard_cad.php';
+                    } elseif ($user->setor_admin === 'COEN') {
+                        return 'admin_coen/dashboard_coen.php';
+                    }
                 }
-                return '../pages/servidor/dashboard.php';
+                return 'servidor/dashboard_servidor.php';
             }
         ],
         [
             'tabela' => 'Reprografo',
             'campo_id' => 'cpf',
-            'dashboard' => '../pages/reprografo/dashboard.php'
+            'dashboard' => 'reprografo/dashboard_reprografo.php'
         ]
     ];
 

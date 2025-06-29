@@ -2,8 +2,8 @@
 require_once '../../includes/config.php';
 session_start();
 
-// Segurança: apenas servidores podem cadastrar
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor') {
+// Permissão: apenas servidor CAD pode acessar
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'CAD') {
     header('Location: ../../index.php');
     exit;
 }
