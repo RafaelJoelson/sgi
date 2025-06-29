@@ -112,6 +112,16 @@ CREATE TABLE LogDecrementoCota (
     FOREIGN KEY (solicitacao_id) REFERENCES SolicitacaoImpressao(id) ON DELETE CASCADE
 );
 
+-- TABELA DE SEMESTRES LETIVOS
+CREATE TABLE SemestreLetivo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ano INT NOT NULL,
+    semestre ENUM('1','2') NOT NULL,
+    data_inicio DATE NOT NULL,
+    data_fim DATE NOT NULL,
+    UNIQUE (ano, semestre)
+);
+
 -- HABILITAR O EVENTO DO SCHEDULER
 -- O evento scheduler deve estar habilitado para que os eventos sejam executados automaticamente
 
@@ -186,18 +196,18 @@ INSERT INTO CotaAluno (id, turma_id, cota_total, cota_usada) VALUES
 
 -- ALUNOS
 INSERT INTO Aluno (matricula, nome, sobrenome, cargo, email, cpf, senha, ativo, cota_id, data_fim_validade) VALUES
-('20250001', 'Ana', 'Silva', 'Líder', 'ana.silva@email.com', '12345678901', 'senha123', TRUE, 1, '2025-12-31'),
-('20250002', 'Bruno', 'Souza', 'Nenhum', 'bruno.souza@email.com', '23456789012', 'senha123', TRUE, 2, '2025-12-31'),
-('20250003', 'Carla', 'Oliveira', 'Vice-líder', 'carla.oliveira@email.com', '34567890123', 'senha123', TRUE, 3, '2025-12-31'),
-('20250004', 'Pedro', 'Oliveira', 'Vice-líder', 'pedro.oliveira@email.com', '34567890124', 'senha123', TRUE, 4, '2025-12-31'),
-('20250005', 'Lucas', 'Pereira', 'Nenhum', 'lucas.pereira@email.com', '45678901234', 'senha123', TRUE, 5, '2025-12-31'),
-('20250006', 'Mariana', 'Lima', 'Nenhum', 'mariana@email.com', '56789012345', 'senha123', TRUE, 6, '2025-12-31');
+('20250001', 'Ana', 'Silva', 'Líder', 'ana.silva@email.com', '12345678901', 'senha123', TRUE, 1, NULL),
+('20250002', 'Bruno', 'Souza', 'Nenhum', 'bruno.souza@email.com', '23456789012', 'senha123', TRUE, 2, NULL),
+('20250003', 'Carla', 'Oliveira', 'Vice-líder', 'carla.oliveira@email.com', '34567890123', 'senha123', TRUE, 3, NULL),
+('20250004', 'Pedro', 'Oliveira', 'Vice-líder', 'pedro.oliveira@email.com', '34567890124', 'senha123', TRUE, 4, NULL),
+('20250005', 'Lucas', 'Pereira', 'Nenhum', 'lucas.pereira@email.com', '45678901234', 'senha123', TRUE, 5, NULL),
+('20250006', 'Mariana', 'Lima', 'Nenhum', 'mariana@email.com', '56789012345', 'senha123', TRUE, 6, NULL);
 
 -- SERVIDORES
 INSERT INTO Servidor (siap, nome, sobrenome, email, cpf, senha, is_admin, setor_admin, ativo, data_fim_validade) VALUES
-('1001', 'João', 'Silva', 'joao.silva@if.edu', '45678901234', 'senha123', TRUE, 'CAD', TRUE, '2025-12-31'),
-('1002', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '56789012345', 'senha123', FALSE, 'NENHUM', TRUE, '2025-12-31'),
-('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', 'senha123', FALSE, 'COEN', TRUE, '2025-12-31');
+('1001', 'João', 'Silva', 'joao.silva@if.edu', '45678901234', 'senha123', TRUE, 'CAD', TRUE, NULL),
+('1002', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '56789012345', 'senha123', FALSE, 'NENHUM', TRUE, NULL),
+('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', 'senha123', FALSE, 'COEN', TRUE, NULL);
 
 -- COTA SERVIDOR
 INSERT INTO CotaServidor (siap, cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada) VALUES
@@ -226,4 +236,9 @@ INSERT INTO Notificacao (solicitacao_id, destinatario_cpf, mensagem, visualizada
 INSERT INTO LogDecrementoCota (solicitacao_id, tipo_usuario, referencia, qtd_copias, data) VALUES
 (2, 'Aluno', '20250005', 5, '2025-06-27 11:15:00'),
 (3, 'Servidor', '1001', 3, '2025-06-27 12:15:00');
+
+-- Exemplo de inserção de semestres letivos
+INSERT INTO SemestreLetivo (ano, semestre, data_inicio, data_fim) VALUES
+(2025, '1', '2025-02-19', '2025-07-10'),
+(2025, '2', '2025-08-01', '2025-12-20');
 

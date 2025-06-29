@@ -14,7 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $cargo = $_POST['cargo'];
     $cota_id = $_POST['cota_id'];
-    $data_fim_validade = $_POST['data_fim_validade'];
+
+    // Define a data de validade automaticamente para o fim do semestre letivo vigente
+    $stmt_semestre = $conn->prepare("SELECT data_fim FROM SemestreLetivo WHERE data_inicio <= :hoje AND data_fim >= :hoje ORDER BY data_fim DESC LIMIT 1");
+    $stmt_semestre->execute([':hoje' => date('Y-m-d')]);
+    $semestre = $stmt_semestre->fetch();
+    $data_fim_validade = $semestre ? $semestre['data_fim'] : null;
 
     // Verifica cota anterior
     $stmt_antiga = $conn->prepare("SELECT cota_id FROM Aluno WHERE matricula = :matricula");
