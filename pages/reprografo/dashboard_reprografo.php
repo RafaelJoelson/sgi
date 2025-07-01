@@ -1,8 +1,12 @@
 <?php
 // Dashboard do Reprográfo
+require_once '../../includes/config.php';
 session_start();
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografo') {
+    header('Location: ../../index.php');
+    exit;
+}
 require_once '../../includes/header.php';
-// Aqui você pode adicionar a verificação de permissão do reprografo
 ?>
 <link rel="stylesheet" href="dashboard_reprografo.css">
 <main class="container">

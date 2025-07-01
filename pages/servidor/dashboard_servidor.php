@@ -1,11 +1,17 @@
 <?php
 // Dashboard do Servidor
+require_once '../../includes/config.php';
 session_start();
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor') {
+    header('Location: ../../index.php');
+    exit;
+}
 require_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="dashboard_servidor.css">
 <main class="container">
   <h1>Painel do Servidor</h1>
+  <div id="cota-info" style="margin-bottom:1em;font-weight:bold;color:#1a4b2a;"></div>
   <form id="form-solicitacao" enctype="multipart/form-data">
     <label>Arquivo para impressão
       <input type="file" name="arquivo" required accept=".pdf,.doc,.docx,.jpg,.png">
@@ -15,6 +21,9 @@ require_once '../../includes/header.php';
     </label>
     <label>
       <input type="checkbox" name="colorida" value="1"> Impressão colorida
+    </label>
+    <label>Número de páginas
+      <input type="number" name="qtd_paginas" id="qtd_paginas" min="1" max="500" required>
     </label>
     <button type="submit">Enviar Solicitação</button>
   </form>
@@ -27,6 +36,20 @@ require_once '../../includes/header.php';
   <button onclick="window.location.href='historico_solicitacoes.php'">Ver Histórico Completo</button>
 </main>
 <script>
+// Buscar cotas disponíveis do servidor
+function carregarCota() {
+  fetch('cota_servidor.php')
+    .then(r => r.json())
+    .then(data => {
+      if(data.sucesso) {
+        document.getElementById('cota-info').innerText = `Cota PB: ${data.cota_pb_disponivel} páginas | Cota Colorida: ${data.cota_color_disponivel} páginas`;
+      } else {
+        document.getElementById('cota-info').innerText = 'Não foi possível obter as cotas.';
+      }
+    });
+}
+carregarCota();
+
 // Envio AJAX do formulário
 const form = document.getElementById('form-solicitacao');
 form.addEventListener('submit', function(e) {
@@ -42,6 +65,7 @@ form.addEventListener('submit', function(e) {
     if(data.sucesso) {
       form.reset();
       carregarSolicitacoes();
+      carregarCota();
     }
   })
   .catch(() => alert('Erro ao enviar solicitação.'));
@@ -68,5 +92,37 @@ function carregarSolicitacoes() {
     });
 }
 carregarSolicitacoes();
+
+// Função para contar páginas de PDF (simples, client-side)
+function contarPaginasPDF(file, callback) {
+  const reader = new FileReader();
+  reader.onload = function() {
+    const texto = reader.result;
+    const matches = (texto.match(/\/Type\s*\/Page[^s]/g) || []).length;
+    callback(matches > 0 ? matches : 1);
+  };
+  reader.readAsText(file);
+}
+
+const inputArquivo = document.querySelector('input[name="arquivo"]');
+const inputPaginas = document.getElementById('qtd_paginas');
+inputArquivo.addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (ext === 'pdf') {
+    contarPaginasPDF(file, function(paginas) {
+      inputPaginas.value = paginas;
+      inputPaginas.readOnly = true;
+    });
+  } else if (['jpg','jpeg','png'].includes(ext)) {
+    inputPaginas.value = 1;
+    inputPaginas.readOnly = true;
+  } else {
+    inputPaginas.value = '';
+    inputPaginas.readOnly = false;
+    inputPaginas.placeholder = 'Informe o número de páginas';
+  }
+});
 </script>
 <?php require_once '../../includes/footer.php'; ?>

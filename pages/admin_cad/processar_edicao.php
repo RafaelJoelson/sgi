@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt_semestre = $conn->prepare("SELECT data_fim FROM SemestreLetivo WHERE data_inicio <= :hoje AND data_fim >= :hoje ORDER BY data_fim DESC LIMIT 1");
     $stmt_semestre->execute([':hoje' => date('Y-m-d')]);
     $semestre = $stmt_semestre->fetch();
-    $data_fim_validade = $semestre ? $semestre['data_fim'] : null;
+    $data_fim_validade = $semestre ? $semestre->data_fim : null;
 
     // Verifica cota anterior
     $stmt_antiga = $conn->prepare("SELECT cota_id FROM Aluno WHERE matricula = :matricula");
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $_SESSION['mensagem'] = 'Aluno atualizado com sucesso!';
-    header('Location: dashboard.php');
+    header('Location: dashboard_cad.php');
     exit;
 }
 

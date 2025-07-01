@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_FILES['arquivo']) || empty(
 
 $arquivo = $_FILES['arquivo'];
 $qtd_copias = intval($_POST['qtd_copias']);
-$colorida = isset($_POST['colorida']) ? 1 : 0;
+$colorida = 0; // Aluno não pode solicitar impressão colorida
 $cpf = $_SESSION['usuario']['cpf'];
 $tipo_solicitante = 'Aluno';
 
@@ -33,6 +33,26 @@ if ($arquivo['size'] > 5*1024*1024) { // 5MB
     exit;
 }
 
+$qtd_paginas = isset($_POST['qtd_paginas']) ? intval($_POST['qtd_paginas']) : 0;
+if ($qtd_paginas < 1) {
+    echo json_encode(['sucesso'=>false,'mensagem'=>'Informe o número de páginas.']);
+    exit;
+}
+$total_impressao = $qtd_paginas * $qtd_copias;
+// Verifica cota do aluno
+$stmt = $conn->prepare('SELECT a.cota_id, c.cota_total, c.cota_usada FROM Aluno a JOIN CotaAluno c ON a.cota_id = c.id WHERE a.cpf = ?');
+$stmt->execute([$cpf]);
+$cota = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$cota) {
+    echo json_encode(['sucesso'=>false,'mensagem'=>'Cota não encontrada.']);
+    exit;
+}
+$disponivel = $cota['cota_total'] - $cota['cota_usada'];
+if ($total_impressao > $disponivel) {
+    echo json_encode(['sucesso'=>false,'mensagem'=>'Cota insuficiente para esta solicitação.']);
+    exit;
+}
+
 // Salva arquivo
 $nome_arquivo = uniqid('imp_').'.'.$ext;
 $destino = '../../uploads/'.$nome_arquivo;
@@ -42,13 +62,13 @@ if (!move_uploaded_file($arquivo['tmp_name'], $destino)) {
 }
 
 // Insere solicitação
-$stmt = $conn->prepare("INSERT INTO SolicitacaoImpressao (cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, colorida, status) VALUES (:cpf, :tipo, :arquivo, :qtd, :colorida, 'Nova')");
+$stmt = $conn->prepare("INSERT INTO SolicitacaoImpressao (cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, qtd_paginas, colorida, status) VALUES (:cpf, :tipo, :arquivo, :qtd, :qtd_paginas, 0, 'Nova')");
 $stmt->execute([
     ':cpf' => $cpf,
     ':tipo' => $tipo_solicitante,
     ':arquivo' => $nome_arquivo,
     ':qtd' => $qtd_copias,
-    ':colorida' => $colorida
+    ':qtd_paginas' => $qtd_paginas
 ]);
 
 if ($stmt->rowCount()) {

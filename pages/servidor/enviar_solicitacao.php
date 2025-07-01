@@ -33,6 +33,35 @@ if ($arquivo['size'] > 5*1024*1024) { // 5MB
     exit;
 }
 
+$qtd_paginas = isset($_POST['qtd_paginas']) ? intval($_POST['qtd_paginas']) : 0;
+if ($qtd_paginas < 1) {
+    echo json_encode(['sucesso'=>false,'mensagem'=>'Informe o número de páginas.']);
+    exit;
+}
+$total_impressao = $qtd_paginas * $qtd_copias;
+
+// Verifica cotas
+$stmt = $conn->prepare('SELECT cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada FROM CotaServidor WHERE siap = ?');
+$stmt->execute([$_SESSION['usuario']['siap']]);
+$cota = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$cota) {
+    echo json_encode(['sucesso'=>false,'mensagem'=>'Cota não encontrada.']);
+    exit;
+}
+if ($colorida) {
+    $disponivel = $cota['cota_color_total'] - $cota['cota_color_usada'];
+    if ($total_impressao > $disponivel) {
+        echo json_encode(['sucesso'=>false,'mensagem'=>'Cota colorida insuficiente.']);
+        exit;
+    }
+} else {
+    $disponivel = $cota['cota_pb_total'] - $cota['cota_pb_usada'];
+    if ($total_impressao > $disponivel) {
+        echo json_encode(['sucesso'=>false,'mensagem'=>'Cota PB insuficiente.']);
+        exit;
+    }
+}
+
 // Salva arquivo
 $nome_arquivo = uniqid('imp_').'.'.$ext;
 $destino = '../../uploads/'.$nome_arquivo;
@@ -42,12 +71,13 @@ if (!move_uploaded_file($arquivo['tmp_name'], $destino)) {
 }
 
 // Insere solicitação
-$stmt = $conn->prepare("INSERT INTO SolicitacaoImpressao (cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, colorida, status) VALUES (:cpf, :tipo, :arquivo, :qtd, :colorida, 'Nova')");
+$stmt = $conn->prepare("INSERT INTO SolicitacaoImpressao (cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, qtd_paginas, colorida, status) VALUES (:cpf, :tipo, :arquivo, :qtd, :qtd_paginas, :colorida, 'Nova')");
 $stmt->execute([
     ':cpf' => $cpf,
     ':tipo' => $tipo_solicitante,
     ':arquivo' => $nome_arquivo,
     ':qtd' => $qtd_copias,
+    ':qtd_paginas' => $qtd_paginas,
     ':colorida' => $colorida
 ]);
 

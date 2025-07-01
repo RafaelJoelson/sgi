@@ -83,6 +83,7 @@ CREATE TABLE SolicitacaoImpressao (
     tipo_solicitante ENUM('Aluno', 'Servidor') NOT NULL,
     arquivo_path TEXT,
     qtd_copias INT NOT NULL,
+    qtd_paginas INT NOT NULL DEFAULT 1,
     colorida BOOLEAN DEFAULT FALSE NOT NULL,
     status ENUM('Nova', 'Lida', 'Aceita', 'Rejeitada') DEFAULT 'Nova' NOT NULL,
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -223,35 +224,29 @@ INSERT INTO CotaAluno (id, turma_id, cota_total, cota_usada) VALUES
 
 -- ALUNOS
 INSERT INTO Aluno (matricula, nome, sobrenome, cargo, email, cpf, senha, ativo, cota_id, data_fim_validade) VALUES
-('20250001', 'Ana', 'Silva', 'Líder', 'ana.silva@email.com', '12345678901', 'senha123', TRUE, 1, NULL),
-('20250002', 'Bruno', 'Souza', 'Nenhum', 'bruno.souza@email.com', '23456789012', 'senha123', TRUE, 2, NULL),
-('20250003', 'Carla', 'Oliveira', 'Vice-líder', 'carla.oliveira@email.com', '34567890123', 'senha123', TRUE, 3, NULL),
-('20250004', 'Pedro', 'Oliveira', 'Vice-líder', 'pedro.oliveira@email.com', '34567890124', 'senha123', TRUE, 4, NULL),
-('20250005', 'Lucas', 'Pereira', 'Nenhum', 'lucas.pereira@email.com', '45678901234', 'senha123', TRUE, 5, NULL),
-('20250006', 'Mariana', 'Lima', 'Nenhum', 'mariana@email.com', '56789012345', 'senha123', TRUE, 6, NULL);
+('20250001', 'Ana', 'Silva', 'Líder', 'ana.silva@email.com', '12345678901', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 1, NULL),
+('20250002', 'Bruno', 'Souza', 'Nenhum', 'bruno.souza@email.com', '23456789012', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 2, NULL),
+('20250003', 'Carla', 'Oliveira', 'Vice-líder', 'carla.oliveira@email.com', '34567890123', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 3, NULL),
+('20250004', 'Pedro', 'Oliveira', 'Vice-líder', 'pedro.oliveira@email.com', '34567890124', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 4, NULL),
+('20250005', 'Lucas', 'Pereira', 'Nenhum', 'lucas.pereira@email.com', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 5, NULL),
+('20250006', 'Mariana', 'Lima', 'Nenhum', 'mariana@email.com', '56789012345', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 6, NULL);
 
 -- SERVIDORES
 INSERT INTO Servidor (siap, nome, sobrenome, email, cpf, senha, is_admin, setor_admin, ativo, data_fim_validade) VALUES
-('1001', 'João', 'Silva', 'joao.silva@if.edu', '45678901234', 'senha123', TRUE, 'CAD', TRUE, NULL),
-('1002', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '56789012345', 'senha123', FALSE, 'NENHUM', TRUE, NULL),
-('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', 'senha123', FALSE, 'COEN', TRUE, NULL);
-
--- COTA SERVIDOR
-INSERT INTO CotaServidor (siap, cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada) VALUES
-('1001', 1000, 200, 100, 10),
-('1002', 1000, 150, 100, 5),
-('1003', 1000, 100, 100, 0);
+('1001', 'João', 'Silva', 'joao.silva@if.edu', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 'CAD', TRUE, NULL),
+('1002', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '56789012345', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', FALSE, 'NENHUM', TRUE, NULL),
+('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', FALSE, 'COEN', TRUE, NULL);
 
 -- REPROGRAFO
 INSERT INTO Reprografo (cpf, nome, sobrenome, email, senha) VALUES
-('11111111111', 'Paulo', 'Lima', 'paulo.lima@if.edu', 'senha123'),
-('22222222222', 'Fernanda', 'Costa', 'fernanda.costa@if.edu', 'senha123');
+('11111111111', 'Paulo', 'Lima', 'paulo.lima@if.edu', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC'),
+('22222222222', 'Fernanda', 'Costa', 'fernanda.costa@if.edu', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC');
 
 -- SOLICITAÇÃO DE IMPRESSÃO
-INSERT INTO SolicitacaoImpressao (id, cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, colorida, status, data_criacao, cpf_reprografo) VALUES
-(1, '12345678901', 'Aluno', 'trabalho_ana.pdf', 10, FALSE, 'Nova', '2025-06-27 10:00:00', NULL),
-(2, '45678901234', 'Aluno', 'relatorio_lucas.pdf', 5, TRUE, 'Aceita', '2025-06-27 11:00:00', '11111111111'),
-(3, '1001', 'Servidor', 'oficio_joao.pdf', 3, FALSE, 'Lida', '2025-06-27 12:00:00', '22222222222');
+INSERT INTO SolicitacaoImpressao (id, cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, qtd_paginas, colorida, status, data_criacao, cpf_reprografo) VALUES
+(1, '12345678901', 'Aluno', 'trabalho_ana.pdf', 10, 2, FALSE, 'Nova', '2025-06-27 10:00:00', NULL),
+(2, '45678901234', 'Aluno', 'relatorio_lucas.pdf', 5, 1, TRUE, 'Aceita', '2025-06-27 11:00:00', '11111111111'),
+(3, '1001', 'Servidor', 'oficio_joao.pdf', 3, 1, FALSE, 'Lida', '2025-06-27 12:00:00', '22222222222');
 
 -- NOTIFICAÇÃO
 INSERT INTO Notificacao (solicitacao_id, destinatario_cpf, mensagem, visualizada, data_envio) VALUES

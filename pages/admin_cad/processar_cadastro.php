@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $atualizaCota->execute([':cota_id' => $cota_id]);
 
     $_SESSION['mensagem'] = 'Aluno cadastrado com sucesso!';
-    header('Location: dashboard.php');
+    header('Location: dashboard_cad.php');
     exit;
 
 }
