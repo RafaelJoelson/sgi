@@ -17,17 +17,19 @@ require_once '../../includes/header.php';
   </section>
 </main>
 <script>
-function carregarSolicitacoes() {
+let ultimosIds = [];
+function carregarSolicitacoes(notify = false) {
   fetch('listar_solicitacoes_pendentes.php')
     .then(r => r.json())
     .then(data => {
-      let html = '<table style="width:100%;font-size:0.98em;"><thead><tr><th>Arquivo</th><th>Solicitante</th><th>Cópias</th><th>Colorida</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead><tbody>';
-      if(data.length === 0) html += '<tr><td colspan="7">Nenhuma solicitação pendente.</td></tr>';
+      let html = '<table style="width:100%;font-size:0.98em;"><thead><tr><th>Arquivo</th><th>Solicitante</th><th>Cópias</th><th>Páginas</th><th>Colorida</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead><tbody>';
+      if(data.length === 0) html += '<tr><td colspan="8">Nenhuma solicitação pendente.</td></tr>';
       else data.forEach(s => {
         html += `<tr>
           <td><a href="../uploads/${s.arquivo}" target="_blank">${s.arquivo}</a></td>
           <td>${s.nome_solicitante}</td>
           <td>${s.qtd_copias}</td>
+          <td><input type="number" min="1" max="500" value="${s.qtd_paginas}" style="width:60px" onchange="editarPaginas(${s.id}, this.value)"></td>
           <td>${s.colorida == 1 ? 'Sim' : 'Não'}</td>
           <td>${s.status}</td>
           <td>${s.data}</td>
@@ -39,9 +41,25 @@ function carregarSolicitacoes() {
       });
       html += '</tbody></table>';
       document.getElementById('tabela-solicitacoes').innerHTML = html;
+      // Notificação de novas solicitações
+      const ids = data.map(s => s.id);
+      if (notify && ultimosIds.length > 0) {
+        const novos = ids.filter(id => !ultimosIds.includes(id));
+        if (novos.length > 0) {
+          if (window.Notification && Notification.permission === 'granted') {
+            new Notification('Nova solicitação de impressão recebida!');
+          } else if (window.Notification && Notification.permission !== 'denied') {
+            Notification.requestPermission();
+          } else {
+            alert('Nova solicitação de impressão recebida!');
+          }
+        }
+      }
+      ultimosIds = ids;
     });
 }
 carregarSolicitacoes();
+setInterval(() => carregarSolicitacoes(true), 10000); // Checa a cada 10s
 
 function atualizarStatus(id, status) {
   if(!confirm('Confirma a ação?')) return;
@@ -56,6 +74,19 @@ function atualizarStatus(id, status) {
     if(data.sucesso) carregarSolicitacoes();
   })
   .catch(() => alert('Erro ao atualizar status.'));
+}
+
+function editarPaginas(id, valor) {
+  fetch('editar_paginas.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: `id=${id}&qtd_paginas=${valor}`
+  })
+  .then(r => r.json())
+  .then(data => {
+    if(!data.sucesso) alert(data.mensagem);
+  })
+  .catch(() => alert('Erro ao atualizar número de páginas.'));
 }
 </script>
 <?php require_once '../../includes/footer.php'; ?>

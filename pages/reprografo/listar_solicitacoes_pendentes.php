@@ -10,7 +10,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografo
 }
 
 // Busca solicitações pendentes (status Nova ou Lida)
-$sql = "SELECT s.id, s.arquivo_path as arquivo, s.qtd_copias, s.colorida, s.status, s.data_criacao as data, s.tipo_solicitante,
+$sql = "SELECT s.id, s.arquivo_path as arquivo, s.qtd_copias, s.qtd_paginas, s.colorida, s.status, s.data_criacao as data, s.tipo_solicitante,
         CASE WHEN s.tipo_solicitante = 'Aluno' THEN a.nome ELSE v.nome END as nome_solicitante
         FROM SolicitacaoImpressao s
         LEFT JOIN Aluno a ON s.tipo_solicitante = 'Aluno' AND s.cpf_solicitante = a.cpf

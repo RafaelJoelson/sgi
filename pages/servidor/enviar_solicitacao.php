@@ -1,88 +1,66 @@
 <?php
-session_start();
+// Processa envio de solicitação de impressão do servidor
 require_once '../../includes/config.php';
+session_start();
 header('Content-Type: application/json');
-
-// Verifica se é servidor logado
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor') {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Acesso negado.']);
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Acesso negado.']);
     exit;
 }
+$siap = $_SESSION['usuario']['id']; // id do servidor = siap
 
 // Validação básica
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_FILES['arquivo']) || empty($_POST['qtd_copias'])) {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Dados incompletos.']);
+if (empty($_FILES['arquivo']['name']) || empty($_POST['qtd_copias']) || empty($_POST['qtd_paginas']) || empty($_POST['tipo_impressao'])) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Preencha todos os campos.']);
     exit;
 }
+$qtd_copias = (int)$_POST['qtd_copias'];
+$qtd_paginas = (int)$_POST['qtd_paginas'];
+$tipo_impressao = $_POST['tipo_impressao'] === 'colorida' ? 'colorida' : 'pb';
 
-$arquivo = $_FILES['arquivo'];
-$qtd_copias = intval($_POST['qtd_copias']);
-$colorida = isset($_POST['colorida']) ? 1 : 0;
-$cpf = $_SESSION['usuario']['cpf'];
-$tipo_solicitante = 'Servidor';
-
-// Valida arquivo
-$permitidos = ['pdf','doc','docx','jpg','png'];
-$ext = strtolower(pathinfo($arquivo['name'], PATHINFO_EXTENSION));
-if (!in_array($ext, $permitidos) || $arquivo['error'] !== 0) {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Arquivo inválido.']);
+if ($qtd_copias < 1 || $qtd_paginas < 1) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Quantidade inválida.']);
     exit;
 }
-if ($arquivo['size'] > 5*1024*1024) { // 5MB
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Arquivo muito grande.']);
-    exit;
-}
-
-$qtd_paginas = isset($_POST['qtd_paginas']) ? intval($_POST['qtd_paginas']) : 0;
-if ($qtd_paginas < 1) {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Informe o número de páginas.']);
-    exit;
-}
-$total_impressao = $qtd_paginas * $qtd_copias;
 
 // Verifica cotas
-$stmt = $conn->prepare('SELECT cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada FROM CotaServidor WHERE siap = ?');
-$stmt->execute([$_SESSION['usuario']['siap']]);
-$cota = $stmt->fetch(PDO::FETCH_ASSOC);
-if (!$cota) {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Cota não encontrada.']);
-    exit;
-}
-if ($colorida) {
-    $disponivel = $cota['cota_color_total'] - $cota['cota_color_usada'];
-    if ($total_impressao > $disponivel) {
-        echo json_encode(['sucesso'=>false,'mensagem'=>'Cota colorida insuficiente.']);
+try {
+    $stmt = $conn->prepare('SELECT cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada FROM CotaServidor WHERE siap = ?');
+    $stmt->execute([$siap]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$row) throw new Exception('Cota do servidor não encontrada.');
+    $total_paginas = $qtd_copias * $qtd_paginas;
+    $pb_disp = $row['cota_pb_total'] - $row['cota_pb_usada'];
+    $color_disp = $row['cota_color_total'] - $row['cota_color_usada'];
+    if ($tipo_impressao === 'colorida' && $color_disp < $total_paginas) {
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Cota colorida insuficiente.']);
         exit;
     }
-} else {
-    $disponivel = $cota['cota_pb_total'] - $cota['cota_pb_usada'];
-    if ($total_impressao > $disponivel) {
-        echo json_encode(['sucesso'=>false,'mensagem'=>'Cota PB insuficiente.']);
+    if ($tipo_impressao === 'pb' && $pb_disp < $total_paginas) {
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Cota PB insuficiente.']);
         exit;
     }
-}
-
-// Salva arquivo
-$nome_arquivo = uniqid('imp_').'.'.$ext;
-$destino = '../../uploads/'.$nome_arquivo;
-if (!move_uploaded_file($arquivo['tmp_name'], $destino)) {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Falha ao salvar arquivo.']);
-    exit;
-}
-
-// Insere solicitação
-$stmt = $conn->prepare("INSERT INTO SolicitacaoImpressao (cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, qtd_paginas, colorida, status) VALUES (:cpf, :tipo, :arquivo, :qtd, :qtd_paginas, :colorida, 'Nova')");
-$stmt->execute([
-    ':cpf' => $cpf,
-    ':tipo' => $tipo_solicitante,
-    ':arquivo' => $nome_arquivo,
-    ':qtd' => $qtd_copias,
-    ':qtd_paginas' => $qtd_paginas,
-    ':colorida' => $colorida
-]);
-
-if ($stmt->rowCount()) {
-    echo json_encode(['sucesso'=>true,'mensagem'=>'Solicitação enviada com sucesso!']);
-} else {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Erro ao registrar solicitação.']);
+    // Upload do arquivo
+    $dir = '../../uploads/';
+    if (!is_dir($dir)) mkdir($dir, 0777, true);
+    $nome_arquivo = uniqid('imp_') . '_' . preg_replace('/[^a-zA-Z0-9.\-_]/','_', $_FILES['arquivo']['name']);
+    $destino = $dir . $nome_arquivo;
+    if (!move_uploaded_file($_FILES['arquivo']['tmp_name'], $destino)) {
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Falha ao salvar arquivo.']);
+        exit;
+    }
+    // Insere solicitação
+    $stmt = $conn->prepare('INSERT INTO SolicitacaoImpressao (cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, qtd_paginas, colorida, status, data_criacao) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())');
+    $stmt->execute([
+        $siap, 'Servidor', $nome_arquivo, $qtd_copias, $qtd_paginas, ($tipo_impressao === 'colorida' ? 1 : 0), 'Nova'
+    ]);
+    // Atualiza cota usada
+    if ($tipo_impressao === 'colorida') {
+        $conn->prepare('UPDATE CotaServidor SET cota_color_usada = cota_color_usada + ? WHERE siap = ?')->execute([$total_paginas, $siap]);
+    } else {
+        $conn->prepare('UPDATE CotaServidor SET cota_pb_usada = cota_pb_usada + ? WHERE siap = ?')->execute([$total_paginas, $siap]);
+    }
+    echo json_encode(['sucesso' => true, 'mensagem' => 'Solicitação enviada com sucesso!']);
+} catch (Exception $e) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Erro: ' . $e->getMessage()]);
 }

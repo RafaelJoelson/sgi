@@ -109,8 +109,9 @@ form.addEventListener('submit', function(e) {
   });
 });
 
+let ultimosStatus = {};
 // Carregar solicitações recentes via AJAX
-function carregarSolicitacoes() {
+function carregarSolicitacoes(notify = false) {
   fetch('listar_solicitacoes.php')
     .then(r => r.json())
     .then(data => {
@@ -126,8 +127,26 @@ function carregarSolicitacoes() {
       });
       html += '</tbody></table>';
       document.getElementById('tabela-solicitacoes').innerHTML = html;
+      // Notificação de mudança de status
+      if (notify) {
+        data.forEach(s => {
+          if (ultimosStatus[s.id] && ultimosStatus[s.id] !== s.status) {
+            if (window.Notification && Notification.permission === 'granted') {
+              new Notification(`Sua solicitação "${s.arquivo}" foi atualizada para: ${s.status}`);
+            } else if (window.Notification && Notification.permission !== 'denied') {
+              Notification.requestPermission();
+            } else {
+              alert(`Sua solicitação "${s.arquivo}" foi atualizada para: ${s.status}`);
+            }
+          }
+          ultimosStatus[s.id] = s.status;
+        });
+      } else {
+        data.forEach(s => { ultimosStatus[s.id] = s.status; });
+      }
     });
 }
 carregarSolicitacoes();
+setInterval(() => carregarSolicitacoes(true), 10000); // Checa a cada 10s
 </script>
 <?php require_once '../../includes/footer.php'; ?>
