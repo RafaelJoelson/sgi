@@ -6,7 +6,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor')
     header('Location: ../../index.php');
     exit;
 }
-$id_servidor = $_SESSION['usuario']['id'];
+$cpf_servidor = $_SESSION['usuario']['cpf'];
 require_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="dashboard_servidor.css">
@@ -26,14 +26,14 @@ require_once '../../includes/header.php';
     <tbody>
       <?php
       try {
-        $stmt = $pdo->prepare('SELECT arquivo, qtd_copias, qtd_paginas, tipo_impressao, status, DATE_FORMAT(data, "%d/%m/%Y %H:%i") as data FROM SolicitacaoImpressao WHERE id_servidor = ? ORDER BY data DESC');
-        $stmt->execute([$id_servidor]);
+        $stmt = $conn->prepare('SELECT arquivo_path as arquivo, qtd_copias, qtd_paginas, colorida as tipo_impressao, status, DATE_FORMAT(data_criacao, "%d/%m/%Y %H:%i") as data FROM SolicitacaoImpressao WHERE cpf_solicitante = ? AND tipo_solicitante = "Servidor" ORDER BY data_criacao DESC');
+        $stmt->execute([$cpf_servidor]);
         while ($s = $stmt->fetch(PDO::FETCH_ASSOC)) {
           echo '<tr>';
           echo '<td>' . htmlspecialchars($s['arquivo']) . '</td>';
           echo '<td>' . (int)$s['qtd_copias'] . '</td>';
           echo '<td>' . (int)$s['qtd_paginas'] . '</td>';
-          echo '<td>' . ($s['tipo_impressao'] === 'colorida' ? 'Colorida' : 'PB') . '</td>';
+          echo '<td>' . ($s['tipo_impressao'] == 1 ? 'Colorida' : 'PB') . '</td>';
           echo '<td>' . htmlspecialchars($s['status']) . '</td>';
           echo '<td>' . htmlspecialchars($s['data']) . '</td>';
           echo '</tr>';

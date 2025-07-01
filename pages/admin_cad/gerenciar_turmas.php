@@ -124,6 +124,7 @@ $periodos = $stmtPeriodos->fetchAll(PDO::FETCH_COLUMN);
 include_once '../../includes/header.php';
 ?>
 
+<link rel="stylesheet" href="gerenciar_turmas.css">
 <main class="container">
   <div class="dashboard-container">
     <aside>

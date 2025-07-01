@@ -7,10 +7,10 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor')
     echo json_encode([]);
     exit;
 }
-$id_servidor = $_SESSION['usuario']['id'];
+$cpf_servidor = $_SESSION['usuario']['cpf'];
 try {
-    $stmt = $pdo->prepare('SELECT id, arquivo, qtd_copias, qtd_paginas, tipo_impressao, status, DATE_FORMAT(data, "%d/%m/%Y %H:%i") as data FROM SolicitacaoImpressao WHERE id_servidor = ? ORDER BY data DESC LIMIT 10');
-    $stmt->execute([$id_servidor]);
+    $stmt = $conn->prepare('SELECT id, arquivo_path as arquivo, qtd_copias, qtd_paginas, colorida as tipo_impressao, status, DATE_FORMAT(data_criacao, "%d/%m/%Y %H:%i") as data FROM SolicitacaoImpressao WHERE cpf_solicitante = ? AND tipo_solicitante = "Servidor" ORDER BY data_criacao DESC LIMIT 10');
+    $stmt->execute([$cpf_servidor]);
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     echo json_encode($result);
 } catch (Exception $e) {

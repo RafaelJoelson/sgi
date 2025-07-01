@@ -50,7 +50,7 @@ $cotas = $stmt->fetchAll();
 
 include_once '../../includes/header.php';
 ?>
-
+<link rel="stylesheet" href="gerenciar_cotas.css">
 <main class="container">
 <div class="dashboard-container">
 <aside>

@@ -53,19 +53,30 @@ if ($stmt->rowCount()) {
                 $cota_id = $aluno->fetchColumn();
                 if ($cota_id) {
                     $conn->prepare("UPDATE CotaAluno SET cota_usada = cota_usada + ? WHERE id = ?")->execute([$total, $cota_id]);
+                    // Log de decremento
+                    $conn->prepare("INSERT INTO LogDecrementoCota (solicitacao_id, tipo_usuario, referencia, qtd_cotas) VALUES (?, ?, ?, ?)")
+                        ->execute([$id, $tipo, $cota_id, $total]);
                 }
             } else if ($tipo === 'Servidor') {
-                // Decrementa cota do servidor (PB ou colorida)
-                if ($colorida) {
-                    $conn->prepare("UPDATE CotaServidor SET cota_color_usada = cota_color_usada + ? WHERE siap = ?")->execute([$total, $referencia]);
-                } else {
-                    $conn->prepare("UPDATE CotaServidor SET cota_pb_usada = cota_pb_usada + ? WHERE siap = ?")->execute([$total, $referencia]);
+                // Buscar SIAP do servidor pelo CPF
+                $servidor = $conn->prepare("SELECT siap FROM Servidor WHERE cpf = ?");
+                $servidor->execute([$referencia]);
+                $siap = $servidor->fetchColumn();
+                if ($siap) {
+                    if ($colorida) {
+                        $conn->prepare("UPDATE CotaServidor SET cota_color_usada = cota_color_usada + ? WHERE siap = ?")->execute([$total, $siap]);
+                    } else {
+                        $conn->prepare("UPDATE CotaServidor SET cota_pb_usada = cota_pb_usada + ? WHERE siap = ?")->execute([$total, $siap]);
+                    }
+                    // Log de decremento
+                    $conn->prepare("INSERT INTO LogDecrementoCota (solicitacao_id, tipo_usuario, referencia, qtd_cotas) VALUES (?, ?, ?, ?)")
+                        ->execute([$id, $tipo, $siap, $total]);
                 }
             }
-            // Log de decremento
-            $conn->prepare("INSERT INTO LogDecrementoCota (solicitacao_id, tipo_usuario, referencia, qtd_copias) VALUES (?, ?, ?, ?)")
-                ->execute([$id, $tipo, $referencia, $total]);
         }
+    } else if ($status === 'Rejeitada') {
+        // Não altera cota ao rejeitar
+        // (removido código de devolução de cota)
     }
     echo json_encode(['sucesso'=>true,'mensagem'=>'Status atualizado com sucesso!']);
 } else {

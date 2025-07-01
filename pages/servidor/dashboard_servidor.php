@@ -140,12 +140,23 @@ function carregarSolicitacoes(notify = false) {
         data.forEach(s => {
           if (ultimosStatus[s.id] && ultimosStatus[s.id] !== s.status) {
             let tipoCota = s.tipo_impressao === 'colorida' ? 'colorida' : 'PB';
-            if (window.Notification && Notification.permission === 'granted') {
-              new Notification(`Sua solicitação (${tipoCota}) "${s.arquivo}" foi atualizada para: ${s.status}`);
-            } else if (window.Notification && Notification.permission !== 'denied') {
-              Notification.requestPermission();
+            const mensagem = `Sua solicitação (${tipoCota}) "${s.arquivo}" foi atualizada para: ${s.status}`;
+            if (window.Notification) {
+              if (Notification.permission === 'granted') {
+                new Notification(mensagem);
+              } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                  if (permission === 'granted') {
+                    new Notification(mensagem);
+                  } else {
+                    alert(mensagem);
+                  }
+                });
+              } else {
+                alert(mensagem);
+              }
             } else {
-              alert(`Sua solicitação (${tipoCota}) "${s.arquivo}" foi atualizada para: ${s.status}`);
+              alert(mensagem);
             }
           }
           ultimosStatus[s.id] = s.status;

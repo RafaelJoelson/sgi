@@ -108,7 +108,7 @@ CREATE TABLE LogDecrementoCota (
     solicitacao_id INT NOT NULL,
     tipo_usuario ENUM('Aluno', 'Servidor') NOT NULL,
     referencia VARCHAR(20) NOT NULL, -- matrícula ou siap
-    qtd_copias INT NOT NULL,
+    qtd_cotas INT NOT NULL,
     data DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (solicitacao_id) REFERENCES SolicitacaoImpressao(id) ON DELETE CASCADE
 );
@@ -255,7 +255,7 @@ INSERT INTO Notificacao (solicitacao_id, destinatario_cpf, mensagem, visualizada
 (3, '1001', 'Sua solicitação foi lida.', FALSE, '2025-06-27 12:10:00');
 
 -- LOG DE DECREMENTO DE COTAS
-INSERT INTO LogDecrementoCota (solicitacao_id, tipo_usuario, referencia, qtd_copias, data) VALUES
+INSERT INTO LogDecrementoCota (solicitacao_id, tipo_usuario, referencia, qtd_cotas, data) VALUES
 (2, 'Aluno', '20250005', 5, '2025-06-27 11:15:00'),
 (3, 'Servidor', '1001', 3, '2025-06-27 12:15:00');
 

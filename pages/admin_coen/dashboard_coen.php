@@ -58,6 +58,7 @@ $total_servidores = $conn->query("SELECT COUNT(*) AS total FROM Servidor")->fetc
 
 include_once '../../includes/header.php';
 ?>
+<link rel="stylesheet" href="dashboard_coen.css">
 <main class="container">
     <div class="dashboard-container">
         <aside>

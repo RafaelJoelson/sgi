@@ -8,6 +8,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor')
     exit;
 }
 $siap = $_SESSION['usuario']['id']; // id do servidor = siap
+$cpf_servidor = $_SESSION['usuario']['cpf']; // cpf do servidor
 
 // Validação básica
 if (empty($_FILES['arquivo']['name']) || empty($_POST['qtd_copias']) || empty($_POST['qtd_paginas']) || empty($_POST['tipo_impressao'])) {
@@ -52,14 +53,8 @@ try {
     // Insere solicitação
     $stmt = $conn->prepare('INSERT INTO SolicitacaoImpressao (cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, qtd_paginas, colorida, status, data_criacao) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())');
     $stmt->execute([
-        $siap, 'Servidor', $nome_arquivo, $qtd_copias, $qtd_paginas, ($tipo_impressao === 'colorida' ? 1 : 0), 'Nova'
+        $cpf_servidor, 'Servidor', $nome_arquivo, $qtd_copias, $qtd_paginas, ($tipo_impressao === 'colorida' ? 1 : 0), 'Nova'
     ]);
-    // Atualiza cota usada
-    if ($tipo_impressao === 'colorida') {
-        $conn->prepare('UPDATE CotaServidor SET cota_color_usada = cota_color_usada + ? WHERE siap = ?')->execute([$total_paginas, $siap]);
-    } else {
-        $conn->prepare('UPDATE CotaServidor SET cota_pb_usada = cota_pb_usada + ? WHERE siap = ?')->execute([$total_paginas, $siap]);
-    }
     echo json_encode(['sucesso' => true, 'mensagem' => 'Solicitação enviada com sucesso!']);
 } catch (Exception $e) {
     echo json_encode(['sucesso' => false, 'mensagem' => 'Erro: ' . $e->getMessage()]);

@@ -37,6 +37,7 @@ $semestre_vigente = $stmt_semestre->fetch();
 
 ?>
 <?php include_once '../../includes/header.php'; ?>
+<link rel="stylesheet" href="form_aluno.css">
 <main class="container">
   <h1><?= $modo_edicao ? 'Editar Aluno' : 'Cadastrar Novo Aluno' ?></h1>
 
