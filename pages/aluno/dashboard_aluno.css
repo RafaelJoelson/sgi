@@ -1,0 +1,63 @@
+/* Dashboard Aluno - Mobile First */
+.container {
+  max-width: 500px;
+  margin: auto;
+  padding: 1em;
+}
+#form-solicitacao {
+  background: #f9f9f9;
+  padding: 1em;
+  border-radius: 8px;
+  margin-bottom: 1.5em;
+}
+#form-solicitacao label {
+  display: block;
+  margin-bottom: 0.5em;
+}
+#form-solicitacao input[type="file"],
+#form-solicitacao input[type="number"] {
+  width: 100%;
+}
+#form-solicitacao button {
+  width: 100%;
+  margin-top: 0.5em;
+}
+#status-solicitacoes h2 {
+  font-size: 1.1em;
+  margin-bottom: 0.5em;
+}
+#tabela-solicitacoes {
+  overflow-x: auto;
+}
+#tabela-solicitacoes table {
+  width: 100%;
+  font-size: 0.98em;
+  border-collapse: collapse;
+}
+#tabela-solicitacoes th, #tabela-solicitacoes td {
+  padding: 0.5em 0.3em;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+#tabela-solicitacoes th {
+  background: #f1f1f1;
+}
+#tabela-solicitacoes tr:last-child td {
+  border-bottom: none;
+}
+button[onclick^="window.location.href"] {
+  width: 100%;
+  margin-top: 1em;
+}
+@media (max-width: 600px) {
+  .container {
+    padding: 0.5em;
+  }
+  #form-solicitacao {
+    padding: 0.5em;
+  }
+  #tabela-solicitacoes th, #tabela-solicitacoes td {
+    font-size: 0.95em;
+    padding: 0.4em 0.2em;
+  }
+}

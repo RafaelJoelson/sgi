@@ -15,18 +15,25 @@ $turmas = $stmtTurmas->fetchAll();
 // Adicionar ou editar cota
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $turma_id = intval($_POST['turma']);
-    $valor_cota = intval($_POST['cota_total']);
+    $valor_cota = intval($_POST['valor_cota']);
+    $acao = $_POST['acao'] ?? '';
 
     $stmt = $conn->prepare("SELECT * FROM CotaAluno WHERE turma_id = :turma_id");
     $stmt->execute([':turma_id' => $turma_id]);
     $cotaAtual = $stmt->fetch();
 
     if ($cotaAtual) {
-        $novoTotal = $cotaAtual->cota_total + $valor_cota;
-        if ($novoTotal < 0) $novoTotal = 0;
+        if ($acao === 'adicionar') {
+            $novoTotal = $cotaAtual->cota_total + $valor_cota;
+        } elseif ($acao === 'subtrair') {
+            $novoTotal = $cotaAtual->cota_total - $valor_cota;
+            if ($novoTotal < 0) $novoTotal = 0;
+        } else {
+            $novoTotal = $cotaAtual->cota_total;
+        }
         $update = $conn->prepare("UPDATE CotaAluno SET cota_total = :total WHERE turma_id = :turma_id");
         $update->execute([':total' => $novoTotal, ':turma_id' => $turma_id]);
-    } else if ($valor_cota > 0) {
+    } else if ($acao === 'adicionar' && $valor_cota > 0) {
         $insert = $conn->prepare("INSERT INTO CotaAluno (turma_id, cota_total, cota_usada) VALUES (:turma_id, :total, 0)");
         $insert->execute([':turma_id' => $turma_id, ':total' => $valor_cota]);
     }
@@ -56,9 +63,11 @@ include_once '../../includes/header.php';
         <option value="<?= $turma->id ?>"><?= htmlspecialchars($turma->nome_completo . ' - ' . $turma->periodo) ?></option>
       <?php endforeach; ?>
     </select>
-    <input type="number" name="cota_total" placeholder="Valor para adicionar (+) ou subtrair (-)" required>
-    <small>Use número negativo para diminuir a cota total.</small>
-    <button type="submit">Salvar</button>
+    <input type="number" name="valor_cota" min="1" placeholder="Valor da alteração" required>
+    <div style="margin: 0.5em 0;">
+      <button type="submit" name="acao" value="adicionar">Adicionar</button>
+      <button type="submit" name="acao" value="subtrair">Subtrair</button>
+    </div>
   </form>
   <div class="btn-container">
     <a class="btn-cotas" href="gerar_relatorio_pdf.php">Gerar Relatório PDF (Cotas x Alunos)</a>

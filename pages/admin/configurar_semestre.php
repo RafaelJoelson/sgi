@@ -64,10 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Buscar semestres cadastrados
 $stmt = $conn->query("SELECT * FROM SemestreLetivo ORDER BY ano DESC, semestre DESC");
-$semestres = $stmt->fetchAll();
+$semestres = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Buscar logs
 $stmtLog = $conn->query("SELECT * FROM LogSemestreLetivo ORDER BY data DESC LIMIT 20");
-$logs = $stmtLog->fetchAll();
+$logs = $stmtLog->fetchAll(PDO::FETCH_ASSOC);
 
 // Exportação do log em CSV
 if (isset($_GET['exportar_log']) && $_GET['exportar_log'] === 'csv') {

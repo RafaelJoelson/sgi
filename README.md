@@ -12,8 +12,6 @@ Este sistema tem como objetivo ser implementado no campus para gerenciar cotas d
   - RAFAEL JOELSON DA SILVA - GESTOR DE PROJETO E DESENVOLVEDOR WEB
   - IASMIN DANIELE DE OLIVEIRA - ANALISTA DE SOFTWARE
   - LIDIANE CONCEIÇÃO DE ANDRADE - ANALISTA DE SOFTWARE
-  - EMILY
-  - LAILA
 
 
 ## Funcionalidades Principais

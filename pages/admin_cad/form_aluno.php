@@ -25,7 +25,7 @@ $stmt = $conn->query("
     FROM CotaAluno ca
     JOIN Turma t ON ca.turma_id = t.id
     JOIN Curso c ON t.curso_id = c.id
-    ORDER BY t.periodo DESC, c.sigla ASC
+    ORDER BY c.nome_completo ASC, t.periodo ASC
 ");
 $cotas = $stmt->fetchAll();
 
@@ -36,16 +36,14 @@ $stmt_semestre->execute([':hoje' => $hoje]);
 $semestre_vigente = $stmt_semestre->fetch();
 
 ?>
-
 <?php include_once '../../includes/header.php'; ?>
-
 <main class="container">
   <h1><?= $modo_edicao ? 'Editar Aluno' : 'Cadastrar Novo Aluno' ?></h1>
 
   <!-- Exibe semestre letivo vigente, se encontrado -->
   <?php if ($semestre_vigente): ?>
     <div class="info-semestre" style="margin-bottom:1em; color:#555; font-size:0.95em;">
-      Semestre letivo vigente: <b><?= $semestre_vigente['ano'] ?>/<?= $semestre_vigente['semestre'] ?></b> (<?= date('d/m/Y', strtotime($semestre_vigente['data_inicio'])) ?> a <?= date('d/m/Y', strtotime($semestre_vigente['data_fim'])) ?>)
+      Semestre letivo vigente: <b><?= $semestre_vigente->ano ?>/<?= $semestre_vigente->semestre ?></b> (<?= date('d/m/Y', strtotime($semestre_vigente->data_inicio)) ?> a <?= date('d/m/Y', strtotime($semestre_vigente->data_fim)) ?>)
     </div>
   <?php endif; ?>
 
@@ -62,12 +60,16 @@ $semestre_vigente = $stmt_semestre->fetch();
       <input type="text" name="nome" required value="<?= $aluno->nome ?? '' ?>">
     </label>
 
+    <label>Sobrenome
+      <input type="text" name="sobrenome" required value="<?= $aluno->sobrenome ?? '' ?>">
+    </label>
+
     <label>Email
       <input type="email" name="email" required value="<?= $aluno->email ?? '' ?>">
     </label>
 
     <label>CPF
-      <input type="text" name="cpf" required value="<?= $aluno->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+      <input type="text" name="cpf" required maxlength="11" value="<?= $aluno->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
     </label>
 
     <?php if (!$modo_edicao): ?>
@@ -95,14 +97,21 @@ $semestre_vigente = $stmt_semestre->fetch();
       </select>
     </label>
 
-
     <label>Data Fim da Validade
-      <input type="date" name="data_fim_validade" required value="<?= $aluno->data_fim_validade ?? '' ?>" style="display:none" disabled>
+      <input type="date" name="data_fim_validade" required 
+        value="<?= $semestre_vigente ? $semestre_vigente->data_fim : '' ?>" 
+        readonly>
     </label>
+
+    <?php if ($modo_edicao): ?>
+      <label>Ativo
+        <input type="checkbox" name="ativo" value="1" <?= isset($aluno) && $aluno->ativo ? 'checked' : '' ?>>
+        <span style="font-size:0.95em; color:#555;">(Desmarque para inativar o aluno)</span>
+      </label>
+    <?php endif; ?>
 
     <button type="submit"><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Aluno' ?></button>
   </form>
   <a class="btn-back" href="javascript:history.back()">Voltar</a>
 </main>
-
 <?php include_once '../../includes/footer.php'; ?>

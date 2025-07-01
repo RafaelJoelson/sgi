@@ -69,6 +69,8 @@ include_once '../../includes/header.php';
             </section>
             <section class="dashboard-menu">
                 <a class="btn-menu" href="gerenciar_cotas_servidor.php">Gerenciar Cotas de Servidor</a>
+                <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
+
             </section>
         </aside>
         <div class="responsive-table">

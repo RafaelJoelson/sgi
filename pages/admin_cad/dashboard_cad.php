@@ -90,7 +90,7 @@ include_once '../../includes/header.php';
                 <a class="btn-menu" href="form_aluno.php">Cadastrar novo aluno</a>
                 <a class="btn-menu" href="gerenciar_cotas.php">Gerenciar Cotas</a>
                 <a class="btn-menu" href="gerenciar_turmas.php">Gerenciar Turmas</a>
-                <a class="btn-menu" href="configurar_semestre.php">Configurar Semestre Letivo</a>
+                <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
             </section>
         </aside>
         <!-- Tabela de alunos -->

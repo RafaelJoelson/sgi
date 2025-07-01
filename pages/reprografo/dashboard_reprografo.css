@@ -1,0 +1,50 @@
+/* Dashboard Reprografo - Mobile First */
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 1em;
+}
+#solicitacoes-pendentes h2 {
+  font-size: 1.1em;
+  margin-bottom: 0.5em;
+}
+#tabela-solicitacoes {
+  overflow-x: auto;
+}
+#tabela-solicitacoes table {
+  width: 100%;
+  font-size: 0.98em;
+  border-collapse: collapse;
+}
+#tabela-solicitacoes th, #tabela-solicitacoes td {
+  padding: 0.5em 0.3em;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+#tabela-solicitacoes th {
+  background: #f1f1f1;
+}
+#tabela-solicitacoes tr:last-child td {
+  border-bottom: none;
+}
+#tabela-solicitacoes button {
+  margin: 0 0.2em;
+  padding: 0.3em 0.7em;
+  border: none;
+  border-radius: 4px;
+  background: #e0e0e0;
+  cursor: pointer;
+  font-size: 0.97em;
+}
+#tabela-solicitacoes button:hover {
+  background: #bdbdbd;
+}
+@media (max-width: 700px) {
+  .container {
+    padding: 0.5em;
+  }
+  #tabela-solicitacoes th, #tabela-solicitacoes td {
+    font-size: 0.95em;
+    padding: 0.4em 0.2em;
+  }
+}

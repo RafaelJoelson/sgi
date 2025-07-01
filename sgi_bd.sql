@@ -122,6 +122,15 @@ CREATE TABLE SemestreLetivo (
     UNIQUE (ano, semestre)
 );
 
+-- LOG DE ALTERAÇÕES DE SEMESTRE LETIVO
+CREATE TABLE IF NOT EXISTS LogSemestreLetivo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(100) NOT NULL,
+    setor VARCHAR(10) NOT NULL,
+    acao VARCHAR(255) NOT NULL,
+    data DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
 -- HABILITAR O EVENTO DO SCHEDULER
 -- O evento scheduler deve estar habilitado para que os eventos sejam executados automaticamente
 

@@ -61,6 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'id'   => $user->{$usuario['campo_id']},
             ];
 
+            // Adiciona campos extras para Servidor
+            if ($usuario['tabela'] === 'Servidor') {
+                $_SESSION['usuario']['is_admin'] = $user->is_admin;
+                $_SESSION['usuario']['setor_admin'] = $user->setor_admin;
+            }
+
             // Dashboard apropriado
             $dashboard = is_callable($usuario['dashboard'])
                 ? $usuario['dashboard']($user)
