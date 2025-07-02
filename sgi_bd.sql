@@ -252,6 +252,15 @@ INSERT INTO SolicitacaoImpressao (id, cpf_solicitante, tipo_solicitante, arquivo
 (2, '45678901234', 'Aluno', 'relatorio_lucas.pdf', 5, 1, TRUE, 'Aceita', '2025-06-27 11:00:00', '11111111111'),
 (3, '1001', 'Servidor', 'oficio_joao.pdf', 3, 1, FALSE, 'Lida', '2025-06-27 12:00:00', '22222222222');
 
+-- SOLICITAÇÕES DE IMPRESSÃO DE SERVIDORES (exemplo para testes)
+INSERT INTO SolicitacaoImpressao (cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, qtd_paginas, colorida, status, data_criacao, cpf_reprografo) VALUES
+('45678901234', 'Servidor', 'relatorio_maria.pdf', 8, 2, FALSE, 'Aceita', '2025-06-28 09:00:00', '11111111111'),
+('45678901234', 'Servidor', 'oficio_maria.pdf', 4, 1, TRUE, 'Aceita', '2025-06-29 10:30:00', '22222222222'),
+('1001', 'Servidor', 'memorando_joao.pdf', 6, 3, FALSE, 'Aceita', '2025-06-30 14:00:00', '11111111111'),
+('1001', 'Servidor', 'ata_joao.pdf', 2, 5, TRUE, 'Aceita', '2025-07-01 16:00:00', '22222222222'),
+('67890123456', 'Servidor', 'relatorio_carlos.pdf', 10, 1, FALSE, 'Aceita', '2025-07-02 08:45:00', '11111111111'),
+('67890123456', 'Servidor', 'oficio_carlos.pdf', 3, 2, TRUE, 'Aceita', '2025-07-02 11:20:00', '22222222222');
+
 -- NOTIFICAÇÃO
 INSERT INTO Notificacao (solicitacao_id, destinatario_cpf, mensagem, visualizada, data_envio) VALUES
 (1, '12345678901', 'Sua solicitação foi recebida.', FALSE, '2025-06-27 10:05:00'),
@@ -261,7 +270,10 @@ INSERT INTO Notificacao (solicitacao_id, destinatario_cpf, mensagem, visualizada
 -- LOG DE DECREMENTO DE COTAS
 INSERT INTO LogDecrementoCota (solicitacao_id, tipo_usuario, referencia, qtd_cotas, data) VALUES
 (2, 'Aluno', '20250005', 5, '2025-06-27 11:15:00'),
-(3, 'Servidor', '1001', 3, '2025-06-27 12:15:00');
+(3, 'Servidor', '1001', 3, '2025-06-27 12:15:00'),
+(1, 'Aluno', '20250001', 10, '2025-06-27 10:20:00'),
+(4, 'Servidor', '1002', 4, '2025-06-28 09:15:00'),
+(5, 'Servidor', '1003', 6, '2025-06-29 10:35:00');
 
 -- Exemplo de inserção de semestres letivos
 INSERT INTO SemestreLetivo (ano, semestre, data_inicio, data_fim) VALUES

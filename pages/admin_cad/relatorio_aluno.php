@@ -12,6 +12,8 @@ $data_fim = $_GET['data_fim'] ?? date('Y-m-d');
 $status = $_GET['status'] ?? '';
 $pb_fisicas = isset($_GET['pb_fisicas']) ? (int)$_GET['pb_fisicas'] : 0;
 $color_fisicas = isset($_GET['color_fisicas']) ? (int)$_GET['color_fisicas'] : 0;
+$curso_id = isset($_GET['curso_id']) ? (int)$_GET['curso_id'] : '';
+$periodo = isset($_GET['periodo']) ? $_GET['periodo'] : '';
 $turma_id = isset($_GET['turma_id']) ? (int)$_GET['turma_id'] : '';
 
 // Monta consulta dinâmica
@@ -45,7 +47,32 @@ if ($vigencia_id) {
     $vigencia_id = $vigencia ? $vigencia->id : null;
 }
 
-$turmas = $conn->query("SELECT t.id, t.periodo, c.sigla, c.nome_completo FROM Turma t JOIN Curso c ON t.curso_id = c.id ORDER BY c.nome_completo, t.periodo")->fetchAll();
+// Buscar cursos para o filtro
+$cursos = $conn->query("SELECT id, sigla, nome_completo FROM Curso ORDER BY nome_completo")->fetchAll();
+// Buscar períodos distintos das turmas
+$periodos = $conn->query("SELECT DISTINCT periodo FROM Turma ORDER BY periodo")->fetchAll();
+// Buscar turmas conforme curso e período
+$turmas = [];
+try {
+    $turmas_sql = "SELECT t.id, t.periodo, c.sigla, c.nome_completo FROM Turma t JOIN Curso c ON t.curso_id = c.id WHERE 1=1";
+    $params_turma = [];
+    if ($curso_id) {
+        $turmas_sql .= " AND c.id = :curso_id";
+        $params_turma[':curso_id'] = $curso_id;
+    }
+    if ($periodo) {
+        $turmas_sql .= " AND t.periodo = :periodo";
+        $params_turma[':periodo'] = $periodo;
+    }
+    $turmas_sql .= " ORDER BY c.nome_completo, t.periodo";
+    $stmt_turmas = $conn->prepare($turmas_sql);
+    $stmt_turmas->execute($params_turma);
+    $turmas = $stmt_turmas->fetchAll();
+    if (!is_array($turmas)) $turmas = [];
+} catch (Exception $e) {
+    $turmas = [];
+}
+
 $relatorio = [];
 $totais_turma = [];
 $total_geral = 0;
@@ -62,6 +89,14 @@ if ($vigencia) {
         ':inicio' => $vigencia->data_inicio . ' 00:00:00',
         ':fim' => $vigencia->data_fim . ' 23:59:59'
     ];
+    if ($curso_id) {
+        $sql .= " AND c.id = :curso_id";
+        $paramsFiltro[':curso_id'] = $curso_id;
+    }
+    if ($periodo) {
+        $sql .= " AND t.periodo = :periodo";
+        $paramsFiltro[':periodo'] = $periodo;
+    }
     if ($turma_id) {
         $sql .= " AND t.id = :turma_id";
         $paramsFiltro[':turma_id'] = $turma_id;
@@ -111,22 +146,42 @@ if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')) {
             <?php endforeach; ?>
           </select>
         </label>
-        <label>Turma:
-          <select name="turma_id" onchange="this.form.submit()">
-            <option value="">Todas</option>
-            <?php foreach ($turmas as $t): ?>
-              <option value="<?= $t->id ?>" <?= $turma_id == $t->id ? 'selected' : '' ?>>
-                <?= htmlspecialchars($t->sigla . ' - ' . $t->periodo) ?>
+        <label>Curso:
+          <select name="curso_id" onchange="this.form.submit()">
+            <option value="">Todos</option>
+            <?php foreach ($cursos as $c): ?>
+              <option value="<?= $c->id ?>" <?= $curso_id == $c->id ? 'selected' : '' ?>>
+                <?= htmlspecialchars($c->nome_completo) ?>
               </option>
             <?php endforeach; ?>
           </select>
         </label>
+        <label>Período:
+          <select name="periodo" onchange="this.form.submit()">
+            <option value="">Todos</option>
+            <?php foreach ($periodos as $p): ?>
+              <option value="<?= htmlspecialchars($p->periodo) ?>" <?= $periodo == $p->periodo ? 'selected' : '' ?>>
+                <?= htmlspecialchars($p->periodo) ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </label>
+        <label>Turma:
+          <select name="turma_id" onchange="this.form.submit()">
+            <option value="">Todas</option>
+            <?php if (!empty($turmas) && is_array($turmas)): foreach ($turmas as $t): ?>
+              <option value="<?= $t->id ?>" <?= $turma_id == $t->id ? 'selected' : '' ?>>
+                <?= htmlspecialchars($t->sigla . ' - ' . $t->periodo) ?>
+              </option>
+            <?php endforeach; endif; ?>
+          </select>
+        </label>
       </form>
-      <button type="button" class="relatorios-imprimir" style="margin-bottom:1em;" onclick="window.open('relatorio_aluno.php?vigencia_id=<?= $vigencia_id ?>&imprimir=1','_blank')">Imprimir</button>
+      <button type="button" class="relatorios-imprimir" style="margin-bottom:1em;" onclick="window.open('relatorio_aluno.php?vigencia_id=<?= $vigencia_id ?>&curso_id=<?= $curso_id ?>&periodo=<?= urlencode($periodo) ?>&turma_id=<?= $turma_id ?>&imprimir=1','_blank')">Imprimir</button>
       <a class="btn-back" href="dashboard_cad.php">Voltar ao Painel</a>
     </aside>
   <?php endif; ?>
-  <main class="dashboard-main">
+  <section class="dashboard-main">
     <div class="responsive-table">
       <table>
         <thead>
@@ -163,11 +218,25 @@ if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')) {
         </tbody>
       </table>
     </div>
-  </main>
+  </section>
 </main>
 <?php
 if (isset($_GET['imprimir']) && $_GET['imprimir'] == '1') {
-  echo '<style>body,main{background:#fff!important;} form,.container > a,button {display:none!important;} table{margin-top:2em;} h1{display:none;} @media print{button{display:none!important;}} .print-header{display:block!important;}</style>';
+  echo '<style>
+    body, main { background: #fff !important; }
+    form, .container > a, button, .btn-back, aside, h1 { display: none !important; }
+    table { margin: 2em auto 0 auto; width: 95vw !important; max-width: 1200px; border-collapse: collapse; font-size: 1em; }
+    th, td { padding: 0.5em 0.7em; border: 1px solid #bbb; }
+    thead th { background: #f3f3f3; color: #222; font-weight: bold; }
+    .responsive-table { width: 100%; overflow: visible !important; }
+    @media print {
+      body, main { background: #fff !important; }
+      table { page-break-inside: auto; }
+      tr { page-break-inside: avoid; page-break-after: auto; }
+      .print-header { display: block !important; }
+      .relatorios-imprimir, .btn-back, aside, h1 { display: none !important; }
+    }
+  </style>';
   echo '<script>window.onload=function(){window.print();}</script>';
   echo '</body></html>';
 } else {
