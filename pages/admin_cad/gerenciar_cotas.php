@@ -51,57 +51,60 @@ $cotas = $stmt->fetchAll();
 include_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="gerenciar_cotas.css">
-<main class="container">
-<div class="dashboard-container">
-<aside>
-  <h1>Gerenciar Cotas por Turma</h1>
-
-  <form method="POST" class="form-cotas">
-    <select name="turma" required>
-      <option value="" disabled selected>Selecione a turma</option>
-      <?php foreach ($turmas as $turma): ?>
-        <option value="<?= $turma->id ?>"><?= htmlspecialchars($turma->nome_completo . ' - ' . $turma->periodo) ?></option>
-      <?php endforeach; ?>
-    </select>
-    <input type="number" name="valor_cota" min="1" placeholder="Valor da alteração" required>
-    <div style="margin: 0.5em 0;">
-      <button type="submit" name="acao" value="adicionar">Adicionar</button>
-      <button type="submit" name="acao" value="subtrair">Subtrair</button>
-    </div>
-  </form>
-  <div class="btn-container">
-    <a class="btn-cotas" href="gerar_relatorio_pdf.php">Gerar Relatório PDF (Cotas x Alunos)</a>
-    <a class="btn-cotas" href="javascript:history.back()">Voltar</a>
-  </div> 
+<div class="dashboard-layout">
+  <aside class="dashboard-aside">
+    <h1>Gerenciar Cotas por Turma</h1>
+    <section aria-label="Formulário de cotas">
+      <form method="POST" class="form-cotas">
+        <fieldset style="border:0;padding:0;margin:0;">
+          <legend style="font-size:1.1em;font-weight:600;margin-bottom:0.5em;">Alterar cota de turma</legend>
+          <label for="turma">Turma</label>
+          <select id="turma" name="turma" required>
+            <option value="" disabled selected>Selecione a turma</option>
+            <?php foreach ($turmas as $turma): ?>
+              <option value="<?= $turma->id ?>"><?= htmlspecialchars($turma->nome_completo . ' - ' . $turma->periodo) ?></option>
+            <?php endforeach; ?>
+          </select>
+          <label for="valor_cota">Valor da alteração</label>
+          <input type="number" id="valor_cota" name="valor_cota" min="1" placeholder="Valor da alteração" required>
+          <div style="margin: 0.5em 0; display: flex; gap: 0.5em; flex-wrap: wrap;">
+            <button type="submit" name="acao" value="adicionar">Adicionar</button>
+            <button type="submit" name="acao" value="subtrair">Subtrair</button>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+    <nav class="btn-container" aria-label="Ações">
+      <a class="btn-cotas" href="gerar_relatorio_pdf.php">Gerar Relatório PDF (Cotas x Alunos)</a>
+      <a class="btn-back" href="javascript:history.back()">Voltar</a>
+    </nav>
   </aside>
-
-
-  <div class="responsive-table">
-    <table>
-      <thead>
-        <tr>
-          <th>Turma</th>
-          <th>Período</th>
-          <th>Cota Total</th>
-          <th>Cota Usada</th>
-          <th>Restante</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($cotas as $cota): ?>
-        <tr>
-          <td data-label="Turma"><?= htmlspecialchars($cota->sigla) ?></td>
-          <td data-label="Período"><?= htmlspecialchars($cota->periodo) ?></td>
-          <td data-label="Cota Total"><?= $cota->cota_total ?></td>
-          <td data-label="Usada"><?= $cota->cota_usada ?></td>
-          <td data-label="Restante"><?= $cota->cota_total - $cota->cota_usada ?></td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
-  </div>
+  <main class="dashboard-main">
+    <div class="responsive-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Turma</th>
+            <th>Período</th>
+            <th>Cota Total</th>
+            <th>Cota Usada</th>
+            <th>Restante</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($cotas as $cota): ?>
+          <tr>
+            <td data-label="Turma"><?= htmlspecialchars($cota->sigla) ?></td>
+            <td data-label="Período"><?= htmlspecialchars($cota->periodo) ?></td>
+            <td data-label="Cota Total"><?= $cota->cota_total ?></td>
+            <td data-label="Usada"><?= $cota->cota_usada ?></td>
+            <td data-label="Restante"><?= $cota->cota_total - $cota->cota_usada ?></td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+  </main>
 </div>
-  
-</main>
 
 <?php include_once '../../includes/footer.php'; ?>

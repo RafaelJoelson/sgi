@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= SITE_NAME ?> - <?= $pageTitle ?? 'Página' ?></title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/styles.css">
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/favicon.png">
 </head>
 <body>
 <header>
@@ -16,7 +17,7 @@
         <hr>
         <?php if (isset($_SESSION['usuario']) && !empty($_SESSION['usuario'])): ?>
             <div class="user-info">
-                <h4>Bem-vindo: <?= htmlspecialchars($_SESSION['usuario']['nome']) ?></h4>
+                <h4>Bem-vindo: <?= htmlspecialchars($_SESSION['usuario']['nome'] . (isset($_SESSION['usuario']['sobrenome']) ? ' ' . $_SESSION['usuario']['sobrenome'] : '')) ?></h4>
                 <a href="<?= BASE_URL ?>/includes/logout.php"><h4>SAIR</h4></a>
             </div>
         <?php endif; ?>

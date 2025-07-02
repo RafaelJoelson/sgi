@@ -75,24 +75,24 @@ $turmas_disponiveis = $stmt_turmas->fetchAll();
 include_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="dashboard_cad.css">
-<main class="container">
-    <div class="dashboard-container">
-        <aside>
-            <section class="dashboard-header">
-                <h1>Coordenação de Apoio ao Discente</h1>
-            </section>
-            <!-- Cards -->
-            <section class="dashboard-cards">
-                <div class="card">Turmas Ativas: <?= $total_turmas ?></div>
-                <div class="card">Alunos Ativos: <?= $total_alunos ?></div>
-            </section>
-            <section class="dashboard-menu">
-                <a class="btn-menu" href="form_aluno.php">Cadastrar novo aluno</a>
-                <a class="btn-menu" href="gerenciar_cotas.php">Gerenciar Cotas</a>
-                <a class="btn-menu" href="gerenciar_turmas.php">Gerenciar Turmas</a>
-                <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
-            </section>
-        </aside>
+<div class="dashboard-layout">
+    <aside class="dashboard-aside">
+        <section class="dashboard-header">
+            <h1>Coordenação de Apoio ao Discente</h1>
+        </section>
+        <!-- Cards -->
+        <section class="dashboard-cards">
+            <div class="card">Turmas Ativas: <?= $total_turmas ?></div>
+            <div class="card">Alunos Ativos: <?= $total_alunos ?></div>
+        </section>
+        <section class="dashboard-menu">
+            <a class="btn-menu" href="form_aluno.php">Cadastrar novo aluno</a>
+            <a class="btn-menu" href="gerenciar_cotas.php">Gerenciar Cotas</a>
+            <a class="btn-menu" href="gerenciar_turmas.php">Gerenciar Turmas</a>
+            <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
+        </section>
+    </aside>
+    <main class="dashboard-main">
         <!-- Tabela de alunos -->
         <div class="responsive-table">
             <!-- Busca por CPF ou matrícula -->
@@ -164,27 +164,27 @@ include_once '../../includes/header.php';
                 </nav>
             <?php endif; ?>
         </div>
-    </div>
-    <?php if (!empty($_SESSION['mensagem'])): ?>
-        <div id="toast-mensagem" class="mensagem-sucesso">
-            <?= htmlspecialchars($_SESSION['mensagem']) ?>
+        <?php if (!empty($_SESSION['mensagem'])): ?>
+            <div id="toast-mensagem" class="mensagem-sucesso">
+                <?= htmlspecialchars($_SESSION['mensagem']) ?>
+            </div>
+            <?php unset($_SESSION['mensagem']); ?>
+        <?php endif; ?>
+        <div id="modal-redefinir" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Redefinir Senha do Aluno</h2>
+                <form method="POST" action="redefinir_senha.php">
+                <input type="hidden" name="matricula" id="matricula-modal">
+                <label>Nova Senha
+                    <input type="password" name="nova_senha" required>
+                </label>
+                <button type="submit">Salvar Nova Senha</button>
+                </form>
+            </div>
         </div>
-        <?php unset($_SESSION['mensagem']); ?>
-    <?php endif; ?>
-    <div id="modal-redefinir" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Redefinir Senha do Aluno</h2>
-            <form method="POST" action="redefinir_senha.php">
-            <input type="hidden" name="matricula" id="matricula-modal">
-            <label>Nova Senha
-                <input type="password" name="nova_senha" required>
-            </label>
-            <button type="submit">Salvar Nova Senha</button>
-            </form>
-        </div>
-    </div>
-</main>
+    </main>
+</div>
 <script>
     document.querySelectorAll('.btn-redefinir').forEach(btn => {
     btn.addEventListener('click', function (e) {

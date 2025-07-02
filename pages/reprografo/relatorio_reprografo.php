@@ -41,76 +41,85 @@ if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')) {
   require_once '../../includes/header.php';
 }
 ?>
-<main class="container">
+<?php if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')): ?>
+<link rel="stylesheet" href="dashboard_relatorio_reprografo.css">
+<?php endif; ?>
+<main class="dashboard-layout">
   <?php if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')): ?>
-  <h1>Relatório de Impressões</h1>
-  <form method="get" style="margin-bottom:1em;">
-    <label>Data inicial <input type="date" name="data_ini" value="<?= htmlspecialchars($data_ini) ?>"></label>
-    <label>Data final <input type="date" name="data_fim" value="<?= htmlspecialchars($data_fim) ?>"></label>
-    <label>Tipo
-      <select name="tipo">
-        <option value="">Todos</option>
-        <option value="Aluno" <?= $tipo=='Aluno'?'selected':'' ?>>Aluno</option>
-        <option value="Servidor" <?= $tipo=='Servidor'?'selected':'' ?>>Servidor</option>
-      </select>
-    </label>
-    <label>PB físicas <input type="number" name="pb_fisicas" min="0" value="<?= $pb_fisicas ?>" style="width:80px;"></label>
-    <label>Coloridas físicas <input type="number" name="color_fisicas" min="0" value="<?= $color_fisicas ?>" style="width:80px;"></label>
-    <button type="submit">Filtrar</button>
-  </form>
-  <button type="button" onclick="window.open('relatorio_reprografo.php?'+new URLSearchParams(new FormData(document.querySelector('form')))+'&imprimir=1','_blank')" style="margin-bottom:1em;float:right;">Imprimir</button>
+    <aside class="dashboard-aside">
+      <h1>Relatório de Impressões</h1>
+      <form method="get" class="relatorios-form">
+        <label>Data inicial <input type="date" name="data_ini" value="<?= htmlspecialchars($data_ini) ?>"></label>
+        <label>Data final <input type="date" name="data_fim" value="<?= htmlspecialchars($data_fim) ?>"></label>
+        <label>Tipo
+          <select name="tipo">
+            <option value="">Todos</option>
+            <option value="Aluno" <?= $tipo=='Aluno'?'selected':'' ?>>Aluno</option>
+            <option value="Servidor" <?= $tipo=='Servidor'?'selected':'' ?>>Servidor</option>
+          </select>
+        </label>
+        <label>PB físicas <input type="number" name="pb_fisicas" min="0" value="<?= $pb_fisicas ?>"></label>
+        <label>Coloridas físicas <input type="number" name="color_fisicas" min="0" value="<?= $color_fisicas ?>"></label>
+        <button type="submit">Filtrar</button>
+      </form>
+      <button type="button" class="relatorios-imprimir" onclick="window.open('relatorio_reprografo.php?'+new URLSearchParams(new FormData(document.querySelector('.relatorios-form')))+'&imprimir=1','_blank')">Imprimir</button>
+      <nav class="btn-container" aria-label="Ações">
+        <a class="btn-back" href="dashboard_reprografo.php">Voltar ao Painel</a>
+      </nav>
+    </aside>
   <?php endif; ?>
-  <table style="width:100%;font-size:0.98em;">
-    <thead>
-      <tr>
-        <th>Tipo</th>
-        <th>Cor</th>
-        <th>Total de Páginas Impressas</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php
-      $total_pb = 0;
-      $total_color = 0;
-      if (empty($dados)):
-      ?>
-        <tr><td colspan="3">Nenhum dado encontrado.</td></tr>
-      <?php else:
-        foreach ($dados as $d):
-          if (!$d['colorida']) {
-            $total_pb += (int)$d['total_paginas'];
-          } else if ($d['tipo_solicitante'] === 'Servidor') {
-            $total_color += (int)$d['total_paginas'];
-          }
-      ?>
+  <main class="dashboard-main">
+    <table class="relatorios-table">
+      <thead>
         <tr>
-          <td><?= $d['tipo_solicitante'] === 'Aluno' ? 'Alunos' : ($d['tipo_solicitante'] === 'Servidor' ? 'Servidores' : htmlspecialchars($d['tipo_solicitante'])) ?></td>
-          <td><?= $d['colorida'] ? 'Colorida' : 'PB' ?></td>
-          <td><?= (int)$d['total_paginas'] ?></td>
+          <th>Tipo</th>
+          <th>Cor</th>
+          <th>Total de Páginas Impressas</th>
         </tr>
-      <?php endforeach; ?>
-        <tr style="background:#f9f9f9;">
-          <td colspan="2">PB físicas (lançamento manual)</td>
-          <td><?= $pb_fisicas ?></td>
-        </tr>
-        <tr style="background:#f9f9f9;">
-          <td colspan="2">Coloridas físicas (lançamento manual)</td>
-          <td><?= $color_fisicas ?></td>
-        </tr>
-        <tr style="font-weight:bold;background:#f3f3f3;">
-          <td colspan="2">Total PB (Alunos + Servidores)</td>
-          <td><?= $total_pb + $pb_fisicas ?></td>
-        </tr>
-        <tr style="font-weight:bold;background:#e3e3ff;">
-          <td colspan="2">Total Coloridas (Servidores)</td>
-          <td><?= $total_color + $color_fisicas ?></td>
-        </tr>
-      <?php endif; ?>
-    </tbody>
-  </table>
-  <?php if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')): ?>
-  <a href="dashboard_reprografo.php" style="display:inline-block;margin-top:1em;">&larr; Voltar ao Painel</a>
-  <?php endif; ?>
+      </thead>
+      <tbody>
+        <?php
+        $total_pb = 0;
+        $total_color = 0;
+        if (empty($dados)):
+        ?>
+          <tr><td colspan="3">Nenhum dado encontrado.</td></tr>
+        <?php else:
+          foreach ($dados as $d):
+            if (!$d['colorida']) {
+              $total_pb += (int)$d['total_paginas'];
+            } else if ($d['tipo_solicitante'] === 'Servidor') {
+              $total_color += (int)$d['total_paginas'];
+            }
+        ?>
+          <tr>
+            <td><?= $d['tipo_solicitante'] === 'Aluno' ? 'Alunos' : ($d['tipo_solicitante'] === 'Servidor' ? 'Servidores' : htmlspecialchars($d['tipo_solicitante'])) ?></td>
+            <td><?= $d['colorida'] ? 'Colorida' : 'PB' ?></td>
+            <td><?= (int)$d['total_paginas'] ?></td>
+          </tr>
+        <?php endforeach; ?>
+          <tr style="background:#f9f9f9;">
+            <td colspan="2">PB físicas (lançamento manual)</td>
+            <td><?= $pb_fisicas ?></td>
+          </tr>
+          <tr style="background:#f9f9f9;">
+            <td colspan="2">Coloridas físicas (lançamento manual)</td>
+            <td><?= $color_fisicas ?></td>
+          </tr>
+          <tr style="font-weight:bold;background:#f3f3f3;">
+            <td colspan="2">Total PB (Alunos + Servidores)</td>
+            <td><?= $total_pb + $pb_fisicas ?></td>
+          </tr>
+          <tr style="font-weight:bold;background:#e3e3ff;">
+            <td colspan="2">Total Coloridas (Servidores)</td>
+            <td><?= $total_color + $color_fisicas ?></td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+    <?php if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')): ?>
+    <?php endif; ?>
+  </main>
 </main>
 <?php
 if (isset($_GET['imprimir']) && $_GET['imprimir'] == '1') {

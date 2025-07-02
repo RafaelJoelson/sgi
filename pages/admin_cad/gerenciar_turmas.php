@@ -126,8 +126,8 @@ include_once '../../includes/header.php';
 
 <link rel="stylesheet" href="gerenciar_turmas.css">
 <main class="container">
-  <div class="dashboard-container">
-    <aside>
+  <div class="dashboard-layout">
+    <aside class="dashboard-aside">
       <h1><?= $modo_edicao ? 'Editar Turma' : 'Nova Turma' ?></h1>
 
       <?php if (!empty($_SESSION['mensagem'])): ?>
@@ -139,7 +139,6 @@ include_once '../../includes/header.php';
         <?php if ($modo_edicao): ?>
           <input type="hidden" name="id" value="<?= $turma_editar->id ?>">
         <?php endif; ?>
-
         <label>Curso
           <select name="curso_id" required>
             <option value="" disabled selected>Selecione o curso</option>
@@ -150,15 +149,15 @@ include_once '../../includes/header.php';
             <?php endforeach; ?>
           </select>
         </label>
-
         <label>Período (ex: 1º Período)
           <input type="text" name="periodo" required pattern="\\d+º Período" title="Use apenas '1º Período', '2º Período', etc." placeholder="Ex: 1º Período" value="<?= $modo_edicao ? htmlspecialchars($turma_editar->periodo) : '' ?>">
         </label>
-
-        <button type="submit"><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Turma' ?></button>
-        <?php if ($modo_edicao): ?>
-          <a href="gerenciar_turmas.php" class="btn-cancelar">Cancelar</a>
-        <?php endif; ?>
+        <div class="btns-row">
+          <button type="submit"><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Turma' ?></button>
+          <?php if ($modo_edicao): ?>
+            <a href="gerenciar_turmas.php" class="btn-cancelar">Cancelar</a>
+          <?php endif; ?>
+        </div>
       </form>
 
       <!-- Formulário para adicionar novo curso -->
@@ -172,53 +171,56 @@ include_once '../../includes/header.php';
         </label>
         <button type="submit">Cadastrar Curso</button>
       </form>
-      <a class="btn-back" href="javascript:history.back()">Voltar</a>
+      <nav class="btn-container" aria-label="Ações">
+        <a class="btn-back" href="javascript:history.back()">Voltar</a>
+      </nav>    
     </aside>
+    <main class="dashboard-main">
+      <div class="responsive-table">
+        <!-- Filtros -->
+        <form method="GET" class="filter-form">
+          <select name="nome">
+            <option value="">Todos os cursos</option>
+            <?php foreach ($cursos as $curso): ?>
+              <option value="<?= htmlspecialchars($curso->nome_completo) ?>" <?= ($filtro_nome === $curso->nome_completo) ? 'selected' : '' ?>>
+                <?= htmlspecialchars($curso->nome_completo . ' (' . $curso->sigla . ')') ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+          <select name="periodo">
+            <option value="">Todos os períodos</option>
+            <?php foreach ($periodos as $p): ?>
+              <option value="<?= htmlspecialchars($p) ?>" <?= ($filtro_periodo === $p) ? 'selected' : '' ?>><?= htmlspecialchars($p) ?></option>
+            <?php endforeach; ?>
+          </select>
+          <button type="submit">Filtrar</button>
+        </form>
 
-    <div class="responsive-table">
-      <!-- Filtros -->
-      <form method="GET" class="filter-form">
-        <select name="nome">
-          <option value="">Todos os cursos</option>
-          <?php foreach ($cursos as $curso): ?>
-            <option value="<?= htmlspecialchars($curso->nome_completo) ?>" <?= ($filtro_nome === $curso->nome_completo) ? 'selected' : '' ?>>
-              <?= htmlspecialchars($curso->nome_completo . ' (' . $curso->sigla . ')') ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
-        <select name="periodo">
-          <option value="">Todos os períodos</option>
-          <?php foreach ($periodos as $p): ?>
-            <option value="<?= htmlspecialchars($p) ?>" <?= ($filtro_periodo === $p) ? 'selected' : '' ?>><?= htmlspecialchars($p) ?></option>
-          <?php endforeach; ?>
-        </select>
-        <button type="submit">Filtrar</button>
-      </form>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Sigla</th>
-            <th>Nome do Curso</th>
-            <th>Período</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($turmas as $t): ?>
+        <table>
+          <thead>
             <tr>
-              <td data-label="Sigla"><?= $t->sigla ?></td>
-              <td data-label="Nome Curso"><?= $t->nome_completo ?></td>
-              <td data-label="Período"><?= $t->periodo ?></td>
-              <td data-label="Ações">
-                <a href="?editar=<?= $t->id ?>">Editar</a>
-                <a href="?excluir=<?= $t->id ?>" onclick="return confirm('Tem certeza que deseja excluir esta turma?')">Excluir</a>
-              </td>
+              <th>Sigla</th>
+              <th>Nome do Curso</th>
+              <th>Período</th>
+              <th>Ações</th>
             </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            <?php foreach ($turmas as $t): ?>
+              <tr>
+                <td data-label="Sigla"><?= $t->sigla ?></td>
+                <td data-label="Nome Curso"><?= $t->nome_completo ?></td>
+                <td data-label="Período"><?= $t->periodo ?></td>
+                <td data-label="Ações" class="action-links">
+                  <a href="?editar=<?= $t->id ?>">Editar</a>
+                  <a href="?excluir=<?= $t->id ?>" onclick="return confirm('Tem certeza que deseja excluir esta turma?')">Excluir</a>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+    </main>
   </div>
 </main>
 

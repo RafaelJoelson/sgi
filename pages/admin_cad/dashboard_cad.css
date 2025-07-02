@@ -40,6 +40,8 @@
   pointer-events: auto;
 }
 
+/* Removido: .dashboard-layout, .dashboard-aside, .dashboard-main e suas media queries, pois agora estão em styles.css global */
+
 aside {
   width: 40%;
   margin-left: 5px;
@@ -166,11 +168,105 @@ aside h1 {
   }
 }
 
+@media (max-width: 900px) {
+  .dashboard-layout {
+    flex-direction: column;
+    width: 96%;
+    min-width: unset;
+    margin: 0.5rem auto;
+    border-radius: 0;
+    box-shadow: none;
+    padding-left: 2vw;
+    padding-right: 2vw;
+  }
+  .dashboard-cards {
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+  .card {
+    width: 48%;
+    min-width: 120px;
+    font-size: 0.95em;
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-layout {
+    width: 100%;
+    min-width: unset;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding-left: 3vw;
+    padding-right: 3vw;
+  }
+  .dashboard-aside {
+    padding: 0.5rem 0.2rem 0.5rem 0.2rem;
+    gap: 0.7rem;
+  }
+  .dashboard-header h1 {
+    font-size: 1.1em;
+  }
+  .dashboard-cards {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .card {
+    width: 90%;
+    min-width: unset;
+    font-size: 0.92em;
+    padding: 0.4rem;
+  }
+  .dashboard-menu {
+    width: 98%;
+    max-width: unset;
+    gap: 0.3rem;
+  }
+  .btn-menu {
+    font-size: 0.95em;
+    padding: 0.4rem;
+  }
+  .responsive-table {
+    min-height: 400px;
+    margin-top: 10px;
+  }
+  /* Ajuste do filtro/busca para mobile */
+  .busca-form, .filter-form {
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 98%;
+    max-width: 100%;
+    align-items: stretch;
+  }
+  .busca-form input,
+  .busca-form select,
+  .busca-form button,
+  .filter-form select,
+  .filter-form button {
+    width: 98%;
+    box-sizing: border-box;
+    font-size: 0.95em;
+    padding: 0.35rem 0.5rem;
+    margin-top: 0;
+  }
+  .busca-form button,
+  .filter-form button {
+    width: 98% !important;
+    min-width: 98%;
+    max-width: 98%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+}
+
 /* Tabela responsiva */
 .responsive-table {
   margin-top: 20px;
   overflow-x: auto;
-  width: 100%;
+  width: 98%;
   min-height: 650px;
 }
 

@@ -38,7 +38,7 @@ require_once 'includes/header.php';
 require_once 'includes/nav.php';
 ?>
 
-<main class="container">
+<main class="main-login-container">
     <section class="row justify-content-center">
         <div class="col-md-6 login-container">
             <div class="card shadow">

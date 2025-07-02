@@ -1,0 +1,151 @@
+/* Dashboard Reprográfo - estilos específicos e complementares */
+
+.dashboard-main h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #19882c;
+}
+
+#solicitacoes-pendentes h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #0080ff;
+}
+
+#tabela-solicitacoes table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fafbfc;
+  font-size: 1em;
+  margin-bottom: 1.5rem;
+}
+#tabela-solicitacoes th, #tabela-solicitacoes td {
+  border: 1px solid #e0e0e0;
+  padding: 0.6em 0.4em;
+  text-align: center;
+}
+#tabela-solicitacoes th {
+  background: #e6f0fa;
+  color: #19882c;
+  font-weight: bold;
+}
+#tabela-solicitacoes tr:nth-child(even) {
+  background: #f5f5f5;
+}
+#tabela-solicitacoes tr:hover {
+  background: #e0f3ff;
+}
+
+#tabela-solicitacoes a {
+  color: #0080ff;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+#tabela-solicitacoes button {
+  background: #0080ff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.35em 0.9em;
+  margin: 0 2px;
+  font-size: 0.98em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#tabela-solicitacoes button:hover {
+  background: #005fa3;
+}
+
+#tabela-solicitacoes input[type="number"] {
+  width: 60px;
+  padding: 0.2em 0.4em;
+  border: 1px solid #b0b0b0;
+  border-radius: 3px;
+  font-size: 1em;
+  text-align: center;
+}
+
+.dashboard-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  margin-top: 0.5em;
+}
+.dashboard-menu-link {
+  display: block;
+  background: #0080ff;
+  color: #fff;
+  padding: 0.7em 1.2em;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 1.08em;
+  transition: background 0.2s, color 0.2s;
+  margin-bottom: 0.2em;
+  text-align: left;
+}
+.dashboard-menu-link:hover,
+.dashboard-menu-link.active {
+  background: #005fa3;
+  color: #fff;
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  #tabela-solicitacoes table, #tabela-solicitacoes thead, #tabela-solicitacoes tbody, #tabela-solicitacoes th, #tabela-solicitacoes td, #tabela-solicitacoes tr {
+    display: block;
+  }
+  #tabela-solicitacoes thead tr {
+    display: none;
+  }
+  #tabela-solicitacoes tr {
+    margin-bottom: 1.2em;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    padding: 0.7em 0.3em;
+  }
+  #tabela-solicitacoes td {
+    border: none;
+    position: relative;
+    padding-left: 45%;
+    text-align: left;
+    min-height: 32px;
+  }
+  #tabela-solicitacoes td:before {
+    position: absolute;
+    left: 0.7em;
+    top: 0.5em;
+    width: 40%;
+    white-space: nowrap;
+    font-weight: bold;
+    color: #19882c;
+    content: attr(data-label);
+  }
+  #tabela-solicitacoes button {
+    width: 100%;
+    margin: 0.2em 0;
+  }
+  .dashboard-menu-link {
+    font-size: 1em;
+    padding: 0.7em 0.7em;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-main h1 {
+    font-size: 1.2rem;
+  }
+  #solicitacoes-pendentes h2 {
+    font-size: 1rem;
+  }
+  #tabela-solicitacoes td {
+    font-size: 0.98em;
+    padding-left: 38%;
+  }
+  .dashboard-menu-link {
+    font-size: 0.98em;
+    padding: 0.6em 0.5em;
+  }
+}

@@ -57,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['usuario'] = [
                 'cpf' => $cpf,
                 'nome' => $user->nome,
+                'sobrenome' => isset($user->sobrenome) ? $user->sobrenome : '',
                 'tipo' => strtolower($usuario['tabela']),
                 'id'   => $user->{$usuario['campo_id']},
             ];

@@ -1,0 +1,221 @@
+/* Formulário de turma e curso */
+.form-cotas, .form-novo-curso {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  width: 95%;
+  max-width: 600px;
+  margin: 1.2rem auto 0 auto;
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.2rem 1rem 1rem 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.form-cotas label, .form-novo-curso label {
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+.form-cotas input, .form-cotas select,
+.form-novo-curso input, .form-novo-curso select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+.form-cotas button, .form-novo-curso button, .btn-cancelar {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  background-color: #0080ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0.7rem;
+  margin-bottom: 0.2rem;
+  font-size: 1rem;
+  padding: 0.5rem;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.form-cotas button:hover, .form-novo-curso button:hover, .btn-cancelar:hover {
+  background-color: #359aff;
+}
+.mensagem-sucesso {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  font-weight: bold;
+  position: relative;
+  min-width: 250px;
+  max-width: 350px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+/* Filtro da tabela */
+.filter-form {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 1rem;
+}
+.filter-form select,
+.filter-form button {
+  padding: 0.5rem;
+  font-size: 1rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.filter-form button {
+    background-color: #0080ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+@media (max-width: 600px) {
+  .filter-form {
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 98%;
+    max-width: 100%;
+    align-items: stretch;
+  }
+  .filter-form select,
+  .filter-form button {
+    width: 98%;
+    min-width: 0;
+    max-width: 100%;
+    font-size: 0.95em;
+    padding: 0.35rem 0.5rem;
+    margin-top: 0;
+  }
+}
+/* Responsividade */
+@media (max-width: 900px) {
+  .form-cotas, .form-novo-curso {
+    width: 98%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media (max-width: 600px) {
+  .form-cotas, .form-novo-curso {
+    gap: 0.7rem;
+    padding: 0.7rem 0.3rem 0.7rem 0.3rem;
+    flex-direction: column;
+    width: 98%;
+    max-width: 100%;
+    align-items: stretch;
+  }
+  .form-cotas input, .form-cotas select, .form-cotas button,
+  .form-novo-curso input, .form-novo-curso select, .form-novo-curso button {
+    width: 98%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    font-size: 0.95em;
+    padding: 0.35rem 0.5rem;
+    margin-top: 0;
+  }
+  .form-cotas button, .form-novo-curso button, .btn-cancelar, .btn-back {
+    min-width: 98%;
+    max-width: 98%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+  .btns-row {
+    flex-direction: column;
+    gap: 0.3rem;
+    align-items: stretch;
+  }
+}
+/* Tabela responsiva */
+.responsive-table {
+  margin-top: 20px;
+  overflow-x: auto;
+  width: 100%;
+  min-height: 400px;
+}
+table {
+  width: 100%;
+  min-width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+thead {
+  background-color: #eee;
+}
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+@media (max-width: 767px) {
+  table, thead, tbody, tr, th, td {
+    padding: 0.50rem;
+    font-size: 10px;
+  }
+  thead {
+    display: none;
+  }
+  .responsive-table {
+    overflow-x: auto;
+    width: 100%;
+  }
+  tr {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #fdfdfd;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+  }
+  td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+  }
+  td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 1rem;
+  }
+}
+/* Links de ação na tabela */
+.action-links a {
+  background: #0080ff;
+  color: #fff;
+  padding: 0.35rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.95em;
+  text-decoration: none;
+  margin-right: 0.4rem;
+  transition: background 0.2s;
+  display: inline-block;
+}
+.action-links a:last-child {
+  margin-right: 0;
+}
+.action-links a:hover {
+  background: #359aff;
+}

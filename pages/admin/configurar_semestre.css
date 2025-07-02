@@ -1,0 +1,129 @@
+/* Estilo para Configurar Semestre Letivo - padrão SGI */
+.dashboard-main {
+  width: 100%;
+  max-width: 900px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: 2rem 2vw 2rem 2vw;
+}
+.mensagem-sucesso {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  font-weight: bold;
+  min-width: 250px;
+  max-width: 350px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.form-semestre {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  width: 90%;
+  max-width: 500px;
+  margin: 0 auto 2em auto;
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.2rem 1rem 1rem 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.form-semestre label {
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+.form-semestre input, .form-semestre select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+.form-semestre button {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  background-color: #0080ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0.7rem;
+  margin-bottom: 0.2rem;
+  font-size: 1rem;
+  padding: 0.5rem;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.form-semestre button:hover {
+  background-color: #359aff;
+}
+.btn-cotas {
+  background-color: #0080ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  margin-bottom: 1em;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s;
+}
+.btn-cotas:hover {
+  background-color: #359aff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  margin-bottom: 1.5em;
+}
+thead {
+  background-color: #eee;
+}
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+@media (max-width: 700px) {
+  .dashboard-main {
+    padding: 1rem 0.5rem 1rem 0.5rem;
+  }
+  .form-semestre {
+    padding: 0.7rem 0.3rem 0.7rem 0.3rem;
+    gap: 0.7rem;
+  }
+  th, td {
+    padding: 0.45rem;
+    font-size: 0.95em;
+  }
+}
+@media (max-width: 500px) {
+  .dashboard-main {
+    padding: 0.5rem 0.1rem 0.5rem 0.1rem;
+  }
+  .form-semestre {
+    padding: 0.5rem 0.1rem 0.5rem 0.1rem;
+    gap: 0.4rem;
+  }
+  th, td {
+    padding: 0.3rem;
+    font-size: 0.9em;
+  }
+}

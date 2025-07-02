@@ -90,6 +90,7 @@ if (isset($_GET['exportar_log']) && $_GET['exportar_log'] === 'csv') {
 
 include_once '../../includes/header.php';
 ?>
+<link rel="stylesheet" href="configurar_semestre.css">
 <script>
 // Dupla confirmação ao salvar semestre
 window.addEventListener('DOMContentLoaded', function() {
@@ -111,73 +112,79 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
-<main class="container">
-  <button type="button" onclick="window.history.back();" class="btn-cotas" style="margin-bottom:1em;display:inline-block;">&larr; Voltar</button>
-  <h1>Configurar Semestre Letivo</h1>
-  <?php if (!empty($_SESSION['mensagem'])): ?>
-    <div class="mensagem-sucesso"> <?= htmlspecialchars($_SESSION['mensagem']) ?> </div>
-    <?php unset($_SESSION['mensagem']); ?>
-  <?php endif; ?>
-  <form method="POST" class="form-semestre" style="margin-bottom:2em;" id="form-semestre">
-    <label>Ano
-      <input type="number" name="ano" required min="2000" max="2100">
-    </label>
-    <label>Semestre
-      <select name="semestre" required>
-        <option value="1">1</option>
-        <option value="2">2</option>
-      </select>
-    </label>
-    <label>Data de Início
-      <input type="date" name="data_inicio" required>
-    </label>
-    <label>Data de Fim
-      <input type="date" name="data_fim" required>
-    </label>
-    <button type="submit">Salvar</button>
-  </form>
-  <h2>Semestres Cadastrados</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Ano</th>
-        <th>Semestre</th>
-        <th>Início</th>
-        <th>Fim</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach ($semestres as $s): ?>
+<div class="dashboard-layout">
+  <aside class="dashboard-aside">
+    <h1>Configurar Semestre Letivo</h1>
+    <?php if (!empty($_SESSION['mensagem'])): ?>
+      <div class="mensagem-sucesso"> <?= htmlspecialchars($_SESSION['mensagem']) ?> </div>
+      <?php unset($_SESSION['mensagem']); ?>
+    <?php endif; ?>
+    <form method="POST" class="form-semestre" style="margin-bottom:2em;" id="form-semestre">
+      <label>Ano
+        <input type="number" name="ano" required min="2000" max="2100">
+      </label>
+      <label>Semestre
+        <select name="semestre" required>
+          <option value="1">1</option>
+          <option value="2">2</option>
+        </select>
+      </label>
+      <label>Data de Início
+        <input type="date" name="data_inicio" required>
+      </label>
+      <label>Data de Fim
+        <input type="date" name="data_fim" required>
+      </label>
+      <button type="submit">Salvar</button>
+    </form>
+    <nav class="btn-container" aria-label="Ações">
+      <a class="btn-back" href="javascript:history.back()">Voltar</a>
+    </nav>
+  </aside>
+  <main class="dashboard-main">
+    <h2>Semestres Cadastrados</h2>
+    <table>
+      <thead>
         <tr>
-          <td><?= $s['ano'] ?></td>
-          <td><?= $s['semestre'] ?></td>
-          <td><?= date('d/m/Y', strtotime($s['data_inicio'])) ?></td>
-          <td><?= date('d/m/Y', strtotime($s['data_fim'])) ?></td>
+          <th>Ano</th>
+          <th>Semestre</th>
+          <th>Início</th>
+          <th>Fim</th>
         </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
-  <h2 style="margin-top:2em;">Log de Alterações</h2>
-  <a href="?exportar_log=csv" class="btn-cotas" style="margin-bottom:1em;display:inline-block;">Exportar Log (CSV)</a>
-  <table>
-    <thead>
-      <tr>
-        <th>Usuário</th>
-        <th>Setor</th>
-        <th>Ação</th>
-        <th>Data</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach ($logs as $log): ?>
+      </thead>
+      <tbody>
+        <?php foreach ($semestres as $s): ?>
+          <tr>
+            <td><?= $s['ano'] ?></td>
+            <td><?= $s['semestre'] ?></td>
+            <td><?= date('d/m/Y', strtotime($s['data_inicio'])) ?></td>
+            <td><?= date('d/m/Y', strtotime($s['data_fim'])) ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+    <h2 style="margin-top:2em;">Log de Alterações</h2>
+    <a href="?exportar_log=csv" class="btn-cotas" style="margin-bottom:1em;display:inline-block;">Exportar Log (CSV)</a>
+    <table>
+      <thead>
         <tr>
-          <td><?= htmlspecialchars($log['usuario']) ?></td>
-          <td><?= htmlspecialchars($log['setor']) ?></td>
-          <td><?= htmlspecialchars($log['acao']) ?></td>
-          <td><?= date('d/m/Y H:i', strtotime($log['data'])) ?></td>
+          <th>Usuário</th>
+          <th>Setor</th>
+          <th>Ação</th>
+          <th>Data</th>
         </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
-</main>
+      </thead>
+      <tbody>
+        <?php foreach ($logs as $log): ?>
+          <tr>
+            <td><?= htmlspecialchars($log['usuario']) ?></td>
+            <td><?= htmlspecialchars($log['setor']) ?></td>
+            <td><?= htmlspecialchars($log['acao']) ?></td>
+            <td><?= date('d/m/Y H:i', strtotime($log['data'])) ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </main>
+</div>
 <?php include_once '../../includes/footer.php'; ?>

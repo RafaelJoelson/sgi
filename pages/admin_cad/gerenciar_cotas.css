@@ -33,14 +33,6 @@
   background-color: #359aff;
 }
 
-.btn-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 90%;
-  margin-top: 1rem;
-}
-
 .btn-cotas {
   background-color: #0080ff;
   color: white;
@@ -53,4 +45,108 @@
 
 .btn-cotas:hover {
   background-color: #359aff;
+}
+
+@media (max-width: 900px) {
+  .form-cotas {
+    width: 98%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .btn-container {
+    width: 98%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media (max-width: 600px) {
+  .form-cotas {
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 98%;
+    max-width: 100%;
+    align-items: stretch;
+  }
+  .form-cotas input,
+  .form-cotas select,
+  .form-cotas button {
+    width: 98%;
+    box-sizing: border-box;
+    font-size: 0.95em;
+    padding: 0.35rem 0.5rem;
+    margin-top: 0;
+  }
+  .form-cotas button {
+    min-width: 98%;
+    max-width: 98%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+  .btn-container {
+    width: 98%;
+    max-width: 100%;
+    gap: 0.3rem;
+  }
+  .btn-cotas {
+    width: 98%;
+    font-size: 0.95em;
+    padding: 0.4rem;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+}
+
+/* Tabela responsiva */
+.responsive-table {
+  margin-top: 20px;
+  overflow-x: auto;
+  width: 100%;
+  min-height: 400px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+thead {
+  background-color: #eee;
+}
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+@media (max-width: 767px) {
+  table, thead, tbody, tr, th, td {
+    padding: 0.50rem;
+    font-size: 10px;
+  }
+  thead {
+    display: none;
+  }
+  .responsive-table {
+    overflow-x: auto;
+    width: 100%;
+  }
+  tr {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #fdfdfd;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+  }
+  td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+  }
+  td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 1rem;
+  }
 }

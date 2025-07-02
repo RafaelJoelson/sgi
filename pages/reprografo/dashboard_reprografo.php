@@ -12,10 +12,9 @@ require_once '../../includes/header.php';
 <div class="dashboard-layout">
   <aside class="dashboard-aside">
     <h2>Menu</h2>
-    <nav>
-      <a href="dashboard_reprografo.php" class="active">Solicitações Pendentes</a>
-      <a href="relatorio_reprografo.php">Relatórios</a>
-      <a href="../../includes/logout.php">Sair</a>
+    <nav class="dashboard-menu">
+      <a href="dashboard_reprografo.php" class="dashboard-menu-link active">Solicitações Pendentes</a>
+      <a href="relatorio_reprografo.php" class="dashboard-menu-link">Relatórios</a>
     </nav>
   </aside>
   <main class="dashboard-main">
