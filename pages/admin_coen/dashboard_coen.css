@@ -36,6 +36,7 @@
 .btn-menu:hover {
   background: #005fa3;
 }
+/* Tabela responsiva */
 .responsive-table {
   width: 100%;
   overflow-x: auto;

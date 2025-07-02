@@ -270,16 +270,17 @@ aside h1 {
 
 /* Tabela responsiva */
 .responsive-table {
-  margin-top: 20px;
+  width: 100%;
   overflow-x: auto;
-  width: 98%;
-  min-height: 650px;
+  margin: 0 auto;
+  padding: 1rem 0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
+  margin-bottom: 1rem;
 }
 
 thead {
@@ -287,12 +288,12 @@ thead {
 }
 
 th, td {
-  padding: 0.75rem;
+  padding: 0.7rem 0.5rem;
   text-align: left;
   border-bottom: 1px solid #ccc;
 }
 
-@media (max-width: 767px) {
+/*@media (max-width: 767px) {
   table, thead, tbody, tr, th, td {
     padding: 0.50rem;
     font-size: 10px;
@@ -326,7 +327,7 @@ th, td {
     font-weight: bold;
     margin-right: 1rem;
   }
-}
+}*/
 
 /* Botões de ação */
 .action-buttons {

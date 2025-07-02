@@ -166,16 +166,6 @@ if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')) {
             <?php endforeach; ?>
           </select>
         </label>
-        <label>Turma:
-          <select name="turma_id" onchange="this.form.submit()">
-            <option value="">Todas</option>
-            <?php if (!empty($turmas) && is_array($turmas)): foreach ($turmas as $t): ?>
-              <option value="<?= $t->id ?>" <?= $turma_id == $t->id ? 'selected' : '' ?>>
-                <?= htmlspecialchars($t->sigla . ' - ' . $t->periodo) ?>
-              </option>
-            <?php endforeach; endif; ?>
-          </select>
-        </label>
       </form>
       <button type="button" class="relatorios-imprimir" style="margin-bottom:1em;" onclick="window.open('relatorio_aluno.php?vigencia_id=<?= $vigencia_id ?>&curso_id=<?= $curso_id ?>&periodo=<?= urlencode($periodo) ?>&turma_id=<?= $turma_id ?>&imprimir=1','_blank')">Imprimir</button>
       <a class="btn-back" href="dashboard_cad.php">Voltar ao Painel</a>

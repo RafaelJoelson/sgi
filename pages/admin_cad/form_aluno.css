@@ -83,26 +83,6 @@ main h1 {
   background-color: #359aff;
 }
 
-.btn-back {
-  display: inline-block;
-  margin: 1.5rem auto 0 auto;
-  background: #fff;
-  color: #0080ff;
-  border: 1px solid #0080ff;
-  border-radius: 4px;
-  padding: 0.5rem 1.2rem;
-  font-size: 1em;
-  font-weight: 600;
-  text-align: center;
-  text-decoration: none;
-  transition: background 0.2s, color 0.2s;
-}
-
-.btn-back:hover {
-  background: #0080ff;
-  color: #fff;
-}
-
 /* Responsividade */
 @media (max-width: 600px) {
   main {

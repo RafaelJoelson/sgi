@@ -188,7 +188,11 @@ INSERT INTO Curso (id, sigla, nome_completo) VALUES
 (3, 'LOG', 'Tecnologia em Logística'),
 (4, 'GTI', 'Tecnologia em Gestão da Tecnologia da Informação'),
 (5, 'GA', 'Tecnologia em Gestão Ambiental'),
-(6, 'GTEAD', 'Tecnologia em Gestão do Turismo EAD');
+(6, 'TECINF', 'Técnico em Informática'),
+(7, 'TECADM', 'Técnico em Administração'),
+(8, 'TECANC', 'Técnico em Análise Clínicas'),
+(9, 'TECENF', 'Técnico em Enfermagem'),
+(10, 'TECSEG', 'Técnico em Segurança do Trabalho');
 
 -- TURMAS (cada turma é uma oferta de curso em um período)
 INSERT INTO Turma (id, curso_id, periodo) VALUES
