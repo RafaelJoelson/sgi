@@ -61,65 +61,79 @@ $cotas = $stmt->fetchAll();
 
 include_once '../../includes/header.php';
 ?>
-<main class="container">
-<div class="dashboard-container">
-<aside>
-  <h1>Transferência de Cotas entre Servidores</h1>
-  <?php if (!empty($_SESSION['mensagem'])): ?>
-    <div class="mensagem-sucesso"> <?= htmlspecialchars($_SESSION['mensagem']) ?> </div>
-    <?php unset($_SESSION['mensagem']); ?>
-  <?php endif; ?>
-  <form method="POST" class="form-cotas">
-    <label>Servidor Origem
-      <select name="siap_origem" required>
-        <option value="" disabled selected>Selecione o servidor</option>
-        <?php foreach ($servidores as $s): ?>
-          <option value="<?= $s->siap ?>"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome . ' (' . $s->siap . ')') ?></option>
-        <?php endforeach; ?>
-      </select>
-    </label>
-    <label>Servidor Destino
-      <select name="siap_destino" required>
-        <option value="" disabled selected>Selecione o servidor</option>
-        <?php foreach ($servidores as $s): ?>
-          <option value="<?= $s->siap ?>"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome . ' (' . $s->siap . ')') ?></option>
-        <?php endforeach; ?>
-      </select>
-    </label>
-    <label>Tipo de Cota
-      <select name="tipo_cota" required>
-        <option value="pb">Preto e Branco</option>
-        <option value="color">Colorida</option>
-      </select>
-    </label>
-    <label>Quantidade
-      <input type="number" name="quantidade" min="1" required>
-    </label>
-    <button type="submit">Transferir</button>
-  </form>
-</aside>
-<div class="responsive-table">
-  <table>
-    <thead>
-      <tr>
-        <th>SIAP</th>
-        <th>Nome</th>
-        <th>Cota PB</th>
-        <th>Cota Colorida</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach ($cotas as $cota): ?>
-      <tr>
-        <td data-label="SIAP"> <?= $cota->siap ?> </td>
-        <td data-label="Nome"> <?= htmlspecialchars($cota->nome . ' ' . $cota->sobrenome) ?> </td>
-        <td data-label="Cota PB"> <?= $cota->cota_pb_usada ?? 0 ?> / <?= $cota->cota_pb_total ?? 0 ?> </td>
-        <td data-label="Cota Colorida"> <?= $cota->cota_color_usada ?? 0 ?> / <?= $cota->cota_color_total ?? 0 ?> </td>
-      </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
+<link rel="stylesheet" href="gerenciar_cotas_servidor.css">
+<div class="dashboard-layout">
+  <aside class="dashboard-aside">
+    <h1>Transferência de Cotas entre Servidores</h1>
+    <?php if (!empty($_SESSION['mensagem'])): ?>
+      <div class="mensagem-sucesso"> <?= htmlspecialchars($_SESSION['mensagem']) ?> </div>
+      <?php unset($_SESSION['mensagem']); ?>
+    <?php endif; ?>
+    <form method="POST" class="form-cotas" id="form-cotas">
+      <label>Servidor Origem
+        <select name="siap_origem" id="siap_origem" required>
+          <option value="" disabled selected>Selecione o servidor</option>
+          <?php foreach ($servidores as $s): ?>
+            <option value="<?= $s->siap ?>"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome . ' (' . $s->siap . ')') ?></option>
+          <?php endforeach; ?>
+        </select>
+      </label>
+      <label>Servidor Destino
+        <select name="siap_destino" id="siap_destino" required>
+          <option value="" disabled selected>Selecione o servidor</option>
+          <?php foreach ($servidores as $s): ?>
+            <option value="<?= $s->siap ?>"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome . ' (' . $s->siap . ')') ?></option>
+          <?php endforeach; ?>
+        </select>
+      </label>
+      <label>Tipo de Cota
+        <select name="tipo_cota" required>
+          <option value="pb">Preto e Branco</option>
+          <option value="color">Colorida</option>
+        </select>
+      </label>
+      <label>Quantidade
+        <input type="number" name="quantidade" min="1" required>
+      </label>
+      <button type="submit">Transferir</button>
+    </form>
+    <a href="dashboard_coen.php" class="btn-back" style="margin-top:1.5em;">Voltar</a>
+    <script>
+      // Remove o servidor origem da lista de destino
+      document.getElementById('siap_origem').addEventListener('change', function() {
+        const origem = this.value;
+        const destinoSelect = document.getElementById('siap_destino');
+        Array.from(destinoSelect.options).forEach(opt => {
+          opt.disabled = (opt.value && opt.value === origem);
+        });
+        // Se o destino selecionado for igual ao origem, limpa
+        if(destinoSelect.value === origem) destinoSelect.value = '';
+      });
+    </script>
+  </aside>
+  <main class="dashboard-main">
+    <div class="responsive-table">
+      <table>
+        <thead>
+          <tr>
+            <th>SIAP</th>
+            <th>Nome</th>
+            <th>Cota PB</th>
+            <th>Cota Colorida</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($cotas as $cota): ?>
+          <tr>
+            <td data-label="SIAP"> <?= $cota->siap ?> </td>
+            <td data-label="Nome"> <?= htmlspecialchars($cota->nome . ' ' . $cota->sobrenome) ?> </td>
+            <td data-label="Cota PB"> <?= $cota->cota_pb_usada ?? 0 ?> / <?= $cota->cota_pb_total ?? 0 ?> </td>
+            <td data-label="Cota Colorida"> <?= $cota->cota_color_usada ?? 0 ?> / <?= $cota->cota_color_total ?? 0 ?> </td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+  </main>
 </div>
-</div>
-</main>
 <?php include_once '../../includes/footer.php'; ?>

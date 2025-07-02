@@ -87,9 +87,11 @@ include_once '../../includes/header.php';
         </section>
         <section class="dashboard-menu">
             <a class="btn-menu" href="form_aluno.php">Cadastrar novo aluno</a>
+            <a class="btn-menu" href="#" id="btn-gerenciar-servidores">Gerenciar Servidores (CAD)</a>
             <a class="btn-menu" href="gerenciar_cotas.php">Gerenciar Cotas</a>
             <a class="btn-menu" href="gerenciar_turmas.php">Gerenciar Turmas</a>
             <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
+            <a class="btn-menu" href="relatorio_aluno.php">Relatório de Impressões por Aluno</a>
         </section>
     </aside>
     <main class="dashboard-main">
@@ -183,6 +185,14 @@ include_once '../../includes/header.php';
                 </form>
             </div>
         </div>
+        <div id="modal-servidores" class="modal">
+          <div class="modal-content" style="max-width:900px;width:98%;">
+            <span class="close" id="close-modal-servidores">&times;</span>
+            <h2>Servidores do Setor CAD</h2>
+            <button onclick="window.location.href='../admin/form_servidor.php'" class="btn-menu" style="margin-bottom:1em;">Novo Servidor</button>
+            <div id="tabela-servidores-cad">Carregando...</div>
+          </div>
+        </div>
     </main>
 </div>
 <script>
@@ -203,6 +213,56 @@ include_once '../../includes/header.php';
     const modal = document.getElementById('modal-redefinir');
     if (e.target === modal) modal.style.display = 'none';
     });
+</script>
+<script>
+document.getElementById('btn-gerenciar-servidores').onclick = function(e) {
+  e.preventDefault();
+  document.getElementById('modal-servidores').style.display = 'block';
+  carregarServidoresCAD();
+};
+document.getElementById('close-modal-servidores').onclick = function() {
+  document.getElementById('modal-servidores').style.display = 'none';
+};
+window.addEventListener('click', function(e) {
+  const modal = document.getElementById('modal-servidores');
+  if (e.target === modal) modal.style.display = 'none';
+});
+function carregarServidoresCAD() {
+  fetch('../admin/listar_servidores_cad.php')
+    .then(r => r.json())
+    .then(data => {
+      let html = '<table style="width:100%;font-size:0.98em;"><thead><tr><th>SIAP</th><th>Nome</th><th>Email</th><th>Setor</th><th>Ações</th></tr></thead><tbody>';
+      if(data.length === 0) html += '<tr><td colspan="5">Nenhum servidor CAD encontrado.</td></tr>';
+      else data.forEach(s => {
+        html += `<tr>
+          <td>${s.siap}</td>
+          <td>${s.nome} ${s.sobrenome}</td>
+          <td>${s.email}</td>
+          <td>${s.setor_admin}</td>
+          <td>
+            <a href="../admin/form_servidor.php?siap=${encodeURIComponent(s.siap)}" class="btn-menu" style="padding:0.3rem 0.7rem;font-size:0.9em;">Editar</a>
+            <a href="#" onclick="excluirServidor('${s.siap}');return false;" class="btn-menu" style="background:#c82333;">Excluir</a>
+          </td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+      document.getElementById('tabela-servidores-cad').innerHTML = html;
+    });
+}
+function excluirServidor(siap) {
+  if(!confirm('Tem certeza que deseja excluir o servidor SIAP ' + siap + '?')) return;
+  fetch('../admin/excluir_servidor.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: 'siap=' + encodeURIComponent(siap)
+  })
+  .then(r => r.json())
+  .then(data => {
+    alert(data.mensagem);
+    carregarServidoresCAD();
+  })
+  .catch(() => alert('Erro ao excluir servidor.'));
+}
 </script>
 <script>
 window.addEventListener('DOMContentLoaded', () => {

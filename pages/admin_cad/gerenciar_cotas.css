@@ -7,10 +7,20 @@
   margin-top: 1rem;
 }
 
+.dashboard-aside-cotas {
+  min-width: 500px;
+  border-right: 1px solid #e0e0e0;
+  padding: 1.5rem 1rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
 .form-cotas label {
   display: flex;
   flex-direction: column;
   font-weight: 600;
+  margin-top: 5px;
 }
 
 .form-cotas input,

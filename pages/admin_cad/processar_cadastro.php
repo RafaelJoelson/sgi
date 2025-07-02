@@ -8,17 +8,6 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
     exit;
 }
 
-// Verifica se a cota existe
-$verifica = $conn->prepare("SELECT COUNT(*) FROM CotaAluno WHERE id = :cota_id");
-$verifica->execute([':cota_id' => $cota_id]);
-
-if ($verifica->fetchColumn() == 0) {
-    $_SESSION['mensagem'] = 'Cota selecionada inválida.';
-    header('Location: form_aluno.php?erro=1');
-    exit;
-}
-
-
 // Validação básica
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $matricula = trim($_POST['matricula']);
@@ -30,11 +19,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cargo = $_POST['cargo'];
     $cota_id = $_POST['cota_id'];
 
+    // Verifica se a cota existe (deve ser feito aqui, após receber o POST)
+    $verifica = $conn->prepare("SELECT COUNT(*) FROM CotaAluno WHERE id = :cota_id");
+    $verifica->execute([':cota_id' => $cota_id]);
+    if ($verifica->fetchColumn() == 0) {
+        $_SESSION['mensagem'] = 'Cota selecionada inválida.';
+        header('Location: form_aluno.php?erro=1');
+        exit;
+    }
+
     // Define a data de validade automaticamente para o fim do semestre letivo vigente
     $stmt_semestre = $conn->prepare("SELECT data_fim FROM SemestreLetivo WHERE data_inicio <= :hoje AND data_fim >= :hoje ORDER BY data_fim DESC LIMIT 1");
     $stmt_semestre->execute([':hoje' => date('Y-m-d')]);
     $semestre = $stmt_semestre->fetch();
-    $data_fim_validade = $semestre ? $semestre['data_fim'] : null;
+    $data_fim_validade = $semestre ? $semestre->data_fim : null;
 
     $stmt = $conn->prepare("INSERT INTO Aluno (matricula, nome, sobrenome, email, cpf, senha, cargo, cota_id, data_fim_validade)
                             VALUES (:matricula, :nome, :sobrenome, :email, :cpf, :senha, :cargo, :cota_id, :validade)");

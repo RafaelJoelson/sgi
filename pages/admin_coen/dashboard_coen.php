@@ -36,7 +36,7 @@ $where_clause = !empty($condicoes) ? 'WHERE ' . implode(' AND ', $condicoes) : '
 $sql_count = "SELECT COUNT(*) AS total " . $base_sql . " " . $where_clause;
 $stmt_count = $conn->prepare($sql_count);
 $stmt_count->execute($params);
-$total_resultados = $stmt_count->fetch()['total'] ?? 0;
+$total_resultados = $stmt_count->fetch()->total ?? 0;
 $total_paginas = ceil($total_resultados / $limite);
 
 // Consulta principal
@@ -54,28 +54,29 @@ $stmt->execute();
 $servidores = $stmt->fetchAll();
 
 // Totais para os cards
-$total_servidores = $conn->query("SELECT COUNT(*) AS total FROM Servidor")->fetch()['total'] ?? 0;
+$total_servidores = $conn->query("SELECT COUNT(*) AS total FROM Servidor")->fetch()->total ?? 0;
 
 include_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="dashboard_coen.css">
-<main class="container">
-    <div class="dashboard-container">
-        <aside>
-            <section class="dashboard-header">
-                <h1>Coordenação de Ensino (COEN)</h1>
-            </section>
-            <section class="dashboard-cards">
-                <div class="card">Servidores Ativos: <?= $total_servidores ?></div>
-            </section>
-            <section class="dashboard-menu">
-                <a class="btn-menu" href="gerenciar_cotas_servidor.php">Gerenciar Cotas de Servidor</a>
-                <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
-
-            </section>
-        </aside>
+<div class="dashboard-layout">
+    <aside class="dashboard-aside">
+        <section class="dashboard-header">
+            <h1>Coordenação de Ensino (COEN)</h1>
+        </section>
+        <section class="dashboard-cards">
+            <div class="card">Servidores Ativos: <?= $total_servidores ?></div>
+        </section>
+        <section class="dashboard-menu">
+            <a class="btn-menu" href="gerenciar_cotas_servidor.php">Gerenciar Cotas de Servidor</a>
+            <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
+            <a class="btn-menu" href="relatorio_servidor.php">Relatório de Impressões de Servidor</a>
+            <a class="btn-menu" href="../admin/form_servidor.php">Cadastrar novo servidor</a>
+        </section>
+    </aside>
+    <main class="dashboard-main">
         <div class="responsive-table">
-            <form method="GET" class="busca-form">
+            <form method="GET" class="busca-form styled-busca-form">
                 <label for="tipo_busca">Buscar por:</label>
                 <select name="tipo_busca" id="tipo_busca" required>
                     <option value="siap" <?= isset($_GET['tipo_busca']) && $_GET['tipo_busca'] === 'siap' ? 'selected' : '' ?>>SIAP</option>
@@ -126,27 +127,27 @@ include_once '../../includes/header.php';
                 </nav>
             <?php endif; ?>
         </div>
-    </div>
-    <?php if (!empty($_SESSION['mensagem'])): ?>
-        <div id="toast-mensagem" class="mensagem-sucesso">
-            <?= htmlspecialchars($_SESSION['mensagem']) ?>
+        <?php if (!empty($_SESSION['mensagem'])): ?>
+            <div id="toast-mensagem" class="mensagem-sucesso">
+                <?= htmlspecialchars($_SESSION['mensagem']) ?>
+            </div>
+            <?php unset($_SESSION['mensagem']); ?>
+        <?php endif; ?>
+        <div id="modal-redefinir" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Redefinir Senha do Servidor</h2>
+                <form method="POST" action="redefinir_senha_servidor.php">
+                <input type="hidden" name="siap" id="siap-modal">
+                <label>Nova Senha
+                    <input type="password" name="nova_senha" required>
+                </label>
+                <button type="submit">Salvar Nova Senha</button>
+                </form>
+            </div>
         </div>
-        <?php unset($_SESSION['mensagem']); ?>
-    <?php endif; ?>
-    <div id="modal-redefinir" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Redefinir Senha do Servidor</h2>
-            <form method="POST" action="redefinir_senha_servidor.php">
-            <input type="hidden" name="siap" id="siap-modal">
-            <label>Nova Senha
-                <input type="password" name="nova_senha" required>
-            </label>
-            <button type="submit">Salvar Nova Senha</button>
-            </form>
-        </div>
-    </div>
-</main>
+    </main>
+</div>
 <script>
     document.querySelectorAll('.btn-redefinir').forEach(btn => {
     btn.addEventListener('click', function (e) {

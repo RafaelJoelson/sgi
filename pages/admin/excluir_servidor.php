@@ -1,0 +1,19 @@
+<?php
+require_once '../../includes/config.php';
+header('Content-Type: application/json');
+session_start();
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'CAD') {
+    echo json_encode(['mensagem' => 'Acesso negado.']);
+    exit;
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['siap'])) {
+    $siap = trim($_POST['siap']);
+    $stmt = $conn->prepare('DELETE FROM Servidor WHERE siap = :siap');
+    if ($stmt->execute([':siap' => $siap])) {
+        echo json_encode(['mensagem' => 'Servidor excluído com sucesso.']);
+    } else {
+        echo json_encode(['mensagem' => 'Erro ao excluir servidor.']);
+    }
+    exit;
+}
+echo json_encode(['mensagem' => 'Requisição inválida.']);

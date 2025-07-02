@@ -52,7 +52,7 @@ include_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="gerenciar_cotas.css">
 <div class="dashboard-layout">
-  <aside class="dashboard-aside">
+  <aside class="dashboard-aside-cotas">
     <h1>Gerenciar Cotas por Turma</h1>
     <section aria-label="Formulário de cotas">
       <form method="POST" class="form-cotas">
@@ -75,8 +75,7 @@ include_once '../../includes/header.php';
       </form>
     </section>
     <nav class="btn-container" aria-label="Ações">
-      <a class="btn-cotas" href="gerar_relatorio_pdf.php">Gerar Relatório PDF (Cotas x Alunos)</a>
-      <a class="btn-back" href="javascript:history.back()">Voltar</a>
+      <a class="btn-back" href="dashboard_cad.php">Voltar</a>
     </nav>
   </aside>
   <main class="dashboard-main">

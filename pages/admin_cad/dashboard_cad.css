@@ -110,6 +110,12 @@ aside h1 {
   margin-top: 0.3rem;
 }
 
+.busca-form label {
+  font-weight: 600;
+  color: #0080ff;
+  margin-bottom: 0;
+}
+
 .dashboard-menu {
   display: flex;
   flex-direction: column;

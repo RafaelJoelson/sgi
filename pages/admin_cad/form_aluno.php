@@ -113,6 +113,6 @@ $semestre_vigente = $stmt_semestre->fetch();
 
     <button type="submit"><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Aluno' ?></button>
   </form>
-  <a class="btn-back" href="javascript:history.back()">Voltar</a>
+  <a class="btn-back" href="dashboard_cad.php">Voltar</a>
 </main>
 <?php include_once '../../includes/footer.php'; ?>
