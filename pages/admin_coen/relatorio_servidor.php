@@ -95,7 +95,7 @@ tfoot td { font-weight: bold; background: #f3f3f3; }
   <main class="dashboard-main">
     <?php if ($modo_impressao): ?>
     <div style="text-align:center; margin-bottom:18px;">
-      <img src="../../img/logo-if.png" alt="Logo IF" style="height:48px;vertical-align:middle;margin-right:12px;">
+      <img src="../../img/logo-if-sjdr-nova-grafia-horizontal.png" alt="Logo IF" style="height:48px;vertical-align:middle;margin-right:12px;">
       <span style="font-size:1.5em;font-weight:bold;vertical-align:middle;">Relatório de Impressões por Servidor</span><br>
       <span style="font-size:1.1em; color:#444;">Vigência: <?= $vigencia ? ($vigencia->ano . '/' . $vigencia->semestre . ' (' . date('d/m/Y', strtotime($vigencia->data_inicio)) . ' a ' . date('d/m/Y', strtotime($vigencia->data_fim)) . ')') : '-' ?></span>
     </div>

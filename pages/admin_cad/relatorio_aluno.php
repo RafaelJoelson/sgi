@@ -118,8 +118,8 @@ if ($vigencia) {
 if (isset($_GET['imprimir']) && $_GET['imprimir'] == '1') {
   echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Relatório de Impressões por Aluno</title><link rel="stylesheet" href="dashboard_cad.css"></head><body>';
   echo '<div style="text-align:center;margin-bottom:2em;">
-    <img src="../../img/logo_horizontal_ifsudestemg.png" alt="Logo IFSudesteMG" style="height:60px;margin-bottom:0.5em;"><br>
-    <span style="font-size:1.3em;font-weight:bold;">Instituto Federal do Sudeste de Minas Gerais - Campus São João Del-Rei</span><br>
+    <img src="../../img/logo-if-sjdr-nova-grafia-horizontal.png" alt="Logo IFSudesteMG" style="height:60px;margin-bottom:0.5em;"><br>
+    <span style="font-size:1.3em;font-weight:bold;">Coordenação de Apoio ao Discente</span><br>
     <span style="font-size:1.1em;">Relatório de Impressões por Aluno</span><br>
     <span style="font-size:1em;">Período: ' . htmlspecialchars($data_ini) . ' a ' . htmlspecialchars($data_fim) . '</span><br>
     <span style="font-size:0.95em;color:#555;">Emitido em: ' . date('d/m/Y H:i') . '</span>
@@ -212,21 +212,8 @@ if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')) {
 </main>
 <?php
 if (isset($_GET['imprimir']) && $_GET['imprimir'] == '1') {
-  echo '<style>
-    body, main { background: #fff !important; }
-    form, .container > a, button, .btn-back, aside, h1 { display: none !important; }
-    table { margin: 2em auto 0 auto; width: 95vw !important; max-width: 1200px; border-collapse: collapse; font-size: 1em; }
-    th, td { padding: 0.5em 0.7em; border: 1px solid #bbb; }
-    thead th { background: #f3f3f3; color: #222; font-weight: bold; }
-    .responsive-table { width: 100%; overflow: visible !important; }
-    @media print {
-      body, main { background: #fff !important; }
-      table { page-break-inside: auto; }
-      tr { page-break-inside: avoid; page-break-after: auto; }
-      .print-header { display: block !important; }
-      .relatorios-imprimir, .btn-back, aside, h1 { display: none !important; }
-    }
-  </style>';
+  echo '<link rel="stylesheet" href="../../print_base.css">
+';
   echo '<script>window.onload=function(){window.print();}</script>';
   echo '</body></html>';
 } else {

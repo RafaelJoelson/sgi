@@ -1,5 +1,37 @@
 /* dashboard_relatorio_reprografo.css - estilos só para tela, não para impressão/relatório gerado */
-
+/* Tabela responsiva */
+.responsive-table {
+  width: 100%;
+  overflow-x: auto;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  margin-bottom: 1rem;
+}
+thead {
+  background: #e9ecef;
+}
+th, td {
+  padding: 0.7rem 0.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: left;
+}
+th {
+  font-weight: 700;
+  color: #1a4b2a;
+}
+tr:hover {
+  background: #f1f7ff;
+}
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
 .relatorios-form {
   display: flex;
   flex-wrap: wrap;

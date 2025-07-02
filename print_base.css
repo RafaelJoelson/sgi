@@ -1,0 +1,58 @@
+
+/* print_base.css - Estilo padrão para relatórios de impressão */
+body {
+  background: #fff !important;
+  color: #222;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+main, section {
+  padding: 0;
+  margin: 0 auto;
+}
+
+table {
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+th, td {
+  padding: 0.5em 0.5em;
+  border: 1px solid #bbb;
+  text-align: left;
+  vertical-align: top;
+}
+
+thead th {
+  background: #f3f3f3;
+  color: #222;
+  font-weight: bold;
+}
+
+tfoot td {
+  font-weight: bold;
+  background: #f3f3f3;
+}
+
+.responsive-table {
+  overflow: visible !important;
+  width: 100%;
+}
+
+@media print {
+  button, .btn-back, aside, form, h1, nav, .relatorios-imprimir, .container > a {
+    display: none !important;
+  }
+  tr {
+    page-break-inside: avoid;
+  }
+  table {
+    page-break-inside: auto;
+  }
+}

@@ -30,8 +30,9 @@ $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if (isset($_GET['imprimir']) && $_GET['imprimir'] == '1') {
   echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Relatório de Impressões</title><link rel="stylesheet" href="dashboard_reprografo.css"></head><body>';
   echo '<div style="text-align:center;margin-bottom:2em;">
-    <img src="../../img/logo_horizontal_ifsudestemg.png" alt="Logo IFSudesteMG" style="height:60px;margin-bottom:0.5em;"><br>
-    <span style="font-size:1.3em;font-weight:bold;">Instituto Federal do Sudeste de Minas Gerais - Campus São João Del-Rei</span><br>
+    <link rel="stylesheet" href="../../print_base.css">
+    <img src="../../img/logo-if-sjdr-nova-grafia-horizontal.png" alt="Logo IFSudesteMG" style="height:60px;margin-bottom:0.5em;"><br>
+    <span style="font-size:1.3em;font-weight:bold;">Reprografia</span><br>
     <span style="font-size:1.1em;">Relatório de Impressões do Campus</span><br>
     <span style="font-size:1em;">Período: ' . htmlspecialchars($data_ini) . ' a ' . htmlspecialchars($data_fim) . '</span><br>
     <span style="font-size:0.95em;color:#555;">Emitido em: ' . date('d/m/Y H:i') . '</span>
@@ -51,16 +52,9 @@ if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')) {
       <form method="get" class="relatorios-form">
         <label>Data inicial <input type="date" name="data_ini" value="<?= htmlspecialchars($data_ini) ?>"></label>
         <label>Data final <input type="date" name="data_fim" value="<?= htmlspecialchars($data_fim) ?>"></label>
-        <label>Tipo
-          <select name="tipo">
-            <option value="">Todos</option>
-            <option value="Aluno" <?= $tipo=='Aluno'?'selected':'' ?>>Aluno</option>
-            <option value="Servidor" <?= $tipo=='Servidor'?'selected':'' ?>>Servidor</option>
-          </select>
-        </label>
-        <label>PB físicas <input type="number" name="pb_fisicas" min="0" value="<?= $pb_fisicas ?>"></label>
-        <label>Coloridas físicas <input type="number" name="color_fisicas" min="0" value="<?= $color_fisicas ?>"></label>
         <button type="submit">Filtrar</button>
+        <label>PB físicas <input type="number" name="pb_fisicas" min="0" value="<?= $pb_fisicas ?>"></label>
+        <label>Coloridas físicas <input type="number" name="color_fisicas" min="0" value="<?= $color_fisicas ?>"></label> 
       </form>
       <button type="button" class="relatorios-imprimir" onclick="window.open('relatorio_reprografo.php?'+new URLSearchParams(new FormData(document.querySelector('.relatorios-form')))+'&imprimir=1','_blank')">Imprimir</button>
       <nav class="btn-container" aria-label="Ações">
@@ -69,7 +63,7 @@ if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')) {
     </aside>
   <?php endif; ?>
   <main class="dashboard-main">
-    <table class="relatorios-table">
+    <table class="responsive-table">
       <thead>
         <tr>
           <th>Tipo</th>
@@ -86,10 +80,12 @@ if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')) {
           <tr><td colspan="3">Nenhum dado encontrado.</td></tr>
         <?php else:
           foreach ($dados as $d):
-            if (!$d['colorida']) {
-              $total_pb += (int)$d['total_paginas'];
-            } else if ($d['tipo_solicitante'] === 'Servidor') {
-              $total_color += (int)$d['total_paginas'];
+            if ((int)$d['colorida'] === 0) {
+                // PB de qualquer um (aluno ou servidor)
+                $total_pb += (int)$d['total_paginas'];
+            } elseif ($d['tipo_solicitante'] === 'Servidor') {
+                // Colorida só de servidores
+                $total_color += (int)$d['total_paginas'];
             }
         ?>
           <tr>
