@@ -1,4 +1,8 @@
 <?php
+// Página de debug temporariamente desativada
+header('Content-Type: text/plain');
+echo 'Página de debug desativada temporariamente.';
+exit;
 require_once '../../includes/config.php';
 session_start();
 header('Content-Type: text/plain');
