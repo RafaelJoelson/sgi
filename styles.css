@@ -203,16 +203,17 @@ footer{
     border: 1px solid #ef9a9a;
 }
 
+/* Centraliza os filhos no eixo vertical e horizontal */
 .main-login-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
   width: 95%;
   min-height: 700px;
   background: #fff;
   margin: 2rem auto;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  align-items: center;      /* Centraliza verticalmente */
+  justify-content: center;  /* Centraliza horizontalmente */
 }
 
 .dashboard-layout {

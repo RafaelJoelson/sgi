@@ -43,7 +43,7 @@ require_once 'includes/nav.php';
         <div class="col-md-6 login-container">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h2 class="text-center mb-0">Login do Sistema</h2>
+                    <h2 class="text-center mb-0">Por favor, realize o Login</h2>
                 </div>
                 
                 <div class="card-body">
