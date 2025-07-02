@@ -17,6 +17,13 @@ if (!$id || !in_array($status, ['Aceita','Rejeitada'])) {
     exit;
 }
 
+// Verifica horário permitido para aceitação de solicitações (até 21:00)
+$hora_atual = (int)date('H');
+if ($status === 'Aceita' && ($hora_atual < 0 || $hora_atual >= 21)) {
+    echo json_encode(['sucesso'=>false,'mensagem'=>'Solicitações só podem ser aceitas entre 07:00 e 21:00.']);
+    exit;
+}
+
 $stmt = $conn->prepare("UPDATE SolicitacaoImpressao SET status = :status, cpf_reprografo = :cpf WHERE id = :id");
 $stmt->execute([
     ':status' => $status,
@@ -37,14 +44,8 @@ if ($stmt->rowCount()) {
             $colorida = (int)$s['colorida'];
             $tipo = $s['tipo_solicitante'];
             $referencia = $s['cpf_solicitante'];
-            // Conta páginas se for PDF
-            $num_paginas = 1;
-            $ext = strtolower(pathinfo($arquivo_path, PATHINFO_EXTENSION));
-            if ($ext === 'pdf' && file_exists($arquivo_path)) {
-                $pdf = file_get_contents($arquivo_path);
-                preg_match_all("/\/Type\s*\/Page[^s]/", $pdf, $matches);
-                $num_paginas = max(1, count($matches[0]));
-            }
+            // Sempre usar o valor salvo na solicitação
+            $num_paginas = (int)$s['qtd_paginas'];
             $total = $num_paginas * $qtd_copias;
             if ($tipo === 'Aluno') {
                 // Decrementa cota do aluno (PB)

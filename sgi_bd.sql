@@ -147,8 +147,7 @@ DO
 BEGIN
   UPDATE Aluno SET ativo = FALSE WHERE data_fim_validade < CURDATE();
   UPDATE Servidor SET ativo = FALSE WHERE data_fim_validade < CURDATE();
-END;
-//
+END;//
 DELIMITER ;
 
 -- EVENTO PARA LIMPAR SOLICITAÇÕES ANTIGAS
@@ -161,8 +160,7 @@ DO
 BEGIN
   DELETE FROM SolicitacaoImpressao 
   WHERE data_criacao < NOW() - INTERVAL 15 DAY;
-END;
-//
+END;//
 DELIMITER ;
 
 -- EVENTO PARA RESETAR COTAS NO INÍCIO DE CADA SEMESTRE LETIVO
@@ -236,6 +234,12 @@ INSERT INTO Servidor (siap, nome, sobrenome, email, cpf, senha, is_admin, setor_
 ('1001', 'João', 'Silva', 'joao.silva@if.edu', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 'CAD', TRUE, NULL),
 ('1002', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '56789012345', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', FALSE, 'NENHUM', TRUE, NULL),
 ('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', FALSE, 'COEN', TRUE, NULL);
+
+-- COTA SERVIDOR
+INSERT INTO CotaServidor (siap, cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada) VALUES
+('1001', 1000, 0, 100, 0),
+('1002', 1000, 0, 100, 0),
+('1003', 1000, 0, 100, 0);
 
 -- REPROGRAFO
 INSERT INTO Reprografo (cpf, nome, sobrenome, email, senha) VALUES

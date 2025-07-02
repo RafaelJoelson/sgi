@@ -118,8 +118,10 @@ function carregarSolicitacoes(notify = false) {
       let html = '<table style="width:100%;font-size:0.98em;"><thead><tr><th>Arquivo</th><th>Cópias</th><th>Status</th><th>Data</th></tr></thead><tbody>';
       if(data.length === 0) html += '<tr><td colspan="4">Nenhuma solicitação recente.</td></tr>';
       else data.forEach(s => {
+        // Adiciona link para download se houver arquivo
+        let linkArquivo = s.arquivo ? `<a href="../../uploads/${encodeURIComponent(s.arquivo)}" target="_blank" rel="noopener" download>${s.arquivo}</a>` : '-';
         html += `<tr>
-          <td>${s.arquivo}</td>
+          <td>${linkArquivo}</td>
           <td>${s.qtd_copias}</td>
           <td>${s.status}</td>
           <td>${s.data}</td>

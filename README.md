@@ -73,3 +73,54 @@ sgi_bd.sql          # Script do banco de dados
 
 ## Licença
 Projeto acadêmico. Uso institucional e educacional.
+
+# Limpeza automática da pasta uploads (arquivos antigos)
+
+Para manter a pasta `uploads` limpa e evitar acúmulo de arquivos antigos, recomenda-se agendar a execução de um script PHP que remove arquivos com mais de 15 dias.
+
+## Como agendar a execução
+
+### Linux (cron)
+1. Dê permissão de execução ao script, se necessário.
+2. Edite o crontab:
+   ```sh
+   crontab -e
+   ```
+3. Adicione a linha (ajuste o caminho do PHP e do script):
+   ```sh
+   0 2 * * * /usr/bin/php /caminho/para/limpar_uploads.php
+   ```
+   Isso executa diariamente às 2h da manhã.
+
+### Windows (Agendador de Tarefas)
+1. Abra o Agendador de Tarefas do Windows.
+2. Crie uma nova tarefa básica.
+3. Defina a frequência (diária).
+4. Na ação, escolha "Iniciar um programa" e aponte para o executável do PHP, por exemplo:
+   - Programa/script: `C:\xampp\php\php.exe`
+   - Adicionar argumentos: `C:\xampp\htdocs\sgi\limpar_uploads.php`
+5. Conclua a configuração.
+
+---
+
+## Ativando eventos automáticos no MySQL
+
+Para que os eventos de limpeza e reset de cotas funcionem, é necessário ativar o event scheduler do MySQL. Execute o comando abaixo no seu MySQL:
+
+```sql
+SET GLOBAL event_scheduler = ON;
+```
+
+Você pode executar esse comando via phpMyAdmin, MySQL Workbench ou terminal.
+
+> Dica: Para garantir que o event scheduler sempre inicie ativado, adicione a linha abaixo no arquivo de configuração do MySQL (`my.cnf` ou `my.ini`):
+> 
+> ```ini
+> event_scheduler=ON
+> ```
+
+---
+
+> **Atenção:**
+> - O script remove apenas arquivos físicos da pasta uploads. Se quiser remover também registros órfãos no banco, adapte conforme sua necessidade.
+> - Certifique-se de que o usuário do sistema (Linux ou Windows) tenha permissão de escrita na pasta uploads.
