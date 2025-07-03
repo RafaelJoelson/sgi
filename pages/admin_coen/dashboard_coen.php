@@ -108,7 +108,7 @@ include_once '../../includes/header.php';
                             <td data-label="Cota Colorida"> <?= $s->cota_color_usada ?? 0 ?> / <?= $s->cota_color_total ?? 0 ?> </td>
                             <td data-label="Ações">
                                 <div class="action-buttons">
-                                    <a href="form_servidor.php?siap=<?= $s->siap ?>">Editar</a>
+                                    <a href="../admin/form_servidor.php?siap=<?= $s->siap ?>">Editar</a>
                                     <a href="#" class="btn-redefinir" data-siap="<?= $s->siap ?>">Redefinir Senha</a>
                                 </div>
                             </td>

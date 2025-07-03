@@ -62,6 +62,7 @@ if (!$modo_impressao) include_once '../../includes/header.php';
 ?>
 <?php if (!$modo_impressao): ?>
 <link rel="stylesheet" href="dashboard_coen.css">
+<link rel="icon" type="image/png" href="<?= BASE_URL ?>/favicon.ico">
 <?php else: ?>
 <style>
 body { background: #fff; color: #222; font-family: Arial, sans-serif; }
@@ -88,15 +89,15 @@ tfoot td { font-weight: bold; background: #f3f3f3; }
         </select>
       </label>
     </form>
-    <button type="button" class="relatorios-imprimir" style="margin-bottom:1em;" onclick="window.open('relatorio_servidor.php?vigencia_id=<?= $vigencia_id ?>&imprimir=1','_blank')">Imprimir</button>
-    <a href="dashboard_coen.php" class="btn-back">Voltar para Dashboard</a>
+    <button type="button" class="btn-menu" onclick="window.open('relatorio_servidor.php?vigencia_id=<?= $vigencia_id ?>&imprimir=1','_blank')">Imprimir</button>
+    <a href="dashboard_coen.php" class="btn-back">Voltar</a>
   </aside>
 <?php endif; ?>
   <main class="dashboard-main">
     <?php if ($modo_impressao): ?>
     <div style="text-align:center; margin-bottom:18px;">
-      <img src="../../img/logo-if-sjdr-nova-grafia-horizontal.png" alt="Logo IF" style="height:48px;vertical-align:middle;margin-right:12px;">
-      <span style="font-size:1.5em;font-weight:bold;vertical-align:middle;">Relatório de Impressões por Servidor</span><br>
+      <img src="../../img/logo-if-sjdr-nova-grafia-horizontal.png" alt="Logo IF" style="height:48px;vertical-align:middle;margin-right:12px;"><br>
+      <span style="font-size:1.4em;font-weight:bold;vertical-align:middle;margin-top:10px;">Coordenação de Ensino</span><br>
       <span style="font-size:1.1em; color:#444;">Vigência: <?= $vigencia ? ($vigencia->ano . '/' . $vigencia->semestre . ' (' . date('d/m/Y', strtotime($vigencia->data_inicio)) . ' a ' . date('d/m/Y', strtotime($vigencia->data_fim)) . ')') : '-' ?></span>
     </div>
     <?php endif; ?>

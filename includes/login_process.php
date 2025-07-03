@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'tabela' => 'Aluno',
             'campo_id' => 'matricula',
             'dashboard' => 'aluno/dashboard_aluno.php',
-            'condicoes' => 'AND data_fim_validade >= CURDATE()' // aluno válido
+            'condicoes' => 'AND ativo = 1'
         ],
         [
             'tabela' => 'Servidor',
@@ -31,14 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
                 return 'servidor/dashboard_servidor.php';
-            }
+            },
+            'condicoes' => 'AND (is_admin = 1 OR ativo = 1)'
         ],
         [
             'tabela' => 'Reprografo',
             'campo_id' => 'cpf',
             'dashboard' => 'reprografo/dashboard_reprografo.php'
+  
         ]
     ];
+
 
     foreach ($usuarios as $usuario) {
         $sql = "SELECT * FROM {$usuario['tabela']} WHERE cpf = :cpf ";

@@ -134,9 +134,9 @@ if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')) {
 <?php endif; ?>
 <main class="dashboard-layout">
   <?php if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')): ?>
-    <aside class="dashboard-aside">
+    <aside class="dashboard-aside-relatorio">
       <h1>Relatório de Impressões por Aluno</h1>
-      <form method="GET" class="relatorios-form" style="margin-bottom:1.2em;">
+      <form method="GET" class="relatorio-form">
         <label>Vigência:
           <select name="vigencia_id" onchange="this.form.submit()">
             <?php foreach ($vigencias as $v): ?>
@@ -167,8 +167,8 @@ if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')) {
           </select>
         </label>
       </form>
-      <button type="button" class="relatorios-imprimir" style="margin-bottom:1em;" onclick="window.open('relatorio_aluno.php?vigencia_id=<?= $vigencia_id ?>&curso_id=<?= $curso_id ?>&periodo=<?= urlencode($periodo) ?>&turma_id=<?= $turma_id ?>&imprimir=1','_blank')">Imprimir</button>
-      <a class="btn-back" href="dashboard_cad.php">Voltar ao Painel</a>
+      <button type="button" class="btn-menu" onclick="window.open('relatorio_aluno.php?vigencia_id=<?= $vigencia_id ?>&curso_id=<?= $curso_id ?>&periodo=<?= urlencode($periodo) ?>&turma_id=<?= $turma_id ?>&imprimir=1','_blank')">Imprimir</button>
+      <a class="btn-back" href="dashboard_cad.php">Voltar</a>
     </aside>
   <?php endif; ?>
   <section class="dashboard-main">
@@ -213,6 +213,8 @@ if (!(isset($_GET['imprimir']) && $_GET['imprimir'] == '1')) {
 <?php
 if (isset($_GET['imprimir']) && $_GET['imprimir'] == '1') {
   echo '<link rel="stylesheet" href="../../print_base.css">
+      <link rel="icon" type="image/png" href="<?= BASE_URL ?>/favicon.ico">
+
 ';
   echo '<script>window.onload=function(){window.print();}</script>';
   echo '</body></html>';

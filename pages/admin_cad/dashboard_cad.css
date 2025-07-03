@@ -100,11 +100,31 @@ aside h1 {
   margin-bottom: 1rem;
 }
 
+.dashboard-aside-relatorio {
+  width: 400px;
+  border-right: 1px solid #e0e0e0;
+  padding: 1.5rem 1rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.relatorio-form {
+  align-items: center;
+  flex-direction: row;
+  gap: 0.5rem;
+  width: 90%;
+  max-width: 600px;
+  margin-bottom: 1rem;
+}
+
 .busca-form input,
 .busca-form select,
 .busca-form button,
 .filter-form select,
-.filter-form button {
+.filter-form button,
+.relatorio-form select,
+.relatorio-form button {
   padding: 0.5rem;
   font-size: 1rem;
   margin-top: 0.3rem;

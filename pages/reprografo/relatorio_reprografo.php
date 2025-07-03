@@ -31,6 +31,7 @@ if (isset($_GET['imprimir']) && $_GET['imprimir'] == '1') {
   echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Relatório de Impressões</title><link rel="stylesheet" href="dashboard_reprografo.css"></head><body>';
   echo '<div style="text-align:center;margin-bottom:2em;">
     <link rel="stylesheet" href="../../print_base.css">
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/favicon.ico">
     <img src="../../img/logo-if-sjdr-nova-grafia-horizontal.png" alt="Logo IFSudesteMG" style="height:60px;margin-bottom:0.5em;"><br>
     <span style="font-size:1.3em;font-weight:bold;">Reprografia</span><br>
     <span style="font-size:1.1em;">Relatório de Impressões do Campus</span><br>
