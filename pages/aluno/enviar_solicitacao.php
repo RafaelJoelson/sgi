@@ -9,36 +9,25 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'aluno') {
     exit;
 }
 
-// Validação básica
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_FILES['arquivo']) || empty($_POST['qtd_copias'])) {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['qtd_copias'])) {
     echo json_encode(['sucesso'=>false,'mensagem'=>'Dados incompletos.']);
     exit;
 }
 
-$arquivo = $_FILES['arquivo'];
+$solicitar_balcao = isset($_POST['solicitar_balcao']);
 $qtd_copias = intval($_POST['qtd_copias']);
 $colorida = 0; // Aluno não pode solicitar impressão colorida
 $cpf = $_SESSION['usuario']['cpf'];
 $tipo_solicitante = 'Aluno';
-
-// Valida arquivo
-$permitidos = ['pdf','doc','docx','jpg','png'];
-$ext = strtolower(pathinfo($arquivo['name'], PATHINFO_EXTENSION));
-if (!in_array($ext, $permitidos) || $arquivo['error'] !== 0) {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Arquivo inválido.']);
-    exit;
-}
-if ($arquivo['size'] > 5*1024*1024) { // 5MB
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Arquivo muito grande.']);
-    exit;
-}
-
 $qtd_paginas = isset($_POST['qtd_paginas']) ? intval($_POST['qtd_paginas']) : 0;
+
 if ($qtd_paginas < 1) {
     echo json_encode(['sucesso'=>false,'mensagem'=>'Informe o número de páginas.']);
     exit;
 }
+
 $total_impressao = $qtd_paginas * $qtd_copias;
+
 // Verifica cota do aluno
 $stmt = $conn->prepare('SELECT a.cota_id, c.cota_total, c.cota_usada FROM Aluno a JOIN CotaAluno c ON a.cota_id = c.id WHERE a.cpf = ?');
 $stmt->execute([$cpf]);
@@ -53,12 +42,32 @@ if ($total_impressao > $disponivel) {
     exit;
 }
 
-// Salva arquivo
-$nome_arquivo = uniqid('imp_').'.'.$ext;
-$destino = '../../uploads/'.$nome_arquivo;
-if (!move_uploaded_file($arquivo['tmp_name'], $destino)) {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Falha ao salvar arquivo.']);
-    exit;
+if (!$solicitar_balcao) {
+    if (empty($_FILES['arquivo'])) {
+        echo json_encode(['sucesso'=>false,'mensagem'=>'Nenhum arquivo enviado.']);
+        exit;
+    }
+
+    $arquivo = $_FILES['arquivo'];
+    $permitidos = ['pdf','doc','docx','jpg','png'];
+    $ext = strtolower(pathinfo($arquivo['name'], PATHINFO_EXTENSION));
+    if (!in_array($ext, $permitidos) || $arquivo['error'] !== 0) {
+        echo json_encode(['sucesso'=>false,'mensagem'=>'Arquivo inválido.']);
+        exit;
+    }
+    if ($arquivo['size'] > 5*1024*1024) {
+        echo json_encode(['sucesso'=>false,'mensagem'=>'Arquivo muito grande.']);
+        exit;
+    }
+
+    $nome_arquivo = uniqid('imp_').'.'.$ext;
+    $destino = '../../uploads/'.$nome_arquivo;
+    if (!move_uploaded_file($arquivo['tmp_name'], $destino)) {
+        echo json_encode(['sucesso'=>false,'mensagem'=>'Falha ao salvar arquivo.']);
+        exit;
+    }
+} else {
+    $nome_arquivo = '[SOLICITAÇÃO NO BALCÃO]';
 }
 
 // Insere solicitação
@@ -76,3 +85,4 @@ if ($stmt->rowCount()) {
 } else {
     echo json_encode(['sucesso'=>false,'mensagem'=>'Erro ao registrar solicitação.']);
 }
+?>

@@ -16,5 +16,9 @@ $stmt->execute([':cpf' => $cpf]);
 $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 foreach ($solicitacoes as &$s) {
     $s['data'] = date('d/m/Y H:i', strtotime($s['data']));
+    
+    if ($s['arquivo'] === '[SOLICITAÇÃO NO BALCÃO]') {
+        $s['arquivo'] = 'Solicitação de cópia física no balcão';
+    }
 }
 echo json_encode($solicitacoes);

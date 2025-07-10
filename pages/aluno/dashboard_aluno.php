@@ -22,6 +22,10 @@ require_once '../../includes/header.php';
     <label>Número de páginas
       <input type="number" name="qtd_paginas" id="qtd_paginas" min="1" max="500" required>
     </label>
+    <label>
+    <input type="checkbox" id="solicitar_balcao" name="solicitar_balcao">
+      Solicitar cópia no balcão (sem envio de arquivo)
+    </label>
     <button type="submit">Enviar Solicitação</button>
   </form>
 
@@ -161,5 +165,18 @@ function carregarSolicitacoes(notify = false) {
 }
 carregarSolicitacoes();
 setInterval(() => carregarSolicitacoes(true), 10000); // Checa a cada 10s
+
+// Habilita/desabilita o upload conforme a opção de cópia no balcão
+document.getElementById('solicitar_balcao').addEventListener('change', function () {
+  const upload = document.getElementById('arquivo');
+  if (this.checked) {
+    upload.disabled = true;
+    upload.removeAttribute('required');
+  } else {
+    upload.disabled = false;
+    upload.setAttribute('required', 'required');
+  }
+});
+
 </script>
 <?php require_once '../../includes/footer.php'; ?>

@@ -6,6 +6,23 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografo
     header('Location: ../../index.php');
     exit;
 }
+// Limpa arquivos da pasta uploads com mais de 15 dias
+$diretorioUploads = realpath(__DIR__ . '/../../uploads');
+if ($diretorioUploads && is_dir($diretorioUploads)) {
+    $arquivos = scandir($diretorioUploads);
+    $agora = time();
+    $dias = 15 * 24 * 60 * 60; // 15 dias em segundos
+
+    foreach ($arquivos as $arquivo) {
+        $caminho = $diretorioUploads . DIRECTORY_SEPARATOR . $arquivo;
+        if (is_file($caminho)) {
+            $modificadoHa = $agora - filemtime($caminho);
+            if ($modificadoHa > $dias) {
+                unlink($caminho);
+            }
+        }
+    }
+}
 require_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="dashboard_reprografo.css">
