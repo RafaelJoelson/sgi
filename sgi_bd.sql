@@ -236,7 +236,7 @@ INSERT INTO Aluno (matricula, nome, sobrenome, cargo, email, cpf, senha, ativo, 
 -- SERVIDORES
 INSERT INTO Servidor (siap, nome, sobrenome, email, cpf, senha, is_admin, setor_admin, ativo, data_fim_validade) VALUES
 ('1001', 'João', 'Silva', 'joao.silva@if.edu', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 'CAD', TRUE, NULL),
-('1002', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '56789012345', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', FALSE, 'NENHUM', TRUE, NULL),
+('1002', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '97164635102', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', FALSE, 'NENHUM', TRUE, NULL),
 ('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 'COEN', TRUE, NULL);
 
 -- COTA SERVIDOR

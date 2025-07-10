@@ -7,41 +7,65 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'aluno') {
     exit;
 }
 require_once '../../includes/header.php';
+
 $aluno_cpf = $_SESSION['usuario']['cpf'];
-// Consulta todas as solicitações do aluno na tabela correta
-$stmt = $conn->prepare('SELECT arquivo_path, qtd_copias, colorida, status, data_criacao FROM SolicitacaoImpressao WHERE cpf_solicitante = ? AND tipo_solicitante = "Aluno" ORDER BY data_criacao DESC');
+
+// A consulta PHP permanece a mesma, pois já está correta e segura.
+$stmt = $conn->prepare(
+    'SELECT id, arquivo_path, qtd_copias, qtd_paginas, status, data_criacao 
+     FROM SolicitacaoImpressao 
+     WHERE cpf_solicitante = ? AND tipo_solicitante = "Aluno" 
+     ORDER BY data_criacao DESC'
+);
 $stmt->execute([$aluno_cpf]);
 $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+<!-- Vinculando a mesma folha de estilos do dashboard -->
 <link rel="stylesheet" href="dashboard_aluno.css">
+
 <main class="container">
-  <h1>Histórico de Solicitações</h1>
-  <a href="dashboard_aluno.php" style="display:inline-block;margin-bottom:1em;">&larr; Voltar ao Painel</a>
-  <div style="overflow-x:auto;">
-    <table style="width:100%;font-size:0.98em;">
-      <thead>
-        <tr>
-          <th>Arquivo</th>
-          <th>Cópias</th>
-          <th>Colorida</th>
-          <th>Status</th>
-          <th>Data</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php if (empty($solicitacoes)): ?>
-          <tr><td colspan="5">Nenhuma solicitação encontrada.</td></tr>
-        <?php else: foreach ($solicitacoes as $s): ?>
-          <tr>
-            <td><?= htmlspecialchars($s['arquivo_path']) ?></td>
-            <td><?= (int)$s['qtd_copias'] ?></td>
-            <td><?= $s['colorida'] ? 'Sim' : 'Não' ?></td>
-            <td><?= htmlspecialchars($s['status']) ?></td>
-            <td><?= htmlspecialchars(date('d/m/Y H:i', strtotime($s['data_criacao']))) ?></td>
-          </tr>
-        <?php endforeach; endif; ?>
-      </tbody>
-    </table>
-  </div>
+    <h3>Histórico de Solicitações</h3>
+    
+    <!-- A tabela agora está dentro de um container com o ID correto para aplicar os estilos -->
+    <div id="tabela-solicitacoes">
+        <table>
+            <thead>
+                <tr>
+                    <th>Arquivo / Tipo</th>
+                    <th>Cópias</th>
+                    <th>Páginas</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($solicitacoes)): ?>
+                    <tr><td colspan="5" style="text-align: center;">Nenhuma solicitação encontrada no seu histórico.</td></tr>
+                <?php else: foreach ($solicitacoes as $s): ?>
+                    <tr>
+                        <td>
+                            <?php
+                            // A lógica para exibir o tipo de solicitação e o link seguro permanece
+                            if (empty($s['arquivo_path'])) {
+                                echo '<strong><i class="fas fa-store-alt"></i> <em>Solicitação no Balcão</em></strong>';
+                            } else {
+                                echo '<a href="download.php?id_solicitacao=' . htmlspecialchars($s['id']) . '" target="_blank" title="Baixar ' . htmlspecialchars($s['arquivo_path']) . '">';
+                                echo '<i class="fas fa-download"></i> ' . htmlspecialchars($s['arquivo_path']);
+                                echo '</a>';
+                            }
+                            ?>
+                        </td>
+                        <td><?= (int)$s['qtd_copias'] ?></td>
+                        <td><?= (int)$s['qtd_paginas'] ?></td>
+                        <td><?= htmlspecialchars($s['status']) ?></td>
+                        <td><?= htmlspecialchars(date('d/m/Y H:i', strtotime($s['data_criacao']))) ?></td>
+                    </tr>
+                <?php endforeach; endif; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- O botão "Voltar" agora usa a tag <button> com onclick para receber o estilo correto do CSS -->
+    <button onclick="window.location.href='dashboard_aluno.php'">&larr; Voltar ao Painel</button>
 </main>
 <?php require_once '../../includes/footer.php'; ?>

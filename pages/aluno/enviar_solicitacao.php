@@ -3,86 +3,113 @@ session_start();
 require_once '../../includes/config.php';
 header('Content-Type: application/json');
 
-// Verifica se é aluno logado
+// --- 1. Verificação de Permissão ---
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'aluno') {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Acesso negado.']);
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Acesso negado.']);
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['qtd_copias'])) {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Dados incompletos.']);
+// --- 2. Validação de Inputs ---
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Método de requisição inválido.']);
     exit;
 }
 
-$solicitar_balcao = isset($_POST['solicitar_balcao']);
-$qtd_copias = intval($_POST['qtd_copias']);
-$colorida = 0; // Aluno não pode solicitar impressão colorida
-$cpf = $_SESSION['usuario']['cpf'];
-$tipo_solicitante = 'Aluno';
-$qtd_paginas = isset($_POST['qtd_paginas']) ? intval($_POST['qtd_paginas']) : 0;
+$cpf_aluno = $_SESSION['usuario']['cpf'];
+$id_aluno = $_SESSION['usuario']['id']; // Assumindo que o 'id' (matrícula) está na sessão
 
-if ($qtd_paginas < 1) {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Informe o número de páginas.']);
+$is_balcao = isset($_POST['solicitar_balcao']);
+$qtd_copias = filter_input(INPUT_POST, 'qtd_copias', FILTER_VALIDATE_INT);
+$qtd_paginas = filter_input(INPUT_POST, 'qtd_paginas', FILTER_VALIDATE_INT);
+
+// Validação mais rigorosa
+if (!$qtd_copias || !$qtd_paginas || $qtd_copias < 1 || $qtd_paginas < 1) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Quantidades de cópias e páginas devem ser números válidos e maiores que zero.']);
     exit;
 }
 
-$total_impressao = $qtd_paginas * $qtd_copias;
-
-// Verifica cota do aluno
-$stmt = $conn->prepare('SELECT a.cota_id, c.cota_total, c.cota_usada FROM Aluno a JOIN CotaAluno c ON a.cota_id = c.id WHERE a.cpf = ?');
-$stmt->execute([$cpf]);
-$cota = $stmt->fetch(PDO::FETCH_ASSOC);
-if (!$cota) {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Cota não encontrada.']);
-    exit;
-}
-$disponivel = $cota['cota_total'] - $cota['cota_usada'];
-if ($total_impressao > $disponivel) {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Cota insuficiente para esta solicitação.']);
+// Se não for de balcão, o arquivo é obrigatório
+if (!$is_balcao && (empty($_FILES['arquivo']) || $_FILES['arquivo']['error'] !== UPLOAD_ERR_OK)) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'O envio de um arquivo é obrigatório e parece ter falhado.']);
     exit;
 }
 
-if (!$solicitar_balcao) {
-    if (empty($_FILES['arquivo'])) {
-        echo json_encode(['sucesso'=>false,'mensagem'=>'Nenhum arquivo enviado.']);
-        exit;
+try {
+    // --- 3. Iniciar Transação ---
+    $conn->beginTransaction();
+
+    // Verifica cota do aluno
+    $stmt_cota = $conn->prepare(
+        'SELECT c.cota_total, c.cota_usada 
+         FROM Aluno a 
+         JOIN CotaAluno c ON a.cota_id = c.id 
+         WHERE a.cpf = ?'
+    );
+    $stmt_cota->execute([$cpf_aluno]);
+    $cota = $stmt_cota->fetch(PDO::FETCH_ASSOC);
+
+    if (!$cota) {
+        throw new Exception('Cota de impressão não encontrada para este aluno.');
     }
 
-    $arquivo = $_FILES['arquivo'];
-    $permitidos = ['pdf','doc','docx','jpg','png'];
-    $ext = strtolower(pathinfo($arquivo['name'], PATHINFO_EXTENSION));
-    if (!in_array($ext, $permitidos) || $arquivo['error'] !== 0) {
-        echo json_encode(['sucesso'=>false,'mensagem'=>'Arquivo inválido.']);
-        exit;
-    }
-    if ($arquivo['size'] > 5*1024*1024) {
-        echo json_encode(['sucesso'=>false,'mensagem'=>'Arquivo muito grande.']);
-        exit;
+    $total_paginas_solicitadas = $qtd_copias * $qtd_paginas;
+    $cota_disponivel = $cota['cota_total'] - $cota['cota_usada'];
+
+    if ($total_paginas_solicitadas > $cota_disponivel) {
+        throw new Exception('Cota de impressão insuficiente. Disponível: ' . $cota_disponivel . ' páginas.');
     }
 
-    $nome_arquivo = uniqid('imp_').'.'.$ext;
-    $destino = '../../uploads/'.$nome_arquivo;
-    if (!move_uploaded_file($arquivo['tmp_name'], $destino)) {
-        echo json_encode(['sucesso'=>false,'mensagem'=>'Falha ao salvar arquivo.']);
-        exit;
+    // --- 4. Lógica Condicional de Upload ---
+    $nome_arquivo_final = null; // Padrão para solicitação de balcão
+
+    if (!$is_balcao) {
+        $arquivo = $_FILES['arquivo'];
+        
+        // Validações do arquivo
+        $permitidos = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'];
+        $extensao = strtolower(pathinfo($arquivo['name'], PATHINFO_EXTENSION));
+        if (!in_array($extensao, $permitidos)) {
+            throw new Exception('Tipo de arquivo inválido. Permitidos: ' . implode(', ', $permitidos));
+        }
+        if ($arquivo['size'] > 10 * 1024 * 1024) { // Limite de 10MB
+            throw new Exception('Arquivo muito grande. O limite é de 10MB.');
+        }
+
+        // Gera nome de arquivo seguro e único
+        $dir_uploads = '../../uploads/';
+        if (!is_dir($dir_uploads)) mkdir($dir_uploads, 0775, true);
+        
+        $nome_arquivo_final = 'aluno_' . $id_aluno . '_' . uniqid() . '.' . $extensao;
+        $caminho_destino = $dir_uploads . $nome_arquivo_final;
+
+        if (!move_uploaded_file($arquivo['tmp_name'], $caminho_destino)) {
+            throw new Exception('Falha crítica ao salvar o arquivo no servidor.');
+        }
     }
-} else {
-    $nome_arquivo = '[SOLICITAÇÃO NO BALCÃO]';
-}
 
-// Insere solicitação
-$stmt = $conn->prepare("INSERT INTO SolicitacaoImpressao (cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, qtd_paginas, colorida, status) VALUES (:cpf, :tipo, :arquivo, :qtd, :qtd_paginas, 0, 'Nova')");
-$stmt->execute([
-    ':cpf' => $cpf,
-    ':tipo' => $tipo_solicitante,
-    ':arquivo' => $nome_arquivo,
-    ':qtd' => $qtd_copias,
-    ':qtd_paginas' => $qtd_paginas
-]);
+    // --- 5. Inserir Solicitação no Banco ---
+    $stmt_insert = $conn->prepare(
+        "INSERT INTO SolicitacaoImpressao (cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, qtd_paginas, colorida, status) 
+         VALUES (?, ?, ?, ?, ?, 0, 'Nova')" // colorida é sempre 0 para aluno
+    );
+    $stmt_insert->execute([
+        $cpf_aluno,
+        'Aluno',
+        $nome_arquivo_final, // Será NULL se for de balcão
+        $qtd_copias,
+        $qtd_paginas
+    ]);
 
-if ($stmt->rowCount()) {
-    echo json_encode(['sucesso'=>true,'mensagem'=>'Solicitação enviada com sucesso!']);
-} else {
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Erro ao registrar solicitação.']);
+    // --- 6. Confirmar Transação ---
+    $conn->commit();
+
+    echo json_encode(['sucesso' => true, 'mensagem' => 'Solicitação enviada com sucesso!']);
+
+} catch (Exception $e) {
+    // --- 7. Reverter Transação em Caso de Erro ---
+    if ($conn->inTransaction()) {
+        $conn->rollBack();
+    }
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Erro: ' . $e->getMessage()]);
 }
 ?>

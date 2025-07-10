@@ -1,63 +1,263 @@
-/* Dashboard Aluno - Mobile First */
+/* --- Variáveis de Cor e Estilo (CSS Variables) --- */
+:root {
+    --cor-primaria: #007bff; /* Azul moderno e acessível */
+    --cor-primaria-hover: #0056b3;
+    --cor-fundo: #f4f7f6; /* Um branco-gelo muito claro */
+    --cor-superficie: #ffffff; /* Para cards e containers */
+    --cor-texto: #212529;
+    --cor-texto-suave: #6c757d;
+    --cor-borda: #dee2e6;
+    --cor-fundo-claro: #f8f9fa;
+    --sombra-card: 0 4px 12px rgba(0, 0, 0, 0.07);
+    --raio-borda: 8px;
+}
+
+/* --- Importação de Fonte e Estilos Base --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+/* --- Container Principal --- */
 .container {
-  max-width: 500px;
-  margin: auto;
-  padding: 1em;
+    max-width: 800px;
+    margin: 2em auto;
+    padding: 2em;
+    background-color: var(--cor-superficie);
+    border-radius: var(--raio-borda);
+    box-shadow: var(--sombra-card);
 }
+
+/* --- Bloco de Informação da Cota --- */
+#cota-info {
+    text-align: center;
+    background-color: rgba(0, 123, 255, 0.1);
+    color: var(--cor-primaria-hover);
+    padding: 1em;
+    border-radius: var(--raio-borda);
+    margin: 1em 0 2em 0;
+    font-weight: 500;
+    border: 1px solid rgba(0, 123, 255, 0.2);
+}
+
+/* --- Formulário de Solicitação --- */
 #form-solicitacao {
-  background: #f9f9f9;
-  padding: 1em;
-  border-radius: 8px;
-  margin-bottom: 1.5em;
+    background: var(--cor-fundo-claro);
+    padding: 1.5em;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    margin-bottom: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em; /* Espaçamento entre elementos do formulário */
 }
+
 #form-solicitacao label {
-  display: block;
-  margin-bottom: 0.5em;
+    font-weight: 500;
+    color: var(--cor-texto-suave);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
 }
+
 #form-solicitacao input[type="file"],
 #form-solicitacao input[type="number"] {
-  width: 100%;
+    width: 100%;
+    padding: 0.75em;
+    border: 1px solid var(--cor-borda);
+    border-radius: 6px;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
-#form-solicitacao button {
-  width: 100%;
-  margin-top: 0.5em;
+
+#form-solicitacao input:focus {
+    outline: none;
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
-#status-solicitacoes h2 {
-  font-size: 1.1em;
-  margin-bottom: 0.5em;
+
+/* Estilo para o botão do input de arquivo */
+#form-solicitacao input[type="file"]::file-selector-button {
+    background-color: var(--cor-primaria);
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 1em;
+    transition: background-color 0.2s;
 }
-#tabela-solicitacoes {
-  overflow-x: auto;
+
+#form-solicitacao input[type="file"]::file-selector-button:hover {
+    background-color: var(--cor-primaria-hover);
 }
-#tabela-solicitacoes table {
-  width: 100%;
-  font-size: 0.98em;
-  border-collapse: collapse;
+
+/* Estilo para a label do checkbox */
+#form-solicitacao label[for="solicitar_balcao"] {
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
 }
-#tabela-solicitacoes th, #tabela-solicitacoes td {
-  padding: 0.5em 0.3em;
-  border-bottom: 1px solid #eee;
-  text-align: left;
+
+/* --- Estilos de Botão --- */
+button {
+    background-color: var(--cor-primaria);
+    color: white;
+    border: none;
+    padding: 0.8em 1.5em;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s, transform 0.1s;
 }
-#tabela-solicitacoes th {
-  background: #f1f1f1;
+
+button:hover {
+    background-color: var(--cor-primaria-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
-#tabela-solicitacoes tr:last-child td {
-  border-bottom: none;
+
+button:active {
+    transform: translateY(0);
 }
+
 button[onclick^="window.location.href"] {
-  width: 100%;
-  margin-top: 1em;
+    background-color: var(--cor-texto-suave);
+    margin-top: 1.5em;
 }
-@media (max-width: 600px) {
-  .container {
-    padding: 0.5em;
-  }
-  #form-solicitacao {
-    padding: 0.5em;
-  }
-  #tabela-solicitacoes th, #tabela-solicitacoes td {
-    font-size: 0.95em;
-    padding: 0.4em 0.2em;
-  }
+
+button[onclick^="window.location.href"]:hover {
+    background-color: #5a6268;
+}
+
+/* --- Tabela de Solicitações --- */
+#tabela-solicitacoes {
+    overflow-x: auto;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    box-shadow: var(--sombra-card);
+}
+
+#tabela-solicitacoes table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tabela-solicitacoes th,
+#tabela-solicitacoes td {
+    padding: 0.8em 1em;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+#tabela-solicitacoes thead {
+    background-color: var(--cor-fundo-claro);
+}
+
+#tabela-solicitacoes th {
+    font-weight: 700;
+    color: var(--cor-texto-suave);
+}
+
+#tabela-solicitacoes tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#tabela-solicitacoes tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+#tabela-solicitacoes td a {
+    color: var(--cor-primaria-hover);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+#tabela-solicitacoes td a:hover {
+    text-decoration: underline;
+}
+
+/* --- Design Responsivo --- */
+@media (max-width: 768px) {
+    .container {
+        margin: 1em;
+        padding: 1em;
+    }
+
+}
+
+@media (max-width: 480px) {
+    #form-solicitacao {
+        padding: 1em;
+    }
+
+    #tabela-solicitacoes th,
+    #tabela-solicitacoes td {
+        padding: 0.6em;
+        font-size: 0.9em;
+    }
+}
+/* --- NOVO: ESTILOS PARA O TOGGLE SWITCH --- */
+.toggle-switch-label {
+    display: flex;
+    justify-content: space-between; /* Alinha o texto à esquerda e o switch à direita */
+    align-items: center;
+    cursor: pointer;
+    width: 100%;
+    gap: 1em;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px; /* Largura do switch */
+    height: 28px; /* Altura do switch */
+}
+
+/* Esconde o checkbox padrão */
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* O "trilho" do switch */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 28px;
+}
+
+/* A "bolinha" do switch */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+/* Estilo quando está ATIVADO (checked) */
+input:checked + .slider {
+    background-color: var(--cor-primaria);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--cor-primaria);
+}
+
+/* Animação da bolinha deslizando */
+input:checked + .slider:before {
+    transform: translateX(22px);
 }
