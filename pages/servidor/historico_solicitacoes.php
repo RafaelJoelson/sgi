@@ -25,23 +25,32 @@ require_once '../../includes/header.php';
     </thead>
     <tbody>
       <?php
-      try {
-        $stmt = $conn->prepare('SELECT arquivo_path as arquivo, qtd_copias, qtd_paginas, colorida as tipo_impressao, status, DATE_FORMAT(data_criacao, "%d/%m/%Y %H:%i") as data FROM SolicitacaoImpressao WHERE cpf_solicitante = ? AND tipo_solicitante = "Servidor" ORDER BY data_criacao DESC');
-        $stmt->execute([$cpf_servidor]);
-        while ($s = $stmt->fetch(PDO::FETCH_ASSOC)) {
-          echo '<tr>';
-          echo '<td>' . htmlspecialchars($s['arquivo']) . '</td>';
-          echo '<td>' . (int)$s['qtd_copias'] . '</td>';
-          echo '<td>' . (int)$s['qtd_paginas'] . '</td>';
-          echo '<td>' . ($s['tipo_impressao'] == 1 ? 'Colorida' : 'PB') . '</td>';
-          echo '<td>' . htmlspecialchars($s['status']) . '</td>';
-          echo '<td>' . htmlspecialchars($s['data']) . '</td>';
-          echo '</tr>';
+        try {
+          $stmt = $conn->prepare('SELECT arquivo_path as arquivo, qtd_copias, qtd_paginas, colorida as tipo_impressao, status, DATE_FORMAT(data_criacao, "%d/%m/%Y %H:%i") as data FROM SolicitacaoImpressao WHERE cpf_solicitante = ? AND tipo_solicitante = "Servidor" ORDER BY data_criacao DESC');
+          $stmt->execute([$cpf_servidor]);
+          while ($s = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo '<tr>';
+
+            // Arquivo
+            if ($s['arquivo'] === '[SOLICITAÇÃO NO BALCÃO]') {
+              echo '<td><em>Solicitação no balcão</em></td>';
+            } else {
+              $nome = htmlspecialchars($s['arquivo']);
+              $link = '../../uploads/' . rawurlencode($s['arquivo']);
+              echo "<td><a href=\"$link\" target=\"_blank\" download>$nome</a></td>";
+            }
+
+            echo '<td>' . (int)$s['qtd_copias'] . '</td>';
+            echo '<td>' . (int)$s['qtd_paginas'] . '</td>';
+            echo '<td>' . ($s['tipo_impressao'] == 1 ? 'Colorida' : 'PB') . '</td>';
+            echo '<td>' . htmlspecialchars($s['status']) . '</td>';
+            echo '<td>' . htmlspecialchars($s['data']) . '</td>';
+            echo '</tr>';
+          }
+        } catch (Exception $e) {
+          echo '<tr><td colspan="6">Erro ao carregar histórico.</td></tr>';
         }
-      } catch (Exception $e) {
-        echo '<tr><td colspan="6">Erro ao carregar histórico.</td></tr>';
-      }
-      ?>
+        ?>
     </tbody>
   </table>
   <button onclick="window.location.href='dashboard_servidor.php'">Voltar ao Painel</button>

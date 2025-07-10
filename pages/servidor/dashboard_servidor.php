@@ -16,6 +16,9 @@ require_once '../../includes/header.php';
     <label>Arquivo para impressão
       <input type="file" name="arquivo" id="arquivo" required accept=".pdf,.doc,.docx,.jpg,.png">
     </label>
+    
+    <label><input type="checkbox" id="solicitar_balcao" name="solicitar_balcao"> Solicitar cópia no balcão (sem envio de arquivo)</label>
+
     <label>Quantidade de cópias
       <input type="number" name="qtd_copias" min="1" max="100" required>
     </label>
@@ -85,6 +88,18 @@ inputArquivo.addEventListener('change', function() {
   }
 });
 
+// Habilita/desabilita o upload conforme a opção de cópia no balcão
+document.getElementById('solicitar_balcao').addEventListener('change', function () {
+  const upload = document.getElementById('arquivo');
+  if (this.checked) {
+    upload.disabled = true;
+    upload.removeAttribute('required');
+  } else {
+    upload.disabled = false;
+    upload.setAttribute('required', 'required');
+  }
+});
+
 // Envio AJAX do formulário
 const form = document.getElementById('form-solicitacao');
 form.addEventListener('submit', function(e) {
@@ -124,8 +139,15 @@ function carregarSolicitacoes(notify = false) {
       let html = '<table style="width:100%;font-size:0.98em;"><thead><tr><th>Arquivo</th><th>Cópias</th><th>Páginas</th><th>Tipo</th><th>Status</th><th>Data</th></tr></thead><tbody>';
       if(data.length === 0) html += '<tr><td colspan="6">Nenhuma solicitação recente.</td></tr>';
       else data.forEach(s => {
-        // Adiciona link para download se houver arquivo
-        let linkArquivo = s.arquivo ? `<a href="../../uploads/${encodeURIComponent(s.arquivo)}" target="_blank" rel="noopener" download>${s.arquivo}</a>` : '-';
+        let linkArquivo;
+        if (s.arquivo === '[SOLICITAÇÃO NO BALCÃO]') {
+          linkArquivo = '<em>Solicitação no balcão</em>';
+        } else if (s.arquivo) {
+          linkArquivo = `<a href="../../uploads/${encodeURIComponent(s.arquivo)}" target="_blank" rel="noopener" download>${s.arquivo}</a>`;
+        } else {
+          linkArquivo = '-';
+        }
+
         html += `<tr>
           <td>${linkArquivo}</td>
           <td>${s.qtd_copias}</td>
@@ -137,6 +159,7 @@ function carregarSolicitacoes(notify = false) {
       });
       html += '</tbody></table>';
       document.getElementById('tabela-solicitacoes').innerHTML = html;
+
       // Notificação de mudança de status
       if (notify) {
         data.forEach(s => {
