@@ -281,6 +281,6 @@ INSERT INTO LogDecrementoCota (solicitacao_id, tipo_usuario, referencia, qtd_cot
 
 -- Exemplo de inserção de semestres letivos
 INSERT INTO SemestreLetivo (ano, semestre, data_inicio, data_fim) VALUES
-(2025, '1', '2025-02-19', '2025-07-10'),
+(2025, '1', '2025-02-19', '2025-07-30'),
 (2025, '2', '2025-08-01', '2025-12-20');
 

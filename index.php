@@ -34,8 +34,6 @@ $pageTitle = 'Login - Sistema de Impressões';
 // Inclui o cabeçalho
 require_once 'includes/header.php';
 
-// Inclui a navegação (se necessário)
-require_once 'includes/nav.php';
 ?>
 
 <main class="main-login-container">
