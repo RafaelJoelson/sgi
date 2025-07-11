@@ -44,7 +44,7 @@ CREATE TABLE Aluno (
 
 -- SERVIDOR
 CREATE TABLE Servidor (
-    siap VARCHAR(20) PRIMARY KEY,
+    siape VARCHAR(20) PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     sobrenome VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
@@ -58,12 +58,12 @@ CREATE TABLE Servidor (
 
 -- COTA PARA TODOS OS SERVIDORES
 CREATE TABLE CotaServidor (
-    siap VARCHAR(20) PRIMARY KEY,
+    siape VARCHAR(20) PRIMARY KEY,
     cota_pb_total INT DEFAULT 1000 NOT NULL,
     cota_pb_usada INT DEFAULT 0 NOT NULL,
     cota_color_total INT DEFAULT 100 NOT NULL,
     cota_color_usada INT DEFAULT 0 NOT NULL,
-    FOREIGN KEY (siap) REFERENCES Servidor(siap) ON DELETE CASCADE
+    FOREIGN KEY (siape) REFERENCES Servidor(siape) ON DELETE CASCADE
 );
 
 
@@ -107,7 +107,7 @@ CREATE TABLE LogDecrementoCota (
     id INT AUTO_INCREMENT PRIMARY KEY,
     solicitacao_id INT NOT NULL,
     tipo_usuario ENUM('Aluno', 'Servidor') NOT NULL,
-    referencia VARCHAR(20) NOT NULL, -- matrícula ou siap
+    referencia VARCHAR(20) NOT NULL, -- matrícula ou siape
     qtd_cotas INT NOT NULL,
     data DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (solicitacao_id) REFERENCES SolicitacaoImpressao(id) ON DELETE CASCADE
@@ -234,13 +234,13 @@ INSERT INTO Aluno (matricula, nome, sobrenome, cargo, email, cpf, senha, ativo, 
 ('20250006', 'Mariana', 'Lima', 'Nenhum', 'mariana@email.com', '56789012345', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 6, NULL);
 
 -- SERVIDORES
-INSERT INTO Servidor (siap, nome, sobrenome, email, cpf, senha, is_admin, setor_admin, ativo, data_fim_validade) VALUES
+INSERT INTO Servidor (siape, nome, sobrenome, email, cpf, senha, is_admin, setor_admin, ativo, data_fim_validade) VALUES
 ('1001', 'João', 'Silva', 'joao.silva@if.edu', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 'CAD', TRUE, NULL),
 ('1002', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '97164635102', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', FALSE, 'NENHUM', TRUE, NULL),
 ('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 'COEN', TRUE, NULL);
 
 -- COTA SERVIDOR
-INSERT INTO CotaServidor (siap, cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada) VALUES
+INSERT INTO CotaServidor (siape, cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada) VALUES
 ('1001', 1000, 0, 100, 0),
 ('1002', 1000, 0, 100, 0),
 ('1003', 1000, 0, 100, 0);

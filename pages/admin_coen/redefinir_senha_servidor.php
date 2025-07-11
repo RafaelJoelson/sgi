@@ -8,8 +8,8 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['siap'], $_POST['nova_senha'])) {
-    $siap = trim($_POST['siap']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['siape'], $_POST['nova_senha'])) {
+    $siape = trim($_POST['siape']);
     $nova_senha = $_POST['nova_senha'];
     if (strlen($nova_senha) < 6) {
         $_SESSION['mensagem'] = 'A senha deve ter pelo menos 6 caracteres.';
@@ -17,9 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['siap'], $_POST['nova_
         exit;
     }
     $hash = password_hash($nova_senha, PASSWORD_DEFAULT);
-    $stmt = $conn->prepare('UPDATE Servidor SET senha = :senha WHERE siap = :siap');
+    $stmt = $conn->prepare('UPDATE Servidor SET senha = :senha WHERE siape = :siape');
     $stmt->bindValue(':senha', $hash);
-    $stmt->bindValue(':siap', $siap);
+    $stmt->bindValue(':siape', $siape);
     if ($stmt->execute()) {
         $_SESSION['mensagem'] = 'Senha redefinida com sucesso!';
     } else {

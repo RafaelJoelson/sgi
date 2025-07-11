@@ -17,8 +17,8 @@
         <hr>
         <?php if (isset($_SESSION['usuario']) && !empty($_SESSION['usuario'])): ?>
             <div class="user-info">
-                <h3>Bem-vindo: <?= htmlspecialchars($_SESSION['usuario']['nome'] . (isset($_SESSION['usuario']['sobrenome']) ? ' ' . $_SESSION['usuario']['sobrenome'] : '')) ?></h3>
-                <a href="<?= BASE_URL ?>/includes/logout.php"><h4>SAIR</h4></a>
+                <h3>Bem-vindo(a): <?= htmlspecialchars($_SESSION['usuario']['nome'] . (isset($_SESSION['usuario']['sobrenome']) ? ' ' . $_SESSION['usuario']['sobrenome'] : '')) ?></h3>
+                <a href="<?= BASE_URL ?>/includes/logout.php"><h4 class="logout">SAIR</h4></a>
             </div>
         <?php endif; ?>
     </div>

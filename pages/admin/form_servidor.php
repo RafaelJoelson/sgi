@@ -8,98 +8,103 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
     exit;
 }
 
-// Verifica se é edição
-$modo_edicao = isset($_GET['siap']);
+// Verifica se está em modo de edição e busca os dados do servidor
+$modo_edicao = isset($_GET['siape']) && !empty($_GET['siape']);
 $servidor = null;
-
 if ($modo_edicao) {
-    $stmt = $conn->prepare("SELECT * FROM Servidor WHERE siap = :siap");
-    $stmt->bindParam(':siap', $_GET['siap']);
-    $stmt->execute();
+    $stmt = $conn->prepare("SELECT * FROM Servidor WHERE siape = :siape");
+    $stmt->execute([':siape' => $_GET['siape']]);
     $servidor = $stmt->fetch();
+    if (!$servidor) {
+        // Se o SIAPE não for encontrado, redireciona com erro
+        $_SESSION['mensagem_erro'] = 'Servidor não encontrado.';
+        header('Location: ../admin_coen/dashboard_coen.php'); // Ou para o painel de admin apropriado
+        exit;
+    }
 }
 
-// Buscar semestre letivo vigente para exibir ao usuário (opcional)
+// Buscar semestre letivo vigente para preencher a data de validade
 $hoje = date('Y-m-d');
-$stmt_semestre = $conn->prepare("SELECT * FROM SemestreLetivo WHERE data_inicio <= :hoje AND data_fim >= :hoje ORDER BY data_fim DESC LIMIT 1");
+$stmt_semestre = $conn->prepare("SELECT data_fim FROM SemestreLetivo WHERE :hoje BETWEEN data_inicio AND data_fim ORDER BY data_fim DESC LIMIT 1");
 $stmt_semestre->execute([':hoje' => $hoje]);
 $semestre_vigente = $stmt_semestre->fetch();
+$data_validade_padrao = $servidor->data_fim_validade ?? ($semestre_vigente->data_fim ?? '');
 
+include_once '../../includes/header.php';
 ?>
-<?php include_once '../../includes/header.php'; ?>
 <link rel="stylesheet" href="form_servidor.css">
 <main>
-  <h1><?= $modo_edicao ? 'Editar Servidor' : 'Cadastrar Novo Servidor' ?></h1>
+    <h1><?= $modo_edicao ? 'Editar Servidor' : 'Cadastrar Novo Servidor' ?></h1>
 
-  <!-- Exibe semestre letivo vigente, se encontrado -->
-  <?php if ($semestre_vigente): ?>
-    <div class="info-semestre">
-      Semestre letivo vigente: <b><?= $semestre_vigente->ano ?>/<?= $semestre_vigente->semestre ?></b> (<?= date('d/m/Y', strtotime($semestre_vigente->data_inicio)) ?> a <?= date('d/m/Y', strtotime($semestre_vigente->data_fim)) ?>)
-    </div>
-  <?php endif; ?>
-
-  <form action="<?= $modo_edicao ? 'processar_edicao_servidor.php' : 'processar_cadastro_servidor.php' ?>" method="POST" class="form-servidor">
-    <?php if ($modo_edicao): ?>
-      <input type="hidden" name="siap" value="<?= htmlspecialchars($servidor->siap) ?>">
+    <!-- Exibe mensagens de sucesso ou erro da sessão -->
+    <?php if (isset($_SESSION['mensagem_sucesso'])): ?>
+        <div class="mensagem-sucesso" style="display:block;"><?= htmlspecialchars($_SESSION['mensagem_sucesso']) ?></div>
+        <?php unset($_SESSION['mensagem_sucesso']); ?>
+    <?php endif; ?>
+    <?php if (isset($_SESSION['mensagem_erro'])): ?>
+        <div class="mensagem-erro" style="display:block;"><?= htmlspecialchars($_SESSION['mensagem_erro']) ?></div>
+        <?php unset($_SESSION['mensagem_erro']); ?>
     <?php endif; ?>
 
-    <label>SIAP
-      <input type="text" name="siap" required value="<?= $servidor->siap ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
-    </label>
+    <form action="<?= $modo_edicao ? 'processar_edicao_servidor.php' : 'processar_cadastro_servidor.php' ?>" method="POST" class="form-servidor">
+        <?php if ($modo_edicao): ?>
+            <input type="hidden" name="siape" value="<?= htmlspecialchars($servidor->siape) ?>">
+        <?php endif; ?>
 
-    <label>Nome
-      <input type="text" name="nome" required value="<?= $servidor->nome ?? '' ?>">
-    </label>
+        <label>SIAPE
+            <input type="text" name="siape" required value="<?= $servidor->siape ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+        </label>
 
-    <label>Sobrenome
-      <input type="text" name="sobrenome" required value="<?= $servidor->sobrenome ?? '' ?>">
-    </label>
+        <label>Nome
+            <input type="text" name="nome" required value="<?= $servidor->nome ?? '' ?>">
+        </label>
 
-    <label>Email
-      <input type="email" name="email" required value="<?= $servidor->email ?? '' ?>">
-    </label>
+        <label>Sobrenome
+            <input type="text" name="sobrenome" required value="<?= $servidor->sobrenome ?? '' ?>">
+        </label>
 
-    <label>CPF
-      <input type="text" name="cpf" required maxlength="11" value="<?= $servidor->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
-    </label>
+        <label>Email
+            <input type="email" name="email" required value="<?= $servidor->email ?? '' ?>">
+        </label>
 
-    <?php if (!$modo_edicao): ?>
-      <label>Senha
-        <input type="password" name="senha" required>
-      </label>
-    <?php endif; ?>
+        <label>CPF
+            <input type="text" name="cpf" required maxlength="11" pattern="\d{11}" title="Digite os 11 números do CPF" value="<?= $servidor->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+        </label>
 
-    <label>Setor Administrativo
-      <select name="setor_admin" required <?= ($_SESSION['usuario']['setor_admin'] === 'CAD' && $_SESSION['usuario']['is_admin']) ? 'disabled' : '' ?>>
-        <option value="NENHUM" <?= isset($servidor) && $servidor->setor_admin === 'NENHUM' ? 'selected' : '' ?>>Nenhum</option>
-        <option value="CAD" <?= isset($servidor) && $servidor->setor_admin === 'CAD' ? 'selected' : '' ?>>CAD</option>
-        <option value="COEN" <?= isset($servidor) && $servidor->setor_admin === 'COEN' ? 'selected' : '' ?>>COEN</option>
-      </select>
-      <?php if ($_SESSION['usuario']['setor_admin'] === 'CAD' && $_SESSION['usuario']['is_admin']): ?>
-        <input type="hidden" name="setor_admin" value="CAD">
-      <?php endif; ?>
-    </label>
+        <?php if (!$modo_edicao): ?>
+            <label>Senha
+                <input type="password" name="senha" required minlength="6">
+            </label>
+        <?php endif; ?>
 
-    <label>Administrador?
-      <select name="is_admin" required>
-        <option value="0" <?= isset($servidor) && !$servidor->is_admin ? 'selected' : '' ?>>Não</option>
-        <option value="1" <?= isset($servidor) && $servidor->is_admin ? 'selected' : '' ?>>Sim</option>
-      </select>
-    </label>
+        <label>Setor Administrativo
+            <select name="setor_admin" required>
+                <option value="NENHUM" <?= (isset($servidor) && $servidor->setor_admin === 'NENHUM') ? 'selected' : '' ?>>Nenhum</option>
+                <option value="CAD" <?= (isset($servidor) && $servidor->setor_admin === 'CAD') ? 'selected' : '' ?>>CAD</option>
+                <option value="COEN" <?= (isset($servidor) && $servidor->setor_admin === 'COEN') ? 'selected' : '' ?>>COEN</option>
+            </select>
+        </label>
 
-    <label>Data Fim da Validade
-      <input type="date" name="data_fim_validade" required value="<?= $semestre_vigente ? $semestre_vigente->data_fim : '' ?>" readonly>
-    </label>
+        <label>É Administrador?
+            <select name="is_admin" required>
+                <option value="0" <?= (isset($servidor) && !$servidor->is_admin) ? 'selected' : '' ?>>Não</option>
+                <option value="1" <?= (isset($servidor) && $servidor->is_admin) ? 'selected' : '' ?>>Sim</option>
+            </select>
+        </label>
 
-    <?php if ($modo_edicao): ?>
-      <label style="flex-direction: row; align-items: center; gap: 0.5em;">
-        <input type="checkbox" name="ativo" value="1" <?= isset($servidor) && $servidor->ativo ? 'checked' : '' ?>>
-        Ativo <span style="font-size:0.95em; color:#555; font-weight:400;">(Desmarque para inativar o servidor)</span>
-      </label>
-    <?php endif; ?>
+        <label>Data Fim da Validade
+            <input type="date" name="data_fim_validade" value="<?= htmlspecialchars($data_validade_padrao) ?>">
+        </label>
 
-    <button type="submit"><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Servidor' ?></button>
-  </form>
-  <a class="btn-back" href="javascript:history.back()">Voltar</a>
+        <?php if ($modo_edicao): ?>
+            <label class="checkbox-label">
+                <input type="checkbox" name="ativo" value="1" <?= (isset($servidor) && $servidor->ativo) ? 'checked' : '' ?>>
+                Servidor Ativo
+            </label>
+        <?php endif; ?>
+
+        <button type="submit"><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Servidor' ?></button>
+    </form>
+    <a class="btn-back" href="javascript:history.back()">Voltar</a>
 </main>
 <?php include_once '../../includes/footer.php'; ?>

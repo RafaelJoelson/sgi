@@ -10,12 +10,12 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor')
     echo json_encode(['sucesso' => false, 'mensagem' => 'Acesso negado.']);
     exit;
 }
-$siap = $_SESSION['usuario']['id'];
-// DEBUG: Exibir siap
-// file_put_contents(__DIR__.'/debug_cota_servidor.log', date('Y-m-d H:i:s')." siap: $siap\n", FILE_APPEND);
+$siape = $_SESSION['usuario']['id'];
+// DEBUG: Exibir siape
+// file_put_contents(__DIR__.'/debug_cota_servidor.log', date('Y-m-d H:i:s')." siape: $siape\n", FILE_APPEND);
 try {
-    $stmt = $conn->prepare('SELECT cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada FROM CotaServidor WHERE siap = ?');
-    $stmt->execute([$siap]);
+    $stmt = $conn->prepare('SELECT cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada FROM CotaServidor WHERE siape = ?');
+    $stmt->execute([$siape]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     // DEBUG: Exibir resultado da query
     // file_put_contents(__DIR__.'/debug_cota_servidor.log', date('Y-m-d H:i:s')." resultado: ".json_encode($row)."\n", FILE_APPEND);

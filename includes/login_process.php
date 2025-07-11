@@ -22,7 +22,7 @@ if (empty($cpf) || empty($senha)) {
 
 $tipos_usuario = [
     ['tabela' => 'Aluno', 'campo_id' => 'matricula', 'dashboard' => 'aluno/dashboard_aluno.php', 'check_ativo' => true],
-    ['tabela' => 'Servidor', 'campo_id' => 'siap', 'dashboard' => function($user) { if ($user['is_admin']) { if ($user['setor_admin'] === 'CAD') return 'admin_cad/dashboard_cad.php'; if ($user['setor_admin'] === 'COEN') return 'admin_coen/dashboard_coen.php'; } return 'servidor/dashboard_servidor.php'; }, 'check_ativo' => true],
+    ['tabela' => 'Servidor', 'campo_id' => 'siape', 'dashboard' => function($user) { if ($user['is_admin']) { if ($user['setor_admin'] === 'CAD') return 'admin_cad/dashboard_cad.php'; if ($user['setor_admin'] === 'COEN') return 'admin_coen/dashboard_coen.php'; } return 'servidor/dashboard_servidor.php'; }, 'check_ativo' => true],
     ['tabela' => 'Reprografo', 'campo_id' => 'cpf', 'dashboard' => 'reprografo/dashboard_reprografo.php', 'check_ativo' => false]
 ];
 

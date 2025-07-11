@@ -9,17 +9,17 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
 }
 
 // Buscar servidores
-$stmtServidores = $conn->query("SELECT siap, nome, sobrenome FROM Servidor ORDER BY nome ASC, sobrenome ASC");
+$stmtServidores = $conn->query("SELECT siape, nome, sobrenome FROM Servidor ORDER BY nome ASC, sobrenome ASC");
 $servidores = $stmtServidores->fetchAll();
 
 // Transferência de cotas
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $siap_origem = $_POST['siap_origem'];
-    $siap_destino = $_POST['siap_destino'];
+    $siape_origem = $_POST['siape_origem'];
+    $siape_destino = $_POST['siape_destino'];
     $tipo_cota = $_POST['tipo_cota']; // pb ou color
     $quantidade = intval($_POST['quantidade']);
 
-    if ($siap_origem === $siap_destino) {
+    if ($siape_origem === $siape_destino) {
         $_SESSION['mensagem'] = 'Selecione servidores diferentes para transferir.';
         header('Location: gerenciar_cotas_servidor.php');
         exit;
@@ -32,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Verifica saldo do servidor origem
     $campo_total = $tipo_cota === 'color' ? 'cota_color_total' : 'cota_pb_total';
-    $stmtSaldo = $conn->prepare("SELECT $campo_total FROM CotaServidor WHERE siap = :siap");
-    $stmtSaldo->execute([':siap' => $siap_origem]);
+    $stmtSaldo = $conn->prepare("SELECT $campo_total FROM CotaServidor WHERE siape = :siape");
+    $stmtSaldo->execute([':siape' => $siape_origem]);
     $saldo_origem = $stmtSaldo->fetchColumn();
 
     if ($saldo_origem < $quantidade) {
@@ -44,10 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Realiza a transferência
     $conn->beginTransaction();
-    $conn->prepare("UPDATE CotaServidor SET $campo_total = $campo_total - :qtd WHERE siap = :siap")
-        ->execute([':qtd' => $quantidade, ':siap' => $siap_origem]);
-    $conn->prepare("UPDATE CotaServidor SET $campo_total = $campo_total + :qtd WHERE siap = :siap")
-        ->execute([':qtd' => $quantidade, ':siap' => $siap_destino]);
+    $conn->prepare("UPDATE CotaServidor SET $campo_total = $campo_total - :qtd WHERE siape = :siape")
+        ->execute([':qtd' => $quantidade, ':siape' => $siape_origem]);
+    $conn->prepare("UPDATE CotaServidor SET $campo_total = $campo_total + :qtd WHERE siape = :siape")
+        ->execute([':qtd' => $quantidade, ':siape' => $siape_destino]);
     $conn->commit();
 
     $_SESSION['mensagem'] = 'Transferência realizada com sucesso!';
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Buscar cotas atuais
-$stmt = $conn->query("SELECT s.siap, s.nome, s.sobrenome, cs.cota_pb_total, cs.cota_pb_usada, cs.cota_color_total, cs.cota_color_usada FROM Servidor s JOIN CotaServidor cs ON s.siap = cs.siap ORDER BY s.nome ASC, s.sobrenome ASC");
+$stmt = $conn->query("SELECT s.siape, s.nome, s.sobrenome, cs.cota_pb_total, cs.cota_pb_usada, cs.cota_color_total, cs.cota_color_usada FROM Servidor s JOIN CotaServidor cs ON s.siape = cs.siape ORDER BY s.nome ASC, s.sobrenome ASC");
 $cotas = $stmt->fetchAll();
 
 include_once '../../includes/header.php';
@@ -71,18 +71,18 @@ include_once '../../includes/header.php';
     <?php endif; ?>
     <form method="POST" class="form-cotas" id="form-cotas">
       <label>Servidor Origem
-        <select name="siap_origem" id="siap_origem" required>
+        <select name="siape_origem" id="siape_origem" required>
           <option value="" disabled selected>Selecione o servidor</option>
           <?php foreach ($servidores as $s): ?>
-            <option value="<?= $s->siap ?>"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome . ' (' . $s->siap . ')') ?></option>
+            <option value="<?= $s->siape ?>"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome . ' (' . $s->siape . ')') ?></option>
           <?php endforeach; ?>
         </select>
       </label>
       <label>Servidor Destino
-        <select name="siap_destino" id="siap_destino" required>
+        <select name="siape_destino" id="siape_destino" required>
           <option value="" disabled selected>Selecione o servidor</option>
           <?php foreach ($servidores as $s): ?>
-            <option value="<?= $s->siap ?>"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome . ' (' . $s->siap . ')') ?></option>
+            <option value="<?= $s->siape ?>"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome . ' (' . $s->siape . ')') ?></option>
           <?php endforeach; ?>
         </select>
       </label>
@@ -100,9 +100,9 @@ include_once '../../includes/header.php';
     <a href="dashboard_coen.php" class="btn-back" style="margin-top:1.5em;">Voltar</a>
     <script>
       // Remove o servidor origem da lista de destino
-      document.getElementById('siap_origem').addEventListener('change', function() {
+      document.getElementById('siape_origem').addEventListener('change', function() {
         const origem = this.value;
-        const destinoSelect = document.getElementById('siap_destino');
+        const destinoSelect = document.getElementById('siape_destino');
         Array.from(destinoSelect.options).forEach(opt => {
           opt.disabled = (opt.value && opt.value === origem);
         });
@@ -116,7 +116,7 @@ include_once '../../includes/header.php';
       <table>
         <thead>
           <tr>
-            <th>SIAP</th>
+            <th>siape</th>
             <th>Nome</th>
             <th>Cota PB</th>
             <th>Cota Colorida</th>
@@ -125,7 +125,7 @@ include_once '../../includes/header.php';
         <tbody>
           <?php foreach ($cotas as $cota): ?>
           <tr>
-            <td data-label="SIAP"> <?= $cota->siap ?> </td>
+            <td data-label="siape"> <?= $cota->siape ?> </td>
             <td data-label="Nome"> <?= htmlspecialchars($cota->nome . ' ' . $cota->sobrenome) ?> </td>
             <td data-label="Cota PB"> <?= $cota->cota_pb_usada ?? 0 ?> / <?= $cota->cota_pb_total ?? 0 ?> </td>
             <td data-label="Cota Colorida"> <?= $cota->cota_color_usada ?? 0 ?> / <?= $cota->cota_color_total ?? 0 ?> </td>

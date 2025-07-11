@@ -11,7 +11,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 10px 10px;
+    margin: 10px 20px;
     padding: 5px;
     background-color: #FFF;
     border-radius: 18px;
@@ -31,6 +31,36 @@ header hr {
 
 a {
     text-decoration: none;
+}
+
+.logout {
+    color: #0080ff;
+    font-weight: bold;
+    text-decoration: none;
+    position: relative; /* Essencial para o posicionamento do pseudo-elemento */
+    display: inline-block; /* Garante que o elemento tenha um bloco para o after */
+    padding-bottom: 3px; /* Cria um pequeno espaço para a linha não colar no texto */
+}
+
+.logout:hover {
+    color: #0362c2;
+}
+
+/* O pseudo-elemento que será a nossa linha animada */
+.logout::after {
+    content: '';
+    position: absolute;
+    width: 0; /* Começa com largura zero (invisível) */
+    height: 2px; /* Espessura da linha */
+    bottom: 0;
+    left: 0;
+    background-color: #005fa3; /* Cor da linha ao aparecer */
+    transition: width 0.3s ease-in-out; /* A animação da largura */
+}
+
+/* Quando o mouse passa por cima, a largura vai para 100% */
+.logout:hover::after {
+    width: 100%;
 }
 
 .user-info {

@@ -10,15 +10,15 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor')
     echo 'Acesso negado';
     exit;
 }
-$siap = $_SESSION['usuario']['id'];
+$siape = $_SESSION['usuario']['id'];
 try {
-    $stmt = $conn->prepare('SELECT * FROM CotaServidor WHERE siap = ?');
-    $stmt->execute([$siap]);
+    $stmt = $conn->prepare('SELECT * FROM CotaServidor WHERE siape = ?');
+    $stmt->execute([$siape]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($row) {
         print_r($row);
     } else {
-        echo 'Nenhuma cota encontrada para siap=' . $siap;
+        echo 'Nenhuma cota encontrada para siape=' . $siape;
     }
 } catch (Exception $e) {
     echo 'Erro: ' . $e->getMessage();

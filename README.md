@@ -1,4 +1,4 @@
-# SGI - Sistema de Gestão de Impressão Acadêmica
+# SGI - Sistema de Gestão de Impressão Acadêmica V.1.1 (alpha)
 
 Projeto de extensão do Instituto Federal do Sudeste de Minas Gerais - Campus São João del-Rei.
 

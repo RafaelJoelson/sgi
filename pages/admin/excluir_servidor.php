@@ -6,10 +6,10 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
     echo json_encode(['mensagem' => 'Acesso negado.']);
     exit;
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['siap'])) {
-    $siap = trim($_POST['siap']);
-    $stmt = $conn->prepare('DELETE FROM Servidor WHERE siap = :siap');
-    if ($stmt->execute([':siap' => $siap])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['siape'])) {
+    $siape = trim($_POST['siape']);
+    $stmt = $conn->prepare('DELETE FROM Servidor WHERE siape = :siape');
+    if ($stmt->execute([':siape' => $siape])) {
         echo json_encode(['mensagem' => 'Servidor excluído com sucesso.']);
     } else {
         echo json_encode(['mensagem' => 'Erro ao excluir servidor.']);

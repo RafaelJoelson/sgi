@@ -8,9 +8,6 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
     exit;
 }
 
-// Pega o SIAPE do admin logado para a verificação de autoexclusão na tabela
-$siape_logado = $_SESSION['usuario']['id'];
-
 // Parâmetros de paginação
 $pagina = isset($_GET['pagina']) && is_numeric($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 $limite = 5; // Itens por página
@@ -19,6 +16,7 @@ $offset = ($pagina - 1) * $limite;
 // Condições de busca
 $condicoes = [];
 $params = [];
+
 $tipo_busca = $_GET['tipo_busca'] ?? '';
 $valor_busca = trim($_GET['valor_busca'] ?? '');
 $filtro_turma = $_GET['turma'] ?? '';
@@ -44,14 +42,19 @@ if (!empty($filtro_turma)) {
 
 $where_clause = !empty($condicoes) ? 'WHERE ' . implode(' AND ', $condicoes) : '';
 
-// Consultas de total e principal
+// Total de resultados
 $sql_count = "SELECT COUNT(*) AS total " . $base_sql . " " . $where_clause;
 $stmt_count = $conn->prepare($sql_count);
 $stmt_count->execute($params);
 $total_resultados = $stmt_count->fetch()->total ?? 0;
 $total_paginas = ceil($total_resultados / $limite);
 
-$sql_alunos = "SELECT a.*, t.periodo, c.sigla, c.nome_completo " . $base_sql . " " . $where_clause . " ORDER BY a.nome ASC LIMIT :limite OFFSET :offset";
+// Consulta principal com LIMIT e OFFSET
+$sql_alunos = "SELECT a.*, t.periodo, c.sigla, c.nome_completo 
+               " . $base_sql . " " . $where_clause . " 
+               ORDER BY a.nome ASC 
+               LIMIT :limite OFFSET :offset";
+
 $stmt = $conn->prepare($sql_alunos);
 foreach ($params as $key => $val) {
     $stmt->bindValue($key, $val);
@@ -61,9 +64,10 @@ $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $alunos = $stmt->fetchAll();
 
-// Dados para os cards e filtros
+// Totais para os cards
 $total_turmas = $conn->query("SELECT COUNT(DISTINCT turma_id) AS total FROM CotaAluno")->fetch()->total ?? 0;
 $total_alunos = $conn->query("SELECT COUNT(*) AS total FROM Aluno")->fetch()->total ?? 0;
+// Buscar turmas disponíveis (JOIN com Curso para pegar sigla e nome)
 $stmt_turmas = $conn->query("SELECT t.id, t.periodo, c.sigla, c.nome_completo FROM Turma t JOIN Curso c ON t.curso_id = c.id ORDER BY c.nome_completo ASC, t.periodo ASC");
 $turmas_disponiveis = $stmt_turmas->fetchAll();
 
@@ -141,8 +145,8 @@ include_once '../../includes/header.php';
                                 <div class="action-buttons">
                                     <a href="form_aluno.php?matricula=<?= $aluno->matricula ?>">Editar/Renovar</a>
                                     <a href="#" class="btn-redefinir" data-matricula="<?= $aluno->matricula ?>">Redefinir Senha</a>
-                                    <a  class="btn-exc"href="excluir_aluno.php?matricula=<?= $aluno->matricula ?>" 
-                                        onclick="return confirm('Tem certeza que deseja excluir o aluno <?= htmlspecialchars($aluno->nome) ?>?')">
+                                    <a href="excluir.php?matricula=<?= $aluno->matricula ?>" 
+                                        onclick="return confirm('Tem certeza que deseja excluir o aluno <?= $aluno->nome ?>?')">
                                         Excluir
                                     </a>
                                 </div>
@@ -192,27 +196,25 @@ include_once '../../includes/header.php';
     </main>
 </div>
 <script>
-// MUDANÇA 1: Passa o SIAPE do PHP para o JavaScript de forma segura
-const siapeLogado = '<?= htmlspecialchars($siape_logado) ?>';
-
-document.querySelectorAll('.btn-redefinir').forEach(btn => {
+    document.querySelectorAll('.btn-redefinir').forEach(btn => {
     btn.addEventListener('click', function (e) {
         e.preventDefault();
         const matricula = this.getAttribute('data-matricula');
         document.getElementById('matricula-modal').value = matricula;
         document.getElementById('modal-redefinir').style.display = 'block';
     });
-});
+    });
 
-document.querySelector('#modal-redefinir .close').addEventListener('click', function () {
+    document.querySelector('.modal .close').addEventListener('click', function () {
     document.getElementById('modal-redefinir').style.display = 'none';
-});
+    });
 
-window.addEventListener('click', function (e) {
+    window.addEventListener('click', function (e) {
     const modal = document.getElementById('modal-redefinir');
     if (e.target === modal) modal.style.display = 'none';
-});
-
+    });
+</script>
+<script>
 document.getElementById('btn-gerenciar-servidores').onclick = function(e) {
   e.preventDefault();
   document.getElementById('modal-servidores').style.display = 'block';
@@ -225,42 +227,30 @@ window.addEventListener('click', function(e) {
   const modal = document.getElementById('modal-servidores');
   if (e.target === modal) modal.style.display = 'none';
 });
-
 function carregarServidoresCAD() {
   fetch('../admin/listar_servidores_cad.php')
     .then(r => r.json())
     .then(data => {
       let html = '<table style="width:100%;font-size:0.98em;"><thead><tr><th>SIAPE</th><th>Nome</th><th>Email</th><th>Setor</th><th>Ações</th></tr></thead><tbody>';
-      if(data.length === 0) {
-          html += '<tr><td colspan="5">Nenhum servidor CAD encontrado.</td></tr>';
-      } else {
-          data.forEach(s => {
-            let botaoExcluir = ''; // Variável para o botão de excluir
-
-            // MUDANÇA 2: Lógica para ocultar o botão de excluir do próprio usuário
-            if (s.siape !== siapeLogado) {
-                botaoExcluir = `<a href="#" onclick="excluirServidor('${s.siape}');return false;" class="btn-exc" ">Excluir</a>`;
-            }
-
-            html += `<tr>
-              <td>${s.siape}</td>
-              <td>${s.nome} ${s.sobrenome}</td>
-              <td>${s.email}</td>
-              <td>${s.setor_admin}</td>
-              <td>
-                <a href="../admin/form_servidor.php?siape=${encodeURIComponent(s.siape)}" class="btn-menu" style="padding:0.3rem 0.7rem;font-size:0.9em;">Editar</a>
-                ${botaoExcluir}
-              </td>
-            </tr>`;
-          });
-      }
+      if(data.length === 0) html += '<tr><td colspan="5">Nenhum servidor CAD encontrado.</td></tr>';
+      else data.forEach(s => {
+        html += `<tr>
+          <td>${s.siape}</td>
+          <td>${s.nome} ${s.sobrenome}</td>
+          <td>${s.email}</td>
+          <td>${s.setor_admin}</td>
+          <td>
+            <a href="../admin/form_servidor.php?siape=${encodeURIComponent(s.siape)}" class="btn-menu" style="padding:0.3rem 0.7rem;font-size:0.9em;">Editar</a>
+            <a href="#" onclick="excluirServidor('${s.siape}');return false;" class="btn-menu" style="background:#c82333;">Excluir</a>
+          </td>
+        </tr>`;
+      });
       html += '</tbody></table>';
       document.getElementById('tabela-servidores-cad').innerHTML = html;
     });
 }
-
 function excluirServidor(siape) {
-  if(!confirm('Tem certeza que deseja excluir o servidor SIAPE ' + siape + '?')) return;
+  if(!confirm('Tem certeza que deseja excluir o servidor siape ' + siape + '?')) return;
   fetch('../admin/excluir_servidor.php', {
     method: 'POST',
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -273,19 +263,25 @@ function excluirServidor(siape) {
   })
   .catch(() => alert('Erro ao excluir servidor.'));
 }
-
+</script>
+<script>
 window.addEventListener('DOMContentLoaded', () => {
   const toast = document.getElementById('toast-mensagem');
   if (toast) {
+    // Adiciona classe para mostrar com fade in
     toast.classList.add('show');
+
+    // Após 4 segundos, começa fade out
     setTimeout(() => {
       toast.classList.remove('show');
+
+      // Depois do tempo da transição, remove o elemento da página
       setTimeout(() => {
         if(toast.parentNode) {
           toast.parentNode.removeChild(toast);
         }
-      }, 600);
-    }, 4000);
+      }, 600); // mesmo tempo da transição CSS
+    }, 4000); // tempo visível da notificação
   }
 });
 </script>
