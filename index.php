@@ -30,12 +30,9 @@ require_once 'includes/header.php';
                     // MUDANÇA: Corrigido o nome da variável para 'erro_login'
                     if (isset($_SESSION['erro_login'])): 
                     ?>
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div class="alert alert-danger alert-dismissible fade show" style="color: red;"role="alert">
                             <i class="fas fa-exclamation-triangle"></i>
                             <?= htmlspecialchars($_SESSION['erro_login']) ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
                         </div>
                     <?php 
                         // Limpa a mensagem da sessão para não exibi-la novamente

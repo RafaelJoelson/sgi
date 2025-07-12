@@ -1,0 +1,68 @@
+# ==============================================================================
+# Arquivo .htaccess para Projetos PHP (Versão Corrigida)
+# ==============================================================================
+
+# --- SEGURANÇA ---
+
+# Impede que os usuários listem o conteúdo dos diretórios se não houver um arquivo index.
+Options -Indexes
+
+# Impede o acesso direto a arquivos sensíveis, como este próprio .htaccess
+# e o seu arquivo de configuração do banco de dados.
+<FilesMatch "^\.ht|config\.php$">
+    Require all denied
+</FilesMatch>
+
+
+# --- REDIRECIONAMENTO PARA HTTPS ---
+
+# Força o uso de HTTPS para aumentar a segurança.
+# Descomente as 3 linhas abaixo se o seu site tiver um certificado SSL instalado.
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+
+# --- URL AMIGÁVEIS (PADRÃO FRONT CONTROLLER) ---
+
+# Ativa o motor de reescrita de URL do Apache.
+RewriteEngine On
+
+# Define a base do URL para as regras de reescrita.
+# !! IMPORTANTE !! Se o seu projeto estiver em um subdiretório (ex: www.meusite.com/sistema/),
+# você PRECISA mudar a linha abaixo para: RewriteBase /sistema/
+# A falha em configurar isso corretamente é a causa mais comum de erros 404.
+RewriteBase /
+
+# MUDANÇA: Estrutura de regras mais robusta.
+# Se a requisição for para um diretório existente OU para um arquivo existente,
+# interrompa o processo de reescrita e sirva o recurso diretamente.
+# Isso garante que seus arquivos CSS, JS, imagens e scripts (como logout.php) funcionem.
+RewriteCond %{REQUEST_FILENAME} -d [OR]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Se a requisição NÃO for para um arquivo ou diretório existente (regra acima falhou),
+# redireciona a requisição para o arquivo index.php.
+# O index.php passará a ser o ponto de entrada único do seu sistema.
+RewriteRule . index.php [L,QSA]
+
+
+# --- CONFIGURAÇÕES PHP (OPCIONAL) ---
+
+# Você pode definir algumas configurações do PHP aqui, se a sua hospedagem permitir.
+# Descomente as linhas que precisar.
+
+# Define o tamanho máximo de upload de arquivos (ex: 20 Megabytes)
+# php_value upload_max_filesize 20M
+
+# Define o tamanho máximo dos dados de um POST
+# php_value post_max_size 20M
+
+# Esconde os erros do PHP na tela (altamente recomendado para produção)
+# php_flag display_errors Off
+
+# Ativa o log de erros em um arquivo (muito útil para depuração em produção)
+# php_flag log_errors On
+# php_value error_log /home/seu_usuario/public_html/logs/php_errors.log
+

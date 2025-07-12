@@ -10,7 +10,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor')
     exit;
 }
 
-$siap = $_SESSION['usuario']['id'];
+$siape = $_SESSION['usuario']['id'];
 $cpf_servidor = $_SESSION['usuario']['cpf'];
 
 // --- 2. Validação de Inputs ---
@@ -36,8 +36,8 @@ try {
     $conn->beginTransaction();
 
     // Verifica cotas do servidor
-    $stmt_cota = $conn->prepare('SELECT cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada FROM CotaServidor WHERE siap = ?');
-    $stmt_cota->execute([$siap]);
+    $stmt_cota = $conn->prepare('SELECT cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada FROM CotaServidor WHERE siape = ?');
+    $stmt_cota->execute([$siape]);
     $cota = $stmt_cota->fetch(PDO::FETCH_ASSOC);
 
     if (!$cota) {
@@ -69,7 +69,7 @@ try {
         $extensao = pathinfo($_FILES['arquivo']['name'], PATHINFO_EXTENSION);
         $nome_base = pathinfo($_FILES['arquivo']['name'], PATHINFO_FILENAME);
         $nome_seguro = preg_replace('/[^a-zA-Z0-9.\-_]/', '_', $nome_base);
-        $nome_arquivo_final = 'serv_' . $siap . '_' . uniqid() . '.' . $extensao;
+        $nome_arquivo_final = 'serv_' . $siape . '_' . uniqid() . '.' . $extensao;
         $caminho_destino = $dir_uploads . $nome_arquivo_final;
 
         if (!move_uploaded_file($_FILES['arquivo']['tmp_name'], $caminho_destino)) {

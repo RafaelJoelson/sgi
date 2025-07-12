@@ -13,6 +13,18 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'sgi');
 
+// --- CORREÇÃO CRÍTICA ---
+// O caminho base DEVE ser o URL completo do seu site para que os links
+// para CSS, imagens e scripts funcionem corretamente com o .htaccess.
+// Use 'https' se você tiver um certificado SSL.
+//define('BASE_URL', 'https://ifsudestesgisjdr.free.nf');
+
+// Configurações do banco de dados
+//define('DB_HOST', 'sql102.infinityfree.com');
+//define('DB_USER', 'if0_39311333');
+//define('DB_PASS', 'fOs7jQlfLZG');
+//define('DB_NAME', 'if0_39311333_sgi');
+
 // Funções úteis
 function isActive($page) {
     return basename($_SERVER['PHP_SELF']) == $page ? 'active' : '';

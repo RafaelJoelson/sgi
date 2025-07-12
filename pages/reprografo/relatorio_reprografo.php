@@ -3,7 +3,7 @@
 require_once '../../includes/config.php';
 session_start();
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografo') {
-    header('Location: ../../index.php');
+    header('Location: ../../reprografia.php');
     exit;
 }
 

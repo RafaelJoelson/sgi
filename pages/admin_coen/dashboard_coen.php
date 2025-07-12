@@ -65,8 +65,7 @@ include_once '../../includes/header.php';
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
         <section class="dashboard-header">
-            <h1>Painel do Administrador</h1>
-            <p>(Gerenciamento de Servidores)</p>
+            <h1>Coordenação de Ensino</h1>
         </section>
         <section class="dashboard-cards">
             <div class="card">Total de Servidores: <?= $total_servidores ?></div>

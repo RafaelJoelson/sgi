@@ -277,3 +277,15 @@ tr:hover {
     margin-bottom: 0.1rem;
   }
 }
+.form-vigencia select {
+  border: 1px solid #bcd6f7;
+  border-radius: 4px;
+  padding: 0.45rem 0.7rem;
+  font-size: 1em;
+  background: #fff;
+  transition: border 0.2s;
+}
+.form-vigencia select:focus {
+  border-color: #0080ff;
+  outline: none;
+}

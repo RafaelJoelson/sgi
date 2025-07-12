@@ -78,7 +78,7 @@ tfoot td { font-weight: bold; background: #f3f3f3; }
 <?php if (!$modo_impressao): ?>
   <aside class="dashboard-aside">
     <h1>Relatório de Impressões por Servidor</h1>
-    <form method="GET" style="margin-bottom:1.2em;">
+    <form method="GET" class="form-vigencia">
       <label>Vigência:
         <select name="vigencia_id" onchange="this.form.submit()">
           <?php foreach ($vigencias as $v): ?>

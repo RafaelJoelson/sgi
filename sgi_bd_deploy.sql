@@ -165,9 +165,9 @@ CREATE TABLE `Servidor` (
 --
 
 INSERT INTO `Servidor` (`siape`, `nome`, `sobrenome`, `email`, `cpf`, `senha`, `is_admin`, `setor_admin`, `ativo`, `data_fim_validade`) VALUES
-('1001', 'João', 'Silva', 'joao.silva@if.edu', '88877766655', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 'CAD', 1, NULL),
-('1002', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '97164635102', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 'NENHUM', 1, NULL),
-('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 'COEN', 1, NULL);
+('1001', 'Coordenação', 'de Apoio ao Discente', 'cad.sjdr@ifsudestemg.edu.br', '10010011101', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 'CAD', 1, NULL),
+('1002', 'Coordenação', 'de Ensino', 'coen.sjdr@ifsudestemg.edu.br', '20020022202', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 'COEN', 1, NULL),
+('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 'NENHUM', 1, NULL);
 
 -- --------------------------------------------------------
 --
@@ -199,21 +199,23 @@ INSERT INTO `CotaServidor` (`siape`, `cota_pb_total`, `cota_pb_usada`, `cota_col
 --
 
 CREATE TABLE `Reprografo` (
-  `cpf` char(11) NOT NULL,
-  `nome` varchar(100) NOT NULL,
-  `sobrenome` varchar(100) NOT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `senha` varchar(255) NOT NULL,
-  PRIMARY KEY (`cpf`)
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `login` VARCHAR(100) NOT NULL,
+  `nome` VARCHAR(100) NOT NULL,
+  `sobrenome` VARCHAR(100) NOT NULL,
+  `email` VARCHAR(100) DEFAULT NULL,
+  `senha` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `login_unique` (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Inserindo dados para a tabela `Reprografo`
 --
 
-INSERT INTO `Reprografo` (`cpf`, `nome`, `sobrenome`, `email`, `senha`) VALUES
-('11111111111', 'Paulo', 'Lima', 'paulo.lima@if.edu', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC'),
-('22222222222', 'Fernanda', 'Costa', 'fernanda.costa@if.edu', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC');
+INSERT INTO `Reprografo` (`id`,`login`, `nome`, `sobrenome`, `email`, `senha`) VALUES
+(1,'copyreiif', 'Paulo', 'Lima', 'paulo.lima@if.edu', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC'),
+(2,'copyreiif2', 'Fernanda', 'Costa', 'fernanda.costa@if.edu', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC');
 
 -- --------------------------------------------------------
 --
@@ -230,26 +232,26 @@ CREATE TABLE `SolicitacaoImpressao` (
   `colorida` tinyint(1) NOT NULL DEFAULT 0,
   `status` enum('Nova','Lida','Aceita','Rejeitada') NOT NULL DEFAULT 'Nova',
   `data_criacao` datetime NOT NULL DEFAULT current_timestamp(),
-  `cpf_reprografo` char(11) DEFAULT NULL,
+  `reprografo_id` int(11) DEFAULT NULL, -- MUDANÇA: Coluna alterada
   PRIMARY KEY (`id`),
-  KEY `cpf_reprografo` (`cpf_reprografo`),
-  CONSTRAINT `SolicitacaoImpressao_ibfk_1` FOREIGN KEY (`cpf_reprografo`) REFERENCES `Reprografo` (`cpf`) ON DELETE SET NULL
+  KEY `reprografo_id` (`reprografo_id`), -- MUDANÇA: Novo índice
+  CONSTRAINT `SolicitacaoImpressao_ibfk_1` FOREIGN KEY (`reprografo_id`) REFERENCES `Reprografo` (`id`) ON DELETE SET NULL -- MUDANÇA: Nova chave estrangeira
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Inserindo dados para a tabela `SolicitacaoImpressao`
 --
 
-INSERT INTO `SolicitacaoImpressao` (`id`, `cpf_solicitante`, `tipo_solicitante`, `arquivo_path`, `qtd_copias`, `qtd_paginas`, `colorida`, `status`, `data_criacao`, `cpf_reprografo`) VALUES
+INSERT INTO `SolicitacaoImpressao` (`id`, `cpf_solicitante`, `tipo_solicitante`, `arquivo_path`, `qtd_copias`, `qtd_paginas`, `colorida`, `status`, `data_criacao`, `reprografo_id`) VALUES
 (1, '12345678901', 'Aluno', 'trabalho_ana.pdf', 10, 2, 0, 'Nova', '2025-06-27 10:00:00', NULL),
-(2, '45678901234', 'Aluno', 'relatorio_lucas.pdf', 5, 1, 1, 'Aceita', '2025-06-27 11:00:00', '11111111111'),
-(3, '88877766655', 'Servidor', 'oficio_joao.pdf', 3, 1, 0, 'Lida', '2025-06-27 12:00:00', '22222222222'),
-(4, '97164635102', 'Servidor', 'relatorio_maria.pdf', 8, 2, 0, 'Aceita', '2025-06-28 09:00:00', '11111111111'),
-(5, '97164635102', 'Servidor', 'oficio_maria.pdf', 4, 1, 1, 'Aceita', '2025-06-29 10:30:00', '22222222222'),
-(6, '88877766655', 'Servidor', 'memorando_joao.pdf', 6, 3, 0, 'Aceita', '2025-06-30 14:00:00', '11111111111'),
-(7, '88877766655', 'Servidor', 'ata_joao.pdf', 2, 5, 1, 'Aceita', '2025-07-01 16:00:00', '22222222222'),
-(8, '67890123456', 'Servidor', 'relatorio_carlos.pdf', 10, 1, 0, 'Aceita', '2025-07-02 08:45:00', '11111111111'),
-(9, '67890123456', 'Servidor', 'oficio_carlos.pdf', 3, 2, 1, 'Aceita', '2025-07-02 11:20:00', '22222222222');
+(2, '45678901234', 'Aluno', 'relatorio_lucas.pdf', 5, 1, 1, 'Aceita', '2025-06-27 11:00:00', 1),
+(3, '10010011101', 'Servidor', 'oficio_joao.pdf', 3, 1, 0, 'Lida', '2025-06-27 12:00:00', 2),
+(4, '20020022202', 'Servidor', 'relatorio_maria.pdf', 8, 2, 0, 'Aceita', '2025-06-28 09:00:00', 1),
+(5, '20020022202', 'Servidor', 'oficio_maria.pdf', 4, 1, 1, 'Aceita', '2025-06-29 10:30:00', 2),
+(6, '10010011101', 'Servidor', 'memorando_joao.pdf', 6, 3, 0, 'Aceita', '2025-06-30 14:00:00', 1),
+(7, '10010011101', 'Servidor', 'ata_joao.pdf', 2, 5, 1, 'Aceita', '2025-07-01 16:00:00', 2),
+(8, '67890123456', 'Servidor', 'relatorio_carlos.pdf', 10, 1, 0, 'Aceita', '2025-07-02 08:45:00', 1),
+(9, '67890123456', 'Servidor', 'oficio_carlos.pdf', 3, 2, 1, 'Aceita', '2025-07-02 11:20:00', 2);
 
 -- --------------------------------------------------------
 --

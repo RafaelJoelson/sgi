@@ -58,7 +58,8 @@
 }
 
 #form-solicitacao input[type="file"],
-#form-solicitacao input[type="number"] {
+#form-solicitacao input[type="number"],
+#form-solicitacao select{
     width: 100%;
     padding: 0.75em;
     border: 1px solid var(--cor-borda);
