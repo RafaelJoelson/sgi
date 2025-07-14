@@ -165,9 +165,9 @@ CREATE TABLE `Servidor` (
 --
 
 INSERT INTO `Servidor` (`siape`, `nome`, `sobrenome`, `email`, `cpf`, `senha`, `is_admin`, `setor_admin`, `ativo`, `data_fim_validade`) VALUES
-('1001', 'Coordenação', 'de Apoio ao Discente', 'cad.sjdr@ifsudestemg.edu.br', '10010011101', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 'CAD', 1, NULL),
-('1002', 'Coordenação', 'de Ensino', 'coen.sjdr@ifsudestemg.edu.br', '20020022202', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 'COEN', 1, NULL),
-('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 'NENHUM', 1, NULL);
+('1000001', 'Coordenação', 'de Apoio ao Discente', 'cad.sjdr@ifsudestemg.edu.br', '10010011101', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 'CAD', 1, NULL),
+('1000002', 'Coordenação', 'de Ensino', 'coen.sjdr@ifsudestemg.edu.br', '20020022202', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 'COEN', 1, NULL),
+('1000003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 'NENHUM', 1, NULL);
 
 -- --------------------------------------------------------
 --
@@ -189,9 +189,9 @@ CREATE TABLE `CotaServidor` (
 --
 
 INSERT INTO `CotaServidor` (`siape`, `cota_pb_total`, `cota_pb_usada`, `cota_color_total`, `cota_color_usada`) VALUES
-('1001', 1000, 0, 100, 0),
-('1002', 1000, 0, 100, 0),
-('1003', 1000, 0, 100, 0);
+('1000001', 0, 0, 0, 0),
+('1000002', 0, 0, 0, 0),
+('1000003', 1000, 0, 100, 0);
 
 -- --------------------------------------------------------
 --
@@ -303,9 +303,9 @@ CREATE TABLE `LogDecrementoCota` (
 INSERT INTO `LogDecrementoCota` (`solicitacao_id`, `tipo_usuario`, `referencia`, `qtd_cotas`, `data`) VALUES
 (1, 'Aluno', '20250001', 10, '2025-06-27 10:20:00'),
 (2, 'Aluno', '20250005', 5, '2025-06-27 11:15:00'),
-(3, 'Servidor', '1001', 3, '2025-06-27 12:15:00'),
-(4, 'Servidor', '1002', 4, '2025-06-28 09:15:00'),
-(5, 'Servidor', '1003', 6, '2025-06-29 10:35:00');
+(3, 'Servidor', '1000001', 3, '2025-06-27 12:15:00'),
+(4, 'Servidor', '1000002', 4, '2025-06-28 09:15:00'),
+(5, 'Servidor', '1000003', 6, '2025-06-29 10:35:00');
 
 -- --------------------------------------------------------
 --

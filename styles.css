@@ -75,7 +75,7 @@ a {
 @media (max-width: 768px) {
     header h1 {
         text-align: center;
-        font-size: 12px;
+        font-size: 10px;
     }
     header hr {
         height: 1px;
@@ -148,6 +148,9 @@ footer{
     }
     header img {
         width: 100px;
+    }
+    footer p {
+        font-size: 10px;
     }
 }
 
@@ -341,7 +344,7 @@ footer{
     padding: 0.5rem 0 1rem 0;
   }
 }
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .dashboard-layout {
     width: 100%;
     min-width: unset;

@@ -9,7 +9,7 @@ function redirecionar_com_erro($url, $mensagem) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ../login_repro.php');
+    header('Location: ../reprografia.php');
     exit;
 }
 
@@ -17,7 +17,7 @@ $login = trim($_POST['login'] ?? '');
 $senha = $_POST['senha'] ?? '';
 
 if (empty($login) || empty($senha)) {
-    redirecionar_com_erro('../login_repro.php', 'Login e senha são obrigatórios.');
+    redirecionar_com_erro('../reprografia.php', 'Login e senha são obrigatórios.');
 }
 
 try {
@@ -41,10 +41,10 @@ try {
         exit;
     } else {
         // Falha na autenticação
-        redirecionar_com_erro('../login_repro.php', 'Login ou senha inválidos.');
+        redirecionar_com_erro('../reprografia.php', 'Login ou senha inválidos.');
     }
 
 } catch (PDOException $e) {
     error_log("Erro no login do reprografo: " . $e->getMessage());
-    redirecionar_com_erro('../login_repro.php', 'Ocorreu um erro no servidor. Tente novamente.');
+    redirecionar_com_erro('../reprografia.php', 'Ocorreu um erro no servidor. Tente novamente.');
 }

@@ -230,20 +230,20 @@ INSERT INTO Aluno (matricula, nome, sobrenome, cargo, email, cpf, senha, ativo, 
 ('20250002', 'Bruno', 'Souza', 'Nenhum', 'bruno.souza@email.com', '23456789012', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 2, NULL),
 ('20250003', 'Carla', 'Oliveira', 'Vice-líder', 'carla.oliveira@email.com', '34567890123', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 3, NULL),
 ('20250004', 'Pedro', 'Oliveira', 'Vice-líder', 'pedro.oliveira@email.com', '34567890124', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 4, NULL),
-('20250005', 'Lucas', 'Pereira', 'Nenhum', 'lucas.pereira@email.com', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 5, NULL),
+('20250005', 'Lucas', 'Pereira', 'Nenhum', 'lucas.pereira@email.com', '35678901236', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 5, NULL),
 ('20250006', 'Mariana', 'Lima', 'Nenhum', 'mariana@email.com', '56789012345', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 6, NULL);
 
 -- SERVIDORES
 INSERT INTO Servidor (siape, nome, sobrenome, email, cpf, senha, is_admin, setor_admin, ativo, data_fim_validade) VALUES
-('1001', 'João', 'Silva', 'joao.silva@if.edu', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 'CAD', TRUE, NULL),
-('1002', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '97164635102', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', FALSE, 'NENHUM', TRUE, NULL),
-('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 'COEN', TRUE, NULL);
+('1000001', 'João', 'Silva', 'joao.silva@if.edu', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 'CAD', TRUE, NULL),
+('1000002', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '97164635102', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', FALSE, 'NENHUM', TRUE, NULL),
+('1000003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', TRUE, 'COEN', TRUE, NULL);
 
 -- COTA SERVIDOR
 INSERT INTO CotaServidor (siape, cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada) VALUES
-('1001', 1000, 0, 100, 0),
-('1002', 1000, 0, 100, 0),
-('1003', 1000, 0, 100, 0);
+('1000001', 1000, 0, 100, 0),
+('1000002', 1000, 0, 100, 0),
+('1000003', 1000, 0, 100, 0);
 
 -- REPROGRAFO
 INSERT INTO Reprografo (cpf, nome, sobrenome, email, senha) VALUES
@@ -254,14 +254,14 @@ INSERT INTO Reprografo (cpf, nome, sobrenome, email, senha) VALUES
 INSERT INTO SolicitacaoImpressao (id, cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, qtd_paginas, colorida, status, data_criacao, cpf_reprografo) VALUES
 (1, '12345678901', 'Aluno', 'trabalho_ana.pdf', 10, 2, FALSE, 'Nova', '2025-06-27 10:00:00', NULL),
 (2, '45678901234', 'Aluno', 'relatorio_lucas.pdf', 5, 1, TRUE, 'Aceita', '2025-06-27 11:00:00', '11111111111'),
-(3, '1001', 'Servidor', 'oficio_joao.pdf', 3, 1, FALSE, 'Lida', '2025-06-27 12:00:00', '22222222222');
+(3, '1000001', 'Servidor', 'oficio_joao.pdf', 3, 1, FALSE, 'Lida', '2025-06-27 12:00:00', '22222222222');
 
 -- SOLICITAÇÕES DE IMPRESSÃO DE SERVIDORES (exemplo para testes)
 INSERT INTO SolicitacaoImpressao (cpf_solicitante, tipo_solicitante, arquivo_path, qtd_copias, qtd_paginas, colorida, status, data_criacao, cpf_reprografo) VALUES
 ('45678901234', 'Servidor', 'relatorio_maria.pdf', 8, 2, FALSE, 'Aceita', '2025-06-28 09:00:00', '11111111111'),
 ('45678901234', 'Servidor', 'oficio_maria.pdf', 4, 1, TRUE, 'Aceita', '2025-06-29 10:30:00', '22222222222'),
-('1001', 'Servidor', 'memorando_joao.pdf', 6, 3, FALSE, 'Aceita', '2025-06-30 14:00:00', '11111111111'),
-('1001', 'Servidor', 'ata_joao.pdf', 2, 5, TRUE, 'Aceita', '2025-07-01 16:00:00', '22222222222'),
+('1000001', 'Servidor', 'memorando_joao.pdf', 6, 3, FALSE, 'Aceita', '2025-06-30 14:00:00', '11111111111'),
+('1000001', 'Servidor', 'ata_joao.pdf', 2, 5, TRUE, 'Aceita', '2025-07-01 16:00:00', '22222222222'),
 ('67890123456', 'Servidor', 'relatorio_carlos.pdf', 10, 1, FALSE, 'Aceita', '2025-07-02 08:45:00', '11111111111'),
 ('67890123456', 'Servidor', 'oficio_carlos.pdf', 3, 2, TRUE, 'Aceita', '2025-07-02 11:20:00', '22222222222');
 
@@ -269,12 +269,12 @@ INSERT INTO SolicitacaoImpressao (cpf_solicitante, tipo_solicitante, arquivo_pat
 INSERT INTO Notificacao (solicitacao_id, destinatario_cpf, mensagem, visualizada, data_envio) VALUES
 (1, '12345678901', 'Sua solicitação foi recebida.', FALSE, '2025-06-27 10:05:00'),
 (2, '45678901234', 'Sua solicitação foi aceita.', TRUE, '2025-06-27 11:10:00'),
-(3, '1001', 'Sua solicitação foi lida.', FALSE, '2025-06-27 12:10:00');
+(3, '1000001', 'Sua solicitação foi lida.', FALSE, '2025-06-27 12:10:00');
 
 -- LOG DE DECREMENTO DE COTAS
 INSERT INTO LogDecrementoCota (solicitacao_id, tipo_usuario, referencia, qtd_cotas, data) VALUES
 (2, 'Aluno', '20250005', 5, '2025-06-27 11:15:00'),
-(3, 'Servidor', '1001', 3, '2025-06-27 12:15:00'),
+(3, 'Servidor', '1000001', 3, '2025-06-27 12:15:00'),
 (1, 'Aluno', '20250001', 10, '2025-06-27 10:20:00'),
 (4, 'Servidor', '1002', 4, '2025-06-28 09:15:00'),
 (5, 'Servidor', '1003', 6, '2025-06-29 10:35:00');
