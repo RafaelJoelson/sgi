@@ -39,80 +39,91 @@ $semestre_vigente = $stmt_semestre->fetch();
 <?php include_once '../../includes/header.php'; ?>
 <link rel="stylesheet" href="form_aluno.css">
 <main>
-  <h1><?= $modo_edicao ? 'Editar Aluno' : 'Cadastrar Novo Aluno' ?></h1>
+    <h1><?= $modo_edicao ? 'Editar Aluno' : 'Cadastrar Novo Aluno' ?></h1>
 
-  <!-- Exibe semestre letivo vigente, se encontrado -->
-  <?php if ($semestre_vigente): ?>
+    <!-- MUDANÇA: Exibe mensagens de sucesso ou erro da sessão -->
+    <?php if (isset($_SESSION['mensagem_sucesso'])): ?>
+        <div class="mensagem-sucesso" style="display:block;"><?= htmlspecialchars($_SESSION['mensagem_sucesso']) ?></div>
+        <?php unset($_SESSION['mensagem_sucesso']); ?>
+    <?php endif; ?>
+    <?php if (isset($_SESSION['mensagem_erro'])): ?>
+        <div class="mensagem-erro" style="display:block;"><?= htmlspecialchars($_SESSION['mensagem_erro']) ?></div>
+        <?php unset($_SESSION['mensagem_erro']); ?>
+    <?php endif; ?>
+
+    <?php if ($semestre_vigente): ?>
     <div class="info-semestre" style="margin-bottom:1em; color:#555; font-size:0.95em;">
       Semestre letivo vigente: <b><?= $semestre_vigente->ano ?>/<?= $semestre_vigente->semestre ?></b> (<?= date('d/m/Y', strtotime($semestre_vigente->data_inicio)) ?> a <?= date('d/m/Y', strtotime($semestre_vigente->data_fim)) ?>)
     </div>
-  <?php endif; ?>
-
-  <form action="<?= $modo_edicao ? 'processar_edicao.php' : 'processar_cadastro.php' ?>" method="POST" class="form-aluno">
-    <?php if ($modo_edicao): ?>
-      <input type="hidden" name="matricula" value="<?= htmlspecialchars($aluno->matricula) ?>">
     <?php endif; ?>
 
-    <label>Matrícula
-      <input type="text" name="matricula" required value="<?= $aluno->matricula ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
-    </label>
+    <!-- MUDANÇA: O action agora aponta para os scripts corretos -->
+    <form action="<?= $modo_edicao ? 'processar_edicao_aluno.php' : 'processar_cadastro_aluno.php' ?>" method="POST" class="form-aluno">
+        <?php if ($modo_edicao): ?>
+            <input type="hidden" name="matricula" value="<?= htmlspecialchars($aluno->matricula) ?>">
+        <?php endif; ?>
 
-    <label>Nome
-      <input type="text" name="nome" required value="<?= $aluno->nome ?? '' ?>">
-    </label>
+        <label>Matrícula
+            <input type="text" name="matricula" required value="<?= $aluno->matricula ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+        </label>
 
-    <label>Sobrenome
-      <input type="text" name="sobrenome" required value="<?= $aluno->sobrenome ?? '' ?>">
-    </label>
+        <label>Nome
+            <input type="text" name="nome" required value="<?= $aluno->nome ?? '' ?>">
+        </label>
 
-    <label>Email
-      <input type="email" name="email" required value="<?= $aluno->email ?? '' ?>">
-    </label>
+        <label>Sobrenome
+            <input type="text" name="sobrenome" required value="<?= $aluno->sobrenome ?? '' ?>">
+        </label>
 
-    <label>CPF
-      <input type="text" name="cpf" required maxlength="11" value="<?= $aluno->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
-    </label>
+        <label>Email
+            <input type="email" name="email" required value="<?= $aluno->email ?? '' ?>">
+        </label>
 
-    <?php if (!$modo_edicao): ?>
-      <label>Senha
-        <input type="password" name="senha" required>
-      </label>
-    <?php endif; ?>
+        <label>CPF
+            <input type="text" name="cpf" required maxlength="11" pattern="\d{11}" title="Digite os 11 números do CPF" value="<?= $aluno->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+        </label>
 
-    <label>Cargo
-      <select name="cargo" required>
-        <option value="Nenhum" <?= isset($aluno) && $aluno->cargo === 'Nenhum' ? 'selected' : '' ?>>Nenhum</option>
-        <option value="Líder" <?= isset($aluno) && $aluno->cargo === 'Líder' ? 'selected' : '' ?>>Líder</option>
-        <option value="Vice-líder" <?= isset($aluno) && $aluno->cargo === 'Vice-líder' ? 'selected' : '' ?>>Vice-líder</option>
-      </select>
-    </label>
+        <?php if (!$modo_edicao): ?>
+            <label>Senha
+                <input type="password" name="senha" required minlength="6">
+            </label>
+        <?php endif; ?>
 
-    <label>Cota (Curso / Período)
-      <select name="cota_id" required>
-        <option value="" disabled <?= !isset($aluno->cota_id) ? 'selected' : '' ?>>Selecione uma cota</option>
-        <?php foreach ($cotas as $cota): ?>
-          <option value="<?= $cota->id ?>" <?= isset($aluno) && $aluno->cota_id == $cota->id ? 'selected' : '' ?>>
-            <?= htmlspecialchars($cota->nome_completo) ?> (<?= htmlspecialchars($cota->sigla) ?>) - <?= htmlspecialchars($cota->periodo) ?>
-          </option>
-        <?php endforeach; ?>
-      </select>
-    </label>
+        <label>Cargo
+            <select name="cargo" required>
+                <option value="Nenhum" <?= isset($aluno) && $aluno->cargo === 'Nenhum' ? 'selected' : '' ?>>Nenhum</option>
+                <option value="Líder" <?= isset($aluno) && $aluno->cargo === 'Líder' ? 'selected' : '' ?>>Líder</option>
+                <option value="Vice-líder" <?= isset($aluno) && $aluno->cargo === 'Vice-líder' ? 'selected' : '' ?>>Vice-líder</option>
+            </select>
+        </label>
 
-    <label>Data Fim da Validade
-      <input type="date" name="data_fim_validade" required 
-        value="<?= $semestre_vigente ? $semestre_vigente->data_fim : '' ?>" 
-        readonly>
-    </label>
+        <label>Turma (Cota)
+            <select name="cota_id" required>
+                <option value="" disabled <?= !isset($aluno->cota_id) ? 'selected' : '' ?>>Selecione uma turma</option>
+                <?php foreach ($cotas as $cota): ?>
+                    <option value="<?= $cota->id ?>" <?= isset($aluno) && $aluno->cota_id == $cota->id ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($cota->nome_completo) ?> (<?= htmlspecialchars($cota->sigla) ?>) - <?= htmlspecialchars($cota->periodo) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </label>
 
-    <?php if ($modo_edicao): ?>
-      <label>Ativo
-        <input type="checkbox" name="ativo" value="1" <?= isset($aluno) && $aluno->ativo ? 'checked' : '' ?>>
-        <span style="font-size:0.95em; color:#555;">(Desmarque para inativar o aluno)</span>
-      </label>
-    <?php endif; ?>
+        <label>Data Fim da Validade
+            <input type="date" name="data_fim_validade" required 
+                value="<?= $aluno->data_fim_validade ?? ($semestre_vigente->data_fim ?? '') ?>" 
+                >
+        </label>
 
-    <button type="submit"><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Aluno' ?></button>
-  </form>
-  <a class="btn-back" href="dashboard_cad.php">Voltar</a>
+        <?php if ($modo_edicao): ?>
+            <!-- MUDANÇA: Estrutura do checkbox melhorada para usabilidade -->
+            <label class="checkbox-label">
+                <input type="checkbox" name="ativo" value="1" <?= isset($aluno) && $aluno->ativo ? 'checked' : '' ?>>
+                Aluno Ativo
+            </label>
+        <?php endif; ?>
+
+        <button type="submit"><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Aluno' ?></button>
+    </form>
+    <a class="btn-back" href="dashboard_cad.php">Voltar</a>
 </main>
 <?php include_once '../../includes/footer.php'; ?>

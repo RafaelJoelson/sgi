@@ -10,7 +10,7 @@ require_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="dashboard_servidor.css">
 <main class="container">
-    <h2>Servidor(a): <?= htmlspecialchars($_SESSION['usuario']['nome'] . (isset($_SESSION['usuario']['sobrenome']) ? ' ' . $_SESSION['usuario']['sobrenome'] : '')) ?></h2>
+    <h5>Servidor(a): <?= htmlspecialchars($_SESSION['usuario']['nome'] . (isset($_SESSION['usuario']['sobrenome']) ? ' ' . $_SESSION['usuario']['sobrenome'] : '')) ?></h5>
     <div id="cota-info" style="margin-bottom:1em;font-weight:bold;color:#1a4b2a;"></div>
     
     <form id="form-solicitacao" enctype="multipart/form-data">

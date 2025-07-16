@@ -76,7 +76,6 @@ include_once '../../includes/header.php';
         <section class="dashboard-header">
             <h1>Coordenação de Apoio ao Discente</h1>
         </section>
-        <!-- Cards -->
         <section class="dashboard-cards">
             <div class="card">Turmas Ativas: <?= $total_turmas ?></div>
             <div class="card">Alunos Ativos: <?= $total_alunos ?></div>
@@ -87,33 +86,36 @@ include_once '../../includes/header.php';
             <a class="btn-menu" href="gerenciar_cotas.php">Gerenciar Cotas</a>
             <a class="btn-menu" href="gerenciar_turmas.php">Gerenciar Turmas</a>
             <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
-            <a class="btn-menu" href="relatorio_aluno.php">Relatório de Impressões por Aluno</a>
+            <a class="btn-menu" href="relatorio_aluno.php">Relatório de Impressões</a>
         </section>
     </aside>
     <main class="dashboard-main">
-        <!-- Tabela de alunos -->
         <div class="responsive-table">
-            <!-- Busca por CPF ou matrícula -->
-            <form method="GET" class="busca-form">
-                <label for="tipo_busca">Buscar por:</label>
-                <select name="tipo_busca" id="tipo_busca" required>
-                    <option value="cpf" <?= isset($_GET['tipo_busca']) && $_GET['tipo_busca'] === 'cpf' ? 'selected' : '' ?>>CPF</option>
-                    <option value="matricula" <?= isset($_GET['tipo_busca']) && $_GET['tipo_busca'] === 'matricula' ? 'selected' : '' ?>>Matrícula</option>
-                </select>
-                <input type="text" name="valor_busca" placeholder="Digite o CPF ou matrícula" value="<?= htmlspecialchars($_GET['valor_busca'] ?? '') ?>" required>
-                <button type="submit">Buscar</button>
-            </form>
-            <!-- Filtro por turma -->
-            <form method="GET" class="filter-form">
-                <select name="turma">
-                    <option value="">Todas as turmas</option>
-                    <?php foreach ($turmas_disponiveis as $turma): ?>
-                        <option value="<?= $turma->id ?>" <?= isset($_GET['turma']) && $_GET['turma'] == $turma->id ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($turma->nome_completo . ' - ' . $turma->periodo) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <button type="submit">Filtrar</button>
+            
+            <form method="GET" class="busca-form styled-busca-form">
+                <div class="form-group">
+                    <label for="tipo_busca">Buscar por:</label>
+                    <select name="tipo_busca" id="tipo_busca">
+                        <option value="cpf" <?= ($tipo_busca === 'cpf' ? 'selected' : '') ?>>CPF</option>
+                        <option value="matricula" <?= ($tipo_busca === 'matricula' ? 'selected' : '') ?>>Matrícula</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="valor_busca">Valor:</label>
+                    <input type="text" id="valor_busca" name="valor_busca" placeholder="Digite o valor..." value="<?= htmlspecialchars($valor_busca) ?>">
+                </div>
+                <div class="form-group filter">
+                    <label for="turma">Filtrar por Turma:</label>
+                    <select name="turma" id="turma">
+                        <option value="">Todas as turmas</option>
+                        <?php foreach ($turmas_disponiveis as $turma): ?>
+                            <option value="<?= $turma->id ?>" <?= ($filtro_turma == $turma->id ? 'selected' : '') ?>>
+                                <?= htmlspecialchars($turma->nome_completo . ' - ' . $turma->periodo) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <button type="submit" class="btn-filtrar">Buscar</button>
             </form>
 
             <table>
@@ -123,25 +125,22 @@ include_once '../../includes/header.php';
                         <th>Nome</th>
                         <th>Cargo</th>
                         <th>Turma</th>
-                        <th>Período</th>
-                        <th>Validade</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($alunos as $aluno): ?>
                         <tr>
-                            <td data-label="Matrícula"><?= $aluno->matricula ?></td>
-                            <td data-label="Nome"><?= $aluno->nome ?></td>
-                            <td data-label="Cargo"><?= $aluno->cargo ?></td>
-                            <td data-label="Turma"><?= htmlspecialchars($aluno->nome_completo) ?></td>
-                            <td data-label="Período"><?= htmlspecialchars($aluno->periodo) ?></td>
-                            <td data-label="Validade"><?= date('d/m/Y', strtotime($aluno->data_fim_validade)) ?></td>
+                            <td data-label="Matrícula"><?= htmlspecialchars($aluno->matricula) ?></td>
+                            <td data-label="Nome"><?= htmlspecialchars($aluno->nome) ?></td>
+                            <td data-label="Cargo"><?= htmlspecialchars($aluno->cargo) ?></td>
+                            <td data-label="Turma"><?= htmlspecialchars($aluno->nome_completo . ' - ' . $aluno->periodo) ?></td>
                             <td data-label="Ações">
+                                <!-- MUDANÇA: Botões revertidos para o estilo original de texto -->
                                 <div class="action-buttons">
                                     <a href="form_aluno.php?matricula=<?= $aluno->matricula ?>">Editar/Renovar</a>
                                     <a href="#" class="btn-redefinir" data-matricula="<?= $aluno->matricula ?>">Redefinir Senha</a>
-                                    <a  class="btn-exc"href="excluir_aluno.php?matricula=<?= $aluno->matricula ?>" 
+                                    <a class="" href="excluir_aluno.php?matricula=<?= $aluno->matricula ?>" 
                                         onclick="return confirm('Tem certeza que deseja excluir o aluno <?= htmlspecialchars($aluno->nome) ?>?')">
                                         Excluir
                                     </a>
@@ -162,131 +161,133 @@ include_once '../../includes/header.php';
                 </nav>
             <?php endif; ?>
         </div>
-        <?php if (!empty($_SESSION['mensagem'])): ?>
-            <div id="toast-mensagem" class="mensagem-sucesso">
-                <?= htmlspecialchars($_SESSION['mensagem']) ?>
-            </div>
-            <?php unset($_SESSION['mensagem']); ?>
-        <?php endif; ?>
-        <div id="modal-redefinir" class="modal">
+        
+        <div id="modal-redefinir-aluno" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Redefinir Senha do Aluno</h2>
                 <form method="POST" action="redefinir_senha.php">
-                <input type="hidden" name="matricula" id="matricula-modal">
-                <label>Nova Senha
-                    <input type="password" name="nova_senha" required>
-                </label>
-                <button type="submit">Salvar Nova Senha</button>
+                    <input type="hidden" name="matricula" id="matricula-modal-aluno">
+                    <label>Nova Senha <input type="password" name="nova_senha" required></label>
+                    <button type="submit">Salvar Nova Senha</button>
                 </form>
             </div>
         </div>
+
         <div id="modal-servidores" class="modal">
           <div class="modal-content" style="max-width:900px;width:98%;">
-            <span class="close" id="close-modal-servidores">&times;</span>
+            <span class="close">&times;</span>
             <h2>Servidores do Setor CAD</h2>
             <button onclick="window.location.href='../admin/form_servidor.php'" class="btn-menu" style="margin-bottom:1em;">Novo Servidor</button>
             <div id="tabela-servidores-cad">Carregando...</div>
           </div>
         </div>
+
+        <div id="modal-excluir" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Confirmar Exclusão</h2>
+                <p>Você tem certeza que deseja excluir <strong id="nome-item-excluir"></strong>?</p>
+                <p>Esta ação é irreversível.</p>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary btn-cancelar-exclusao">Cancelar</button>
+                    <a href="#" id="btn-confirmar-exclusao" class="btn-danger">Sim, Excluir</a>
+                </div>
+            </div>
+        </div>
     </main>
 </div>
 <script>
-// MUDANÇA 1: Passa o SIAPE do PHP para o JavaScript de forma segura
-const siapeLogado = '<?= htmlspecialchars($siape_logado) ?>';
+document.addEventListener('DOMContentLoaded', () => {
+    const siapeLogado = '<?= htmlspecialchars($siape_logado) ?>';
+    const mainContent = document.querySelector('.dashboard-layout');
 
-document.querySelectorAll('.btn-redefinir').forEach(btn => {
-    btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        const matricula = this.getAttribute('data-matricula');
-        document.getElementById('matricula-modal').value = matricula;
-        document.getElementById('modal-redefinir').style.display = 'block';
-    });
-});
+    mainContent.addEventListener('click', function(e) {
+        // MUDANÇA: O seletor agora inclui o link 'a.btn-redefinir'
+        const target = e.target.closest('button.btn-action, a.btn-redefinir, .close, .btn-cancelar-exclusao, #btn-gerenciar-servidores');
+        if (!target) return;
 
-document.querySelector('#modal-redefinir .close').addEventListener('click', function () {
-    document.getElementById('modal-redefinir').style.display = 'none';
-});
-
-window.addEventListener('click', function (e) {
-    const modal = document.getElementById('modal-redefinir');
-    if (e.target === modal) modal.style.display = 'none';
-});
-
-document.getElementById('btn-gerenciar-servidores').onclick = function(e) {
-  e.preventDefault();
-  document.getElementById('modal-servidores').style.display = 'block';
-  carregarServidoresCAD();
-};
-document.getElementById('close-modal-servidores').onclick = function() {
-  document.getElementById('modal-servidores').style.display = 'none';
-};
-window.addEventListener('click', function(e) {
-  const modal = document.getElementById('modal-servidores');
-  if (e.target === modal) modal.style.display = 'none';
-});
-
-function carregarServidoresCAD() {
-  fetch('../admin/listar_servidores_cad.php')
-    .then(r => r.json())
-    .then(data => {
-      let html = '<table style="width:100%;font-size:0.98em;"><thead><tr><th>SIAPE</th><th>Nome</th><th>Email</th><th>Setor</th><th>Ações</th></tr></thead><tbody>';
-      if(data.length === 0) {
-          html += '<tr><td colspan="5">Nenhum servidor CAD encontrado.</td></tr>';
-      } else {
-          data.forEach(s => {
-            let botaoExcluir = ''; // Variável para o botão de excluir
-
-            // MUDANÇA 2: Lógica para ocultar o botão de excluir do próprio usuário
-            if (s.siape !== siapeLogado) {
-                botaoExcluir = `<a href="#" onclick="excluirServidor('${s.siape}');return false;" class="btn-exc" ">Excluir</a>`;
-            }
-
-            html += `<tr>
-              <td>${s.siape}</td>
-              <td>${s.nome} ${s.sobrenome}</td>
-              <td>${s.email}</td>
-              <td>${s.setor_admin}</td>
-              <td>
-                <a href="../admin/form_servidor.php?siape=${encodeURIComponent(s.siape)}" class="btn-menu" style="padding:0.3rem 0.7rem;font-size:0.9em;">Editar</a>
-                ${botaoExcluir}
-              </td>
-            </tr>`;
-          });
-      }
-      html += '</tbody></table>';
-      document.getElementById('tabela-servidores-cad').innerHTML = html;
-    });
-}
-
-function excluirServidor(siape) {
-  if(!confirm('Tem certeza que deseja excluir o servidor SIAPE ' + siape + '?')) return;
-  fetch('../admin/excluir_servidor.php', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body: 'siape=' + encodeURIComponent(siape)
-  })
-  .then(r => r.json())
-  .then(data => {
-    alert(data.mensagem);
-    carregarServidoresCAD();
-  })
-  .catch(() => alert('Erro ao excluir servidor.'));
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  const toast = document.getElementById('toast-mensagem');
-  if (toast) {
-    toast.classList.add('show');
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => {
-        if(toast.parentNode) {
-          toast.parentNode.removeChild(toast);
+        // Gerenciar Servidores (abrir modal)
+        if (target.id === 'btn-gerenciar-servidores') {
+            e.preventDefault();
+            document.getElementById('modal-servidores').style.display = 'block';
+            carregarServidoresCAD();
         }
-      }, 600);
-    }, 4000);
-  }
+
+        // Redefinir senha de aluno (abrir modal)
+        if (target.classList.contains('btn-redefinir')) {
+            e.preventDefault();
+            // MUDANÇA: Usa 'data-matricula' do link de texto
+            const matricula = target.dataset.matricula;
+            document.getElementById('matricula-modal-aluno').value = matricula;
+            document.getElementById('modal-redefinir-aluno').style.display = 'block';
+        }
+
+        // Excluir (abrir modal de confirmação para servidores no modal)
+        if (target.classList.contains('btn-excluir')) {
+            e.preventDefault();
+            const id = target.dataset.id;
+            const nome = target.dataset.nome;
+            const tipo = target.dataset.tipo;
+            
+            document.getElementById('nome-item-excluir').textContent = `o ${tipo} ${nome}`;
+            const linkConfirmar = `../admin/excluir_servidor.php?siape=${id}`;
+            document.getElementById('btn-confirmar-exclusao').href = linkConfirmar;
+            document.getElementById('modal-excluir').style.display = 'block';
+        }
+
+        // Fechar qualquer modal
+        if (target.classList.contains('close') || target.classList.contains('btn-cancelar-exclusao')) {
+            e.preventDefault();
+            target.closest('.modal').style.display = 'none';
+        }
+    });
+
+    // Fechar modal ao clicar fora
+    window.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+        }
+    });
+
+    // --- FUNÇÃO PARA CARREGAR SERVIDORES ---
+    function carregarServidoresCAD() {
+        fetch('../admin/listar_servidores_cad.php')
+            .then(r => r.json())
+            .then(data => {
+                let html = '<table style="width:100%;"><thead><tr><th>SIAPE</th><th>Nome</th><th>Email</th><th>Ações</th></tr></thead><tbody>';
+                if (data.length === 0) {
+                    html += '<tr><td colspan="4">Nenhum servidor CAD encontrado.</td></tr>';
+                } else {
+                    data.forEach(s => {
+                        let botaoExcluir = '';
+                        if (s.siape !== siapeLogado) {
+                            // O botão de excluir aqui continua usando o modal, pois está dentro de um conteúdo dinâmico
+                            botaoExcluir = `<button type="button" class="btn-action btn-delete btn-exc" 
+                                                data-id="${s.siape}" 
+                                                data-nome="${s.nome} ${s.sobrenome}" 
+                                                data-tipo="servidor"
+                                                title="Excluir Servidor">
+                                                Excluir
+                                            </button>`;
+                        }
+                        html += `<tr>
+                            <td>${s.siape}</td>
+                            <td>${s.nome} ${s.sobrenome}</td>
+                            <td>${s.email}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="../admin/form_servidor.php?siape=${s.siape}" class="btn-action btn-edit" title="Editar">Editar</a>
+                                    ${botaoExcluir}
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                }
+                html += '</tbody></table>';
+                document.getElementById('tabela-servidores-cad').innerHTML = html;
+            });
+    }
 });
 </script>
 <?php include_once '../../includes/footer.php'; ?>

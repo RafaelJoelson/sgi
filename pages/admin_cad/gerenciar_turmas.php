@@ -86,12 +86,19 @@ if (isset($_POST['novo_curso_nome']) && isset($_POST['novo_curso_sigla'])) {
     exit;
 }
 
-// Filtros de busca
+// 1. Parâmetros de paginação
+$pagina = isset($_GET['pagina']) && is_numeric($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+$limite = 15; // Itens por página
+$offset = ($pagina - 1) * $limite;
+
+// 2. Parâmetros de filtro
 $filtro_nome = trim($_GET['nome'] ?? '');
 $filtro_periodo = trim($_GET['periodo'] ?? '');
-$sql = "SELECT t.*, c.sigla, c.nome_completo FROM Turma t JOIN Curso c ON t.curso_id = c.id";
+
+$base_sql = "FROM Turma t JOIN Curso c ON t.curso_id = c.id";
 $condicoes = [];
 $params = [];
+
 if ($filtro_nome !== '') {
     $condicoes[] = "c.nome_completo LIKE :nome";
     $params[':nome'] = "%$filtro_nome%";
@@ -100,30 +107,45 @@ if ($filtro_periodo !== '') {
     $condicoes[] = "t.periodo = :periodo";
     $params[':periodo'] = $filtro_periodo;
 }
-if ($condicoes) {
-    $sql .= " WHERE " . implode(' AND ', $condicoes);
-}
-$sql .= " ORDER BY c.nome_completo ASC, t.id ASC";
-$stmt = $conn->prepare($sql);
-$stmt->execute($params);
-$turmas = $stmt->fetchAll();
 
-// Busca de dados para modo de edição
+$where_clause = !empty($condicoes) ? " WHERE " . implode(' AND ', $condicoes) : '';
+
+// 3. Contar o total de resultados para a paginação
+$sql_count = "SELECT COUNT(*) AS total " . $base_sql . $where_clause;
+$stmt_count = $conn->prepare($sql_count);
+$stmt_count->execute($params);
+$total_resultados = $stmt_count->fetch()->total ?? 0;
+$total_paginas = ceil($total_resultados / $limite);
+
+// 4. Buscar os resultados da página atual
+$sql_turmas = "SELECT t.*, c.sigla, c.nome_completo " . $base_sql . $where_clause . " ORDER BY c.nome_completo ASC, t.id ASC LIMIT :limite OFFSET :offset";
+$stmt_turmas = $conn->prepare($sql_turmas);
+
+// Bind dos parâmetros de filtro
+foreach ($params as $key => $val) {
+    $stmt_turmas->bindValue($key, $val);
+}
+// Bind dos parâmetros de paginação
+$stmt_turmas->bindValue(':limite', $limite, PDO::PARAM_INT);
+$stmt_turmas->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt_turmas->execute();
+$turmas = $stmt_turmas->fetchAll();
+
+
+// Lógica para modo de edição e para preencher os selects dos formulários
 $modo_edicao = false;
 $turma_editar = null;
 if (isset($_GET['editar'])) {
-    $stmt = $conn->prepare("SELECT t.* FROM Turma t WHERE t.id = :id");
-    $stmt->execute([':id' => $_GET['editar']]);
-    $turma_editar = $stmt->fetch();
+    $stmt_editar = $conn->prepare("SELECT t.* FROM Turma t WHERE t.id = :id");
+    $stmt_editar->execute([':id' => $_GET['editar']]);
+    $turma_editar = $stmt_editar->fetch();
     $modo_edicao = (bool)$turma_editar;
 }
 
-// Buscar dados para os selects dos formulários
 $stmtCursos = $conn->query("SELECT id, sigla, nome_completo FROM Curso ORDER BY nome_completo ASC");
 $cursos = $stmtCursos->fetchAll();
 $stmtPeriodos = $conn->query("SELECT DISTINCT periodo FROM Turma ORDER BY LENGTH(periodo), periodo ASC");
 $periodos = $stmtPeriodos->fetchAll(PDO::FETCH_COLUMN);
-
 include_once '../../includes/header.php';
 ?>
 
@@ -173,7 +195,6 @@ include_once '../../includes/header.php';
                 </div>
             </form>
 
-            <!-- Formulário para adicionar novo curso -->
             <form method="POST" class="form-novo-curso">
                 <h2>Adicionar novo curso</h2>
                 <label>Nome completo
@@ -190,7 +211,6 @@ include_once '../../includes/header.php';
         </aside>
         <main class="dashboard-main">
             <div class="responsive-table">
-                <!-- Filtros -->
                 <form method="GET" class="filter-form">
                     <select name="nome">
                         <option value="">Todos os cursos</option>
@@ -232,6 +252,20 @@ include_once '../../includes/header.php';
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                
+                <!-- MUDANÇA: Adicionada a navegação de paginação -->
+                <?php if ($total_paginas > 1): ?>
+                    <nav class="paginacao">
+                        <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
+                            <a class="<?= $i === $pagina ? 'pagina-ativa' : '' ?>"
+                                href="?<?= http_build_query(array_merge($_GET, ['pagina' => $i])) ?>">
+                                <?= $i ?>
+                            </a>
+                        <?php endfor; ?>
+                    </nav>
+                <?php endif; ?>
+                <!-- FIM DA MUDANÇA -->
+
             </div>
         </main>
     </div>

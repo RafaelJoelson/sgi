@@ -106,3 +106,43 @@ main h1 {
     padding: 0.5rem 0;
   }
 }
+.mensagem-sucesso,
+.mensagem-erro {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid transparent;
+    border-radius: 8px; /* Bordas mais arredondadas */
+    font-weight: 500;
+    display: block; /* Garante que a mensagem seja exibida */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Espaço entre o ícone e o texto */
+}
+
+/* Estilo para a mensagem de sucesso (verde) */
+.mensagem-sucesso {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+}
+
+/* Estilo para a mensagem de erro (vermelho) */
+.mensagem-erro {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+/* Adiciona um ícone antes da mensagem para melhor feedback visual */
+.mensagem-sucesso::before {
+    font-family: "Font Awesome 5 Free"; /* Requer Font Awesome */
+    font-weight: 900;
+    content: "\f058"; /* Ícone de círculo de verificação */
+}
+
+.mensagem-erro::before {
+    font-family: "Font Awesome 5 Free"; /* Requer Font Awesome */
+    font-weight: 900;
+    content: "\f071"; /* Ícone de triângulo de aviso */
+}

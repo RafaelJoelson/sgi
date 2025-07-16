@@ -108,6 +108,25 @@ INSERT INTO `CotaAluno` (`id`, `turma_id`, `cota_total`, `cota_usada`) VALUES
 
 -- --------------------------------------------------------
 --
+-- Estrutura da tabela `Configuracao`
+--
+CREATE TABLE `Configuracoes` (
+  `chave` VARCHAR(50) NOT NULL,
+  `valor` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`chave`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Inserindo dados para a tabela `Configuracoes`
+
+INSERT INTO `Configuracoes` (`chave`, `valor`) VALUES
+('cota_padrao_aluno', '600'),
+('cota_padrao_servidor_pb', '1000'),
+('cota_padrao_servidor_color', '100');
+
+
+-- --------------------------------------------------------
+--
 -- Estrutura da tabela `Aluno`
 --
 
@@ -343,67 +362,3 @@ CREATE TABLE `LogSemestreLetivo` (
   `data` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- #####################################################################
--- # NOTA IMPORTANTE PARA HOSPEDAGEM (InfinityFree, etc.)
--- #####################################################################
---
--- O Agendador de Eventos (MySQL Events) está DESABILITADO neste servidor.
--- Os blocos "CREATE EVENT" abaixo foram comentados para não causar erros
--- durante a importação do banco de dados.
---
--- Para que as tarefas automáticas (limpeza, desativação, etc.) funcionem,
--- você DEVE configurar um CRON JOB no painel de controle da sua hospedagem
--- para executar o script PHP `tarefas_diarias.php` uma vez por dia.
---
--- #####################################################################
-
-/*
--- EVENTO PARA DESATIVAR USUÁRIOS EXPIRADOS (SUBSTITUÍDO POR CRON JOB)
-DELIMITER //
-CREATE EVENT IF NOT EXISTS desativar_usuarios_expirados
-ON SCHEDULE EVERY 1 DAY
-DO
-BEGIN
-  UPDATE Aluno SET ativo = FALSE WHERE data_fim_validade < CURDATE();
-  UPDATE Servidor SET ativo = FALSE WHERE data_fim_validade < CURDATE() AND is_admin = FALSE;
-END;//
-DELIMITER ;
-*/
-
-/*
--- EVENTO PARA LIMPAR SOLICITAÇÕES ANTIGAS (SUBSTITUÍDO POR CRON JOB)
-DELIMITER //
-CREATE EVENT IF NOT EXISTS limpar_solicitacoes_antigas
-ON SCHEDULE EVERY 1 DAY
-DO
-BEGIN
-  DELETE FROM SolicitacaoImpressao 
-  WHERE data_criacao < NOW() - INTERVAL 15 DAY;
-END;//
-DELIMITER ;
-*/
-
-/*
--- EVENTO PARA RESETAR COTAS NO INÍCIO DE CADA SEMESTRE LETIVO (SUBSTITUÍDO POR CRON JOB)
-DELIMITER //
-CREATE EVENT IF NOT EXISTS resetar_cotas_semestre
-ON SCHEDULE EVERY 1 DAY
-DO
-BEGIN
-  DECLARE prox_semestre_inicio DATE;
-  SELECT data_inicio INTO prox_semestre_inicio FROM SemestreLetivo WHERE data_inicio = CURDATE() LIMIT 1;
-  IF prox_semestre_inicio IS NOT NULL THEN
-    UPDATE CotaAluno SET cota_total = 600, cota_usada = 0;
-    UPDATE CotaServidor SET cota_pb_total = 1000, cota_pb_usada = 0, cota_color_total = 100, cota_color_usada = 0;
-  END IF;
-END;//
-DELIMITER ;
-*/
-
-SET FOREIGN_KEY_CHECKS=1;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
