@@ -52,7 +52,7 @@ include_once '../../includes/header.php';
         <?php endif; ?>
 
         <label>SIAPE
-            <input type="text" name="siape" required value="<?= $servidor->siape ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+            <input type="text" name="siape" maxlength="8" required value="<?= $servidor->siape ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
         </label>
 
         <label>Nome
