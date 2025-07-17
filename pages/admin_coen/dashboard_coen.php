@@ -64,6 +64,13 @@ include_once '../../includes/header.php';
 <link rel="stylesheet" href="dashboard_coen.css">
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
+        <div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
         <section class="dashboard-header">
             <h1>Coordenação de Ensino</h1>
         </section>

@@ -113,6 +113,13 @@ require_once '../../includes/header.php';
 <link rel="stylesheet" href="dashboard_cad.css">
 <main class="dashboard-layout">
     <aside class="dashboard-aside-relatorio">
+        <div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
         <h1>Relatório de Impressões por Aluno</h1>
         <!-- CORREÇÃO: A classe foi ajustada para 'relatorio-form' e o ID foi garantido -->
         <form method="GET" class="relatorio-form" id="form-relatorio">
@@ -144,9 +151,11 @@ require_once '../../includes/header.php';
                 </select>
             </label>
             <button type="submit" class="btn-menu">Filtrar</button>
+            <button type="button" class="btn-menu" onclick="imprimirRelatorio()">Imprimir</button>
         </form>
-        <button type="button" class="btn-menu" onclick="imprimirRelatorio()">Imprimir</button>
-        <a class="btn-back" href="dashboard_cad.php">&larr; Voltar</a>
+        <div>
+            <a class="btn-back" href="dashboard_cad.php">&larr; Voltar</a>
+        </div>
     </aside>
 <?php endif; ?>
     <section class="dashboard-main">

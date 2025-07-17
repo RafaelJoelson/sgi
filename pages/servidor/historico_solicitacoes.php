@@ -24,6 +24,13 @@ $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <link rel="stylesheet" href="dashboard_servidor.css">
 
 <main class="container">
+    <div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
     <h3>Histórico de Solicitações</h3>
     
     <!-- A tabela agora está dentro de um container com o ID correto para aplicar os estilos -->

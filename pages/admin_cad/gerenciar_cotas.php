@@ -53,6 +53,13 @@ include_once '../../includes/header.php';
 <link rel="stylesheet" href="gerenciar_cotas.css">
 <div class="dashboard-layout">
   <aside class="dashboard-aside-cotas">
+    <div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
     <h1>Gerenciar Cotas por Turma</h1>
     <section aria-label="Formulário de cotas">
       <form method="POST" class="form-cotas">

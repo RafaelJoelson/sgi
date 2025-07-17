@@ -239,7 +239,7 @@ CREATE TABLE `SolicitacaoImpressao` (
   `status` enum('Nova','Lida','Aceita','Rejeitada') NOT NULL DEFAULT 'Nova',
   `data_criacao` datetime NOT NULL DEFAULT current_timestamp(),
   `reprografo_id` int(11) DEFAULT NULL,
-  `arquivada` tinyint(1) NOT NULL DEFAULT 0,
+  `arquivada` BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Marca se a solicitação foi arquivada' AFTER `reprografo_id`;
   PRIMARY KEY (`id`),
   KEY `reprografo_id` (`reprografo_id`),
   CONSTRAINT `SolicitacaoImpressao_ibfk_1` FOREIGN KEY (`reprografo_id`) REFERENCES `Reprografo` (`id`) ON DELETE SET NULL

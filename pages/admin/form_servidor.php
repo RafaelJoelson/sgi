@@ -34,6 +34,13 @@ include_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="form_servidor.css">
 <main>
+    <div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
     <h1><?= $modo_edicao ? 'Editar Servidor' : 'Cadastrar Novo Servidor' ?></h1>
 
     <!-- Exibe mensagens de sucesso ou erro da sessão -->

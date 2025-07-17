@@ -73,6 +73,13 @@ include_once '../../includes/header.php';
 <link rel="stylesheet" href="dashboard_cad.css">
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
+        <div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
         <section class="dashboard-header">
             <h1>Coordenação de Apoio ao Discente</h1>
         </section>
@@ -90,6 +97,7 @@ include_once '../../includes/header.php';
         </section>
     </aside>
     <main class="dashboard-main">
+        
         <div class="responsive-table">
             
             <form method="GET" class="busca-form styled-busca-form">
@@ -140,7 +148,7 @@ include_once '../../includes/header.php';
                                 <div class="action-buttons">
                                     <a href="form_aluno.php?matricula=<?= $aluno->matricula ?>">Editar/Renovar</a>
                                     <a href="#" class="btn-redefinir" data-matricula="<?= $aluno->matricula ?>">Redefinir Senha</a>
-                                    <a class="" href="excluir_aluno.php?matricula=<?= $aluno->matricula ?>" 
+                                    <a class="btn-exc" href="excluir_aluno.php?matricula=<?= $aluno->matricula ?>" 
                                         onclick="return confirm('Tem certeza que deseja excluir o aluno <?= htmlspecialchars($aluno->nome) ?>?')">
                                         Excluir
                                     </a>
@@ -263,7 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         let botaoExcluir = '';
                         if (s.siape !== siapeLogado) {
                             // O botão de excluir aqui continua usando o modal, pois está dentro de um conteúdo dinâmico
-                            botaoExcluir = `<button type="button" class="btn-action btn-delete btn-exc" 
+                            botaoExcluir = `<button type="button" class="btn-action btn-delete btn-exc"
+                                            style="font-size:10px;" 
                                                 data-id="${s.siape}" 
                                                 data-nome="${s.nome} ${s.sobrenome}" 
                                                 data-tipo="servidor"

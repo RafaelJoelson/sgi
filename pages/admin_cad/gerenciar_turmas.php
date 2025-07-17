@@ -153,6 +153,13 @@ include_once '../../includes/header.php';
 <main class="container">
     <div class="dashboard-layout">
         <aside class="dashboard-aside">
+        <div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
             <h1><?= $modo_edicao ? 'Editar Turma' : 'Nova Turma' ?></h1>
 
             <?php if (!empty($_SESSION['mensagem'])): ?>

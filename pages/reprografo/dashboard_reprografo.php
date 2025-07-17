@@ -28,6 +28,13 @@ require_once '../../includes/header.php';
 <link rel="stylesheet" href="dashboard_reprografo.css">
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
+        <div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
         <h2>Menu</h2>
         <nav class="dashboard-menu">
             <a href="dashboard_reprografo.php" class="dashboard-menu-link active">Solicitações Pendentes</a>

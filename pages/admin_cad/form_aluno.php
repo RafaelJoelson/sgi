@@ -46,6 +46,13 @@ include_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="form_aluno.css">
 <main>
+<div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
     <h1><?= $modo_edicao ? 'Editar Aluno' : 'Cadastrar Novo Aluno' ?></h1>
 
     <?php if (isset($_SESSION['mensagem_erro'])): ?>

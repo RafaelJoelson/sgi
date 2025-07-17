@@ -8,35 +8,65 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
     exit;
 }
 
-// Processa o formulário de salvar/editar semestre
+// Cria tabela de log se não existir (boa prática manter)
+$conn->exec("CREATE TABLE IF NOT EXISTS LogSemestreLetivo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(100) NOT NULL,
+    setor VARCHAR(10) NOT NULL,
+    acao VARCHAR(255) NOT NULL,
+    data DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
+)");
+
+// Processa o formulário de adicionar/editar semestre
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ano'])) {
-    $ano = intval($_POST['ano']);
+    $ano = filter_input(INPUT_POST, 'ano', FILTER_VALIDATE_INT);
     $semestre = $_POST['semestre'];
     $data_inicio = $_POST['data_inicio'];
     $data_fim = $_POST['data_fim'];
 
-    // Lógica para salvar ou atualizar o semestre no banco
-    $stmt_check = $conn->prepare("SELECT id FROM SemestreLetivo WHERE ano = :ano AND semestre = :semestre");
-    $stmt_check->execute([':ano' => $ano, ':semestre' => $semestre]);
-    $existe = $stmt_check->fetch();
-
-    if ($existe) {
-        $stmt_update = $conn->prepare("UPDATE SemestreLetivo SET data_inicio = :inicio, data_fim = :fim WHERE id = :id");
-        $stmt_update->execute([':inicio' => $data_inicio, ':fim' => $data_fim, ':id' => $existe['id']]);
-        $acao = "Atualizou semestre $ano/$semestre para $data_inicio a $data_fim";
+    // Validação dos dados
+    if (!$ano || !$semestre || !$data_inicio || !$data_fim) {
+        $_SESSION['mensagem_erro'] = "Todos os campos são obrigatórios.";
+    } elseif (strtotime($data_fim) <= strtotime($data_inicio)) {
+        $_SESSION['mensagem_erro'] = "A data de fim deve ser posterior à data de início.";
     } else {
-        $stmt_insert = $conn->prepare("INSERT INTO SemestreLetivo (ano, semestre, data_inicio, data_fim) VALUES (:ano, :semestre, :inicio, :fim)");
-        $stmt_insert->execute([':ano' => $ano, ':semestre' => $semestre, ':inicio' => $data_inicio, ':fim' => $data_fim]);
-        $acao = "Cadastrou semestre $ano/$semestre: $data_inicio a $data_fim";
+        try {
+            $conn->beginTransaction();
+
+            // Verifica se já existe um semestre para o mesmo ano/período
+            $stmt_check = $conn->prepare("SELECT id FROM SemestreLetivo WHERE ano = :ano AND semestre = :semestre");
+            $stmt_check->execute([':ano' => $ano, ':semestre' => $semestre]);
+            $existe = $stmt_check->fetch();
+
+            if ($existe) {
+                // Atualiza o semestre existente
+                $stmt_update = $conn->prepare("UPDATE SemestreLetivo SET data_inicio = :inicio, data_fim = :fim WHERE id = :id");
+                $stmt_update->execute([':inicio' => $data_inicio, ':fim' => $data_fim, ':id' => $existe->id]);
+                $acao = "Atualizou semestre $ano/$semestre para " . date('d/m/Y', strtotime($data_inicio)) . " a " . date('d/m/Y', strtotime($data_fim));
+            } else {
+                // Insere um novo semestre
+                $stmt_insert = $conn->prepare("INSERT INTO SemestreLetivo (ano, semestre, data_inicio, data_fim) VALUES (:ano, :semestre, :inicio, :fim)");
+                $stmt_insert->execute([':ano' => $ano, ':semestre' => $semestre, ':inicio' => $data_inicio, ':fim' => $data_fim]);
+                $acao = "Cadastrou semestre $ano/$semestre: " . date('d/m/Y', strtotime($data_inicio)) . " a " . date('d/m/Y', strtotime($data_fim));
+            }
+            
+            // Log da ação
+            // CORREÇÃO: Acessando os dados da sessão como um array
+            $usuario_log = $_SESSION['usuario']['nome'] . ' ' . ($_SESSION['usuario']['sobrenome'] ?? '') . ' (' . $_SESSION['usuario']['id'] . ')';
+            $setor_log = $_SESSION['usuario']['setor_admin'];
+            $stmt_log = $conn->prepare("INSERT INTO LogSemestreLetivo (usuario, setor, acao) VALUES (:usuario, :setor, :acao)");
+            $stmt_log->execute([':usuario' => $usuario_log, ':setor' => $setor_log, ':acao' => $acao]);
+            
+            $conn->commit();
+            $_SESSION['mensagem'] = 'Semestre salvo com sucesso!';
+
+        } catch (Exception $e) {
+            if ($conn->inTransaction()) {
+                $conn->rollBack();
+            }
+            $_SESSION['mensagem_erro'] = 'Erro ao salvar semestre: ' . $e->getMessage();
+        }
     }
-    
-    // Log da ação
-    $usuario_log = $_SESSION['usuario']['nome'] . ' ' . ($_SESSION['usuario']['sobrenome'] ?? '') . ' (' . $_SESSION['usuario']['id'] . ')';
-    $setor_log = $_SESSION['usuario']['setor_admin'];
-    $conn->prepare("INSERT INTO LogSemestreLetivo (usuario, setor, acao) VALUES (:usuario, :setor, :acao)")
-         ->execute([':usuario' => $usuario_log, ':setor' => $setor_log, ':acao' => $acao]);
-    
-    $_SESSION['mensagem'] = 'Semestre salvo com sucesso!';
     header('Location: configurar_semestre.php');
     exit;
 }
@@ -62,9 +92,9 @@ if (isset($_GET['exportar_log']) && $_GET['exportar_log'] === 'csv') {
 
 // Buscar dados para a página
 $stmt_semestres = $conn->query("SELECT * FROM SemestreLetivo ORDER BY ano DESC, semestre DESC");
-$semestres = $stmt_semestres->fetchAll(PDO::FETCH_ASSOC);
+$semestres = $stmt_semestres->fetchAll();
 $stmt_logs = $conn->query("SELECT * FROM LogSemestreLetivo ORDER BY data DESC LIMIT 20");
-$logs = $stmt_logs->fetchAll(PDO::FETCH_ASSOC);
+$logs = $stmt_logs->fetchAll();
 
 include_once '../../includes/header.php';
 ?>
@@ -72,7 +102,23 @@ include_once '../../includes/header.php';
 
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
+        <div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
         <h1>Configurar Semestre Letivo</h1>
+        
+        <?php if (!empty($_SESSION['mensagem'])): ?>
+            <div class="mensagem-sucesso"> <?= htmlspecialchars($_SESSION['mensagem']) ?> </div>
+            <?php unset($_SESSION['mensagem']); ?>
+        <?php endif; ?>
+        <?php if (!empty($_SESSION['mensagem_erro'])): ?>
+            <div class="mensagem-erro"> <?= htmlspecialchars($_SESSION['mensagem_erro']) ?> </div>
+            <?php unset($_SESSION['mensagem_erro']); ?>
+        <?php endif; ?>
         
         <form method="POST" class="form-semestre" style="margin-bottom:1em;" id="form-semestre">
             <label>Ano <input type="number" name="ano" required min="2020" max="2100" value="<?= date('Y') ?>"></label>
@@ -87,20 +133,13 @@ include_once '../../includes/header.php';
             <button type="submit">Salvar Semestre</button>
         </form>
 
-        <button id="btn-abrir-modal-cotas" class="btn-menu">Definir Cotas Padrão</button>
+        <button type="button" id="btn-abrir-modal-cotas" class="btn-menu" style="background-color: #17a2b8;">Definir Cotas Padrão</button>
         
         <nav class="btn-container" aria-label="Ações">
             <a class="btn-back" href="javascript:history.back()">&larr; Voltar</a>
         </nav>
     </aside>
     <main class="dashboard-main">
-        <?php if (!empty($_SESSION['mensagem'])): ?>
-            <div id="toast-mensagem" class="mensagem-sucesso">
-                <?= htmlspecialchars($_SESSION['mensagem']) ?>
-            </div>
-            <?php unset($_SESSION['mensagem']); ?>
-        <?php endif; ?>
-
         <h2>Semestres Cadastrados</h2>
         <table>
             <thead>
@@ -114,10 +153,10 @@ include_once '../../includes/header.php';
             <tbody>
                 <?php foreach ($semestres as $s): ?>
                     <tr>
-                        <td><?= $s['ano'] ?></td>
-                        <td><?= $s['semestre'] ?></td>
-                        <td><?= date('d/m/Y', strtotime($s['data_inicio'])) ?></td>
-                        <td><?= date('d/m/Y', strtotime($s['data_fim'])) ?></td>
+                        <td><?= htmlspecialchars($s->ano) ?></td>
+                        <td><?= htmlspecialchars($s->semestre) ?></td>
+                        <td><?= date('d/m/Y', strtotime($s->data_inicio)) ?></td>
+                        <td><?= date('d/m/Y', strtotime($s->data_fim)) ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -137,10 +176,10 @@ include_once '../../includes/header.php';
             <tbody>
                 <?php foreach ($logs as $log): ?>
                     <tr>
-                        <td><?= htmlspecialchars($log['usuario']) ?></td>
-                        <td><?= htmlspecialchars($log['setor']) ?></td>
-                        <td><?= htmlspecialchars($log['acao']) ?></td>
-                        <td><?= date('d/m/Y H:i', strtotime($log['data'])) ?></td>
+                        <td><?= htmlspecialchars($log->usuario) ?></td>
+                        <td><?= htmlspecialchars($log->setor) ?></td>
+                        <td><?= htmlspecialchars($log->acao) ?></td>
+                        <td><?= date('d/m/Y H:i', strtotime($log->data)) ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

@@ -64,6 +64,13 @@ include_once '../../includes/header.php';
 <link rel="stylesheet" href="gerenciar_cotas_servidor.css">
 <div class="dashboard-layout">
   <aside class="dashboard-aside">
+    <div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
     <h1>Transferência de Cotas entre Servidores</h1>
     <?php if (!empty($_SESSION['mensagem'])): ?>
       <div class="mensagem-sucesso"> <?= htmlspecialchars($_SESSION['mensagem']) ?> </div>

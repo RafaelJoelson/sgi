@@ -91,6 +91,13 @@ require_once '../../includes/header.php';
 <link rel="stylesheet" href="dashboard_relatorio_reprografo.css">
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
+        <div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
         <h3>Filtros do Relatório</h3>
         <form method="get" class="relatorios-form">
             <div class="form-group">

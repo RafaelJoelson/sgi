@@ -98,6 +98,13 @@ require_once '../../includes/header.php';
 <link rel="stylesheet" href="dashboard_coen.css">
 <main class="dashboard-layout">
     <aside class="dashboard-aside">
+        <div class="container-principal"> <!-- Um container para o conteúdo -->
+        <?php
+        // Chama a função de migalhas se o usuário estiver logado
+        if (isset($_SESSION['usuario'])) {
+            gerar_migalhas();
+        }
+        ?>
         <h1>Relatório de Impressões por Servidor</h1>
         <form method="GET" class="relatorio-form" id="form-relatorio">
             <label>Data Inicial:
