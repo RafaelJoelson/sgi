@@ -105,6 +105,6 @@ include_once '../../includes/header.php';
 
         <button type="submit"><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Servidor' ?></button>
     </form>
-    <a class="btn-back" href="javascript:history.back()">Voltar</a>
+    <a class="btn-back" href="javascript:history.back()">&larr; Voltar</a>
 </main>
 <?php include_once '../../includes/footer.php'; ?>

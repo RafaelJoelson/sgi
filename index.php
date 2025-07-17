@@ -1,9 +1,37 @@
 <?php
-session_start(); // Adicione no topo para gerenciar mensagens de erro
+session_start(); 
 
-// Redireciona usuário logado para seu dashboard
+// CORREÇÃO: Lógica de redirecionamento para usuário já logado
 if (isset($_SESSION['usuario'])) {
-    // ... (toda a sua lógica de redirecionamento que já está correta) ...
+    $tipo = $_SESSION['usuario']['tipo'] ?? '';
+    $setor_admin = $_SESSION['usuario']['setor_admin'] ?? '';
+    $is_admin = $_SESSION['usuario']['is_admin'] ?? false;
+
+    $redirect_url = '';
+
+    if ($tipo === 'aluno') {
+        $redirect_url = 'pages/aluno/dashboard_aluno.php';
+    } elseif ($tipo === 'reprografo') {
+        $redirect_url = 'pages/reprografo/dashboard_reprografo.php';
+    } elseif ($tipo === 'servidor') {
+        if ($is_admin) {
+            if ($setor_admin === 'CAD') {
+                $redirect_url = 'pages/admin_cad/dashboard_cad.php';
+            } elseif ($setor_admin === 'COEN') {
+                $redirect_url = 'pages/admin_coen/dashboard_coen.php';
+            } else {
+                // Um admin sem setor específico pode ir para um painel genérico
+                $redirect_url = 'pages/servidor/dashboard_servidor.php';
+            }
+        } else {
+            $redirect_url = 'pages/servidor/dashboard_servidor.php';
+        }
+    }
+
+    if ($redirect_url) {
+        header('Location: ' . $redirect_url);
+        exit;
+    }
 }
 
 // Inclui configurações de conexão
@@ -26,18 +54,12 @@ require_once 'includes/header.php';
                 </div>
                 
                 <div class="card-body">
-                    <?php 
-                    // MUDANÇA: Corrigido o nome da variável para 'erro_login'
-                    if (isset($_SESSION['erro_login'])): 
-                    ?>
-                        <div class="alert alert-danger alert-dismissible fade show" style="color: red;"role="alert">
+                    <?php if (isset($_SESSION['erro_login'])): ?>
+                        <div class="alert alert-danger" style="color: red;" role="alert">
                             <i class="fas fa-exclamation-triangle"></i>
                             <?= htmlspecialchars($_SESSION['erro_login']) ?>
                         </div>
-                    <?php 
-                        // Limpa a mensagem da sessão para não exibi-la novamente
-                        unset($_SESSION['erro_login']); 
-                    ?>
+                        <?php unset($_SESSION['erro_login']); ?>
                     <?php endif; ?>
 
                     <form action="./includes/login_process.php" method="POST">

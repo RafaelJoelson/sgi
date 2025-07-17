@@ -109,7 +109,7 @@ require_once '../../includes/header.php';
             <button type="submit" class="btn-menu">Filtrar</button>
         </form>
         <button type="button" class="btn-menu" onclick="imprimirRelatorio()">Imprimir</button>
-        <a href="dashboard_coen.php" class="btn-back">Voltar</a>
+        <a href="dashboard_coen.php" class="btn-back">&larr; Voltar</a>
     </aside>
 <?php endif; ?>
     <main class="dashboard-main">

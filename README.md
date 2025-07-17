@@ -1,4 +1,4 @@
-# SGI - Sistema de Gestão de Impressão Acadêmica V.1.2 (alpha)
+# SGI - Sistema de Gestão de Impressão Acadêmica V.1.4.2 (alpha)
 
 Projeto de extensão do Instituto Federal do Sudeste de Minas Gerais - Campus São João del-Rei.
 
@@ -9,10 +9,10 @@ Este sistema tem como objetivo ser implementado no campus para gerenciar cotas d
 - **Coordenadora:** GILMA APARECIDA S. CAMPOS
 - **Alunos:**
 
-  - RAFAEL JOELSON DA SILVA - GESTOR DE PROJETO E DESENVOLVEDOR WEB
-  - IASMIN DANIELE DE OLIVEIRA - ANALISTA DE SOFTWARE, BETA TESTER
-  - LIDIANE CONCEIÇÃO DE ANDRADE - ANALISTA DE SOFTWARE, BETA TESTER
-  - EMILY CAMPOS COLONELLI - DESENVOLVEDORA, BETA TESTER
+  - RAFAEL JOELSON DA SILVA
+  - IASMIN DANIELE DE OLIVEIRA
+  - LIDIANE CONCEIÇÃO DE ANDRADE
+  - EMILY CAMPOS COLONELLI
 
 
 ## Funcionalidades Principais
@@ -36,8 +36,11 @@ pages/
   aluno/            # Painel do aluno
   servidor/         # Painel do servidor
   reprografo/       # Painel do reprográfo
+  utils/            # Manuais do sistema e página de Suporte
 img/                # Imagens do sistema
 styles.css          # Estilos globais
+print_base.css      # Estilos globais e impressão
+favicon.ico         # Íncone do sistema
 sgi_bd.sql          # Script do banco de dados
 ```
 
@@ -88,7 +91,7 @@ Para manter a pasta `uploads` limpa e evitar acúmulo de arquivos antigos, recom
    ```
 3. Adicione a linha (ajuste o caminho do PHP e do script):
    ```sh
-   0 2 * * * /usr/bin/php /caminho/para/limpar_uploads.php
+   0 2 * * * /usr/bin/php /includes/tarefas_diarias.php
    ```
    Isso executa diariamente às 2h da manhã.
 
@@ -98,7 +101,7 @@ Para manter a pasta `uploads` limpa e evitar acúmulo de arquivos antigos, recom
 3. Defina a frequência (diária).
 4. Na ação, escolha "Iniciar um programa" e aponte para o executável do PHP, por exemplo:
    - Programa/script: `C:\xampp\php\php.exe`
-   - Adicionar argumentos: `C:\xampp\htdocs\sgi\limpar_uploads.php`
+   - Adicionar argumentos: `C:\xampp\htdocs\sgi\includes\tarefas_diarias.phpp`
 5. Conclua a configuração.
 
 ---

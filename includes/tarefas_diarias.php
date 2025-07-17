@@ -21,9 +21,10 @@ try {
     // --- TAREFA 1: Desativar usuários com validade expirada ---
     echo "Verificando usuários expirados...\n";
     
-    $stmt_desativar_alunos = $conn->prepare("UPDATE Aluno SET ativo = FALSE WHERE data_fim_validade IS NOT NULL AND data_fim_validade < CURDATE()");
+    // MUDANÇA: Ao desativar o aluno, também reseta seu cargo para 'Nenhum'.
+    $stmt_desativar_alunos = $conn->prepare("UPDATE Aluno SET ativo = FALSE, cargo = 'Nenhum' WHERE data_fim_validade IS NOT NULL AND data_fim_validade < CURDATE()");
     $stmt_desativar_alunos->execute();
-    echo "- " . $stmt_desativar_alunos->rowCount() . " aluno(s) desativado(s).\n";
+    echo "- " . $stmt_desativar_alunos->rowCount() . " aluno(s) desativado(s) e cargo(s) resetado(s).\n";
 
     $stmt_desativar_servidores = $conn->prepare("UPDATE Servidor SET ativo = FALSE WHERE data_fim_validade IS NOT NULL AND data_fim_validade < CURDATE() AND is_admin = FALSE");
     $stmt_desativar_servidores->execute();

@@ -2,10 +2,36 @@
 session_start();
 require_once 'includes/config.php';
 
-// Redireciona se já estiver logado
-if (isset($_SESSION['usuario']) && $_SESSION['usuario']['tipo'] === 'reprografo') {
-    header('Location: pages/reprografo/dashboard_reprografo.php');
-    exit;
+// CORREÇÃO: Lógica de redirecionamento para qualquer usuário já logado
+if (isset($_SESSION['usuario'])) {
+    $tipo = $_SESSION['usuario']['tipo'] ?? '';
+    $setor_admin = $_SESSION['usuario']['setor_admin'] ?? '';
+    $is_admin = $_SESSION['usuario']['is_admin'] ?? false;
+
+    $redirect_url = '';
+
+    // Define o URL de redirecionamento com base no tipo de usuário
+    if ($tipo === 'reprografo') {
+        $redirect_url = 'pages/reprografo/dashboard_reprografo.php';
+    } elseif ($tipo === 'aluno') {
+        $redirect_url = 'pages/aluno/dashboard_aluno.php';
+    } elseif ($tipo === 'servidor') {
+        if ($is_admin) {
+            if ($setor_admin === 'CAD') {
+                $redirect_url = 'pages/admin_cad/dashboard_cad.php';
+            } elseif ($setor_admin === 'COEN') {
+                $redirect_url = 'pages/admin_coen/dashboard_coen.php';
+            } else {
+                $redirect_url = 'pages/servidor/dashboard_servidor.php';
+            }
+        } else {
+            $redirect_url = 'pages/servidor/dashboard_servidor.php';
+        }
+    }
+    if ($redirect_url) {
+        header('Location: ' . $redirect_url);
+        exit;
+    }
 }
 
 $pageTitle = 'Login - Reprografia';
@@ -29,10 +55,8 @@ include_once 'includes/header.php';
                         <?php unset($_SESSION['erro_login']); ?>
                     <?php endif; ?>
 
-                    <!-- O formulário agora aponta para o novo script de processo -->
                     <form action="./includes/login_process_repro.php" method="POST">
                         <div class="form-group">
-                            <!-- Campo alterado de CPF para Login -->
                             <label for="login">Login:</label>
                             <input type="text" id="login" name="login" 
                                    class="form-control" 

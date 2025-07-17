@@ -17,7 +17,7 @@
             --cor-texto: #212529;
             --cor-texto-suave: #6c757d;
             --cor-borda: #dee2e6;
-            --sombra-card: 0 4px_12px rgba(0, 0, 0, 0.07);
+            --sombra-card: 0 4px 12px rgba(0, 0, 0, 0.07);
             --raio-borda: 8px;
         }
 
@@ -189,6 +189,34 @@
                         <p>Você deve entrar em contato com o setor responsável pelo seu cadastro para solicitar a redefinição de sua senha. Alunos devem procurar o CAD (Coordenação de Apoio ao Discente) e Servidores devem procurar o COEN (Coordenação de Ensino).</p>
                     </div>
                 </details>
+
+                <details class="faq-item">
+                    <summary>O que significa "Solicitação no Balcão"?</summary>
+                    <div class="faq-resposta">
+                        <p>Esta opção é para quando você já tem o material físico em mãos (como um livro ou uma folha) e precisa apenas de uma cópia. Ao marcar esta opção, você não precisa enviar um arquivo, apenas informar a quantidade de cópias e páginas. A reprografia entenderá que você levará o material original até eles.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Posso solicitar impressões coloridas?</summary>
+                    <div class="faq-resposta">
+                        <p>Apenas **servidores** têm uma cota específica para impressões coloridas e podem solicitá-las através do sistema. Alunos, por padrão, só podem solicitar impressões em preto e branco.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>(Para Reprógrafo) Como sei quando chega um novo pedido?</summary>
+                    <div class="faq-resposta">
+                        <p>O sistema foi projetado para te notificar de três formas: com um alerta sonoro, fazendo a aba do navegador piscar e exibindo uma notificação no canto da tela. Para que isso funcione, você precisa permitir que o site envie notificações quando o navegador perguntar.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>(Para Admin) Como funciona o reset de cotas?</summary>
+                    <div class="faq-resposta">
+                        <p>O reset de cotas é uma tarefa automática. No primeiro dia de cada semestre letivo cadastrado em "Configurar Semestre", o sistema irá zerar as cotas usadas e redefinir os totais para os valores padrão configurados em "Definir Cotas Padrão".</p>
+                    </div>
+                </details>
             </div>
         </section>
 
@@ -196,9 +224,10 @@
         <section class="secao-suporte">
             <h2><i class="fas fa-book"></i> Manuais e Documentos</h2>
             <ul class="lista-manuais">
-                <li><a href="./documents/" download><i class="fas fa-file-pdf"></i> Manual de Uso do Sistema para Alunos</a></li>
-                <li><a href="./documents/" download><i class="fas fa-file-pdf"></i> Manual de Uso do Sistema para Servidores</a></li>
-                <li><a href="./documents/" download><i class="fas fa-file-alt"></i> Política de Uso da Reprografia</a></li>
+                <li><a href="#" download><i class="fas fa-file-pdf"></i> Manual de Uso do Sistema para Alunos</a></li>
+                <li><a href="#" download><i class="fas fa-file-pdf"></i> Manual de Uso do Sistema para Servidores</a></li>
+                <li><a href="#" download><i class="fas fa-file-pdf"></i> Manual de Uso do Sistema para a Reprografia</a></li>
+                <li><a href="#" download><i class="fas fa-file-alt"></i> Política de Uso da Reprografia</a></li>
             </ul>
         </section>
 
@@ -209,6 +238,10 @@
                 <li>
                     <p>Para problemas técnicos, dúvidas ou sugestões, entre em contato com o suporte de TI através do e-mail:</p>
                     <a href="mailto:ti.sjdr@ifsudestemg.edu.br"><i class="fas fa-at"></i> ti.sjdr@ifsudestemg.edu.br</a>
+                </li>
+                <li>
+                    <p>Ou entre em contato com o desenvolvedor do sistema através do e-mail:</p>
+                    <a href="mailto:ti.rafaeljoelsonifsudeste@gmail.com"><i class="fas fa-at"></i> rafaeljoelsonifsudeste@gmail.com</a>
                 </li>
             </ul>
         </section>

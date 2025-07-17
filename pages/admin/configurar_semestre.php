@@ -90,7 +90,7 @@ include_once '../../includes/header.php';
         <button id="btn-abrir-modal-cotas" class="btn-menu">Definir Cotas Padrão</button>
         
         <nav class="btn-container" aria-label="Ações">
-            <a class="btn-back" href="javascript:history.back()">Voltar</a>
+            <a class="btn-back" href="javascript:history.back()">&larr; Voltar</a>
         </nav>
     </aside>
     <main class="dashboard-main">

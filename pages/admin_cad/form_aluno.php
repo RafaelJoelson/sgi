@@ -113,6 +113,6 @@ include_once '../../includes/header.php';
 
         <button type="submit"><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Aluno' ?></button>
     </form>
-    <a class="btn-back" href="dashboard_cad.php">Voltar</a>
+    <a class="btn-back" href="dashboard_cad.php">&larr; Voltar</a>
 </main>
 <?php include_once '../../includes/footer.php'; ?>

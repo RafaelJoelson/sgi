@@ -75,7 +75,7 @@ include_once '../../includes/header.php';
       </form>
     </section>
     <nav class="btn-container" aria-label="Ações">
-      <a class="btn-back" href="dashboard_cad.php">Voltar</a>
+      <a class="btn-back" href="dashboard_cad.php">&larr; Voltar</a>
     </nav>
   </aside>
   <main class="dashboard-main">
