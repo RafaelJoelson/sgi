@@ -19,7 +19,7 @@ $qtd_copias = filter_input(INPUT_POST, 'qtd_copias', FILTER_VALIDATE_INT);
 $qtd_paginas = filter_input(INPUT_POST, 'qtd_paginas', FILTER_VALIDATE_INT);
 $tipo_impressao = $_POST['tipo_impressao'] ?? 'pb';
 
-// Validação mais robusta
+// Validação mais rigorosa
 if (!$qtd_copias || !$qtd_paginas || $qtd_copias < 1 || $qtd_paginas < 1) {
     echo json_encode(['sucesso' => false, 'mensagem' => 'Quantidades de cópias e páginas devem ser números válidos e maiores que zero.']);
     exit;
@@ -27,7 +27,7 @@ if (!$qtd_copias || !$qtd_paginas || $qtd_copias < 1 || $qtd_paginas < 1) {
 
 // Se NÃO for solicitação de balcão, o arquivo é obrigatório.
 if (!$is_balcao && (empty($_FILES['arquivo']) || $_FILES['arquivo']['error'] !== UPLOAD_ERR_OK)) {
-    echo json_encode(['sucesso' => false, 'mensagem' => 'O envio do arquivo é obrigatório e falhou. Verifique o arquivo e tente novamente.']);
+    echo json_encode(['sucesso' => false, 'mensagem' => 'O envio do arquivo é obrigatório e parece ter falhado. Verifique o arquivo e tente novamente.']);
     exit;
 }
 
@@ -65,10 +65,7 @@ try {
             mkdir($dir_uploads, 0775, true);
         }
         
-        // Gera um nome de arquivo único e seguro
-        $extensao = pathinfo($_FILES['arquivo']['name'], PATHINFO_EXTENSION);
-        $nome_base = pathinfo($_FILES['arquivo']['name'], PATHINFO_FILENAME);
-        $nome_seguro = preg_replace('/[^a-zA-Z0-9.\-_]/', '_', $nome_base);
+        $extensao = strtolower(pathinfo($_FILES['arquivo']['name'], PATHINFO_EXTENSION));
         $nome_arquivo_final = 'serv_' . $siape . '_' . uniqid() . '.' . $extensao;
         $caminho_destino = $dir_uploads . $nome_arquivo_final;
 
@@ -85,20 +82,33 @@ try {
     $stmt_insert->execute([
         $cpf_servidor, 
         'Servidor', 
-        $nome_arquivo_final, // Será NULL se for de balcão
+        $nome_arquivo_final, 
         $qtd_copias, 
         $qtd_paginas, 
         ($tipo_impressao === 'colorida' ? 1 : 0), 
         'Nova'
     ]);
+    $solicitacao_id = $conn->lastInsertId();
 
-    // --- 6. Confirmar Transação ---
+    // --- 6. MUDANÇA: CRIAÇÃO DA NOTIFICAÇÃO PARA O SERVIDOR ---
+    $nome_para_msg = $nome_arquivo_final ? basename($nome_arquivo_final) : 'Solicitação no Balcão';
+    $mensagem_notificacao = "Sua solicitação para '{$nome_para_msg}' foi recebida e está aguardando análise.";
+    
+    $stmt_notificacao = $conn->prepare("INSERT INTO Notificacao (solicitacao_id, destinatario_cpf, mensagem) VALUES (:sol_id, :cpf, :msg)");
+    $stmt_notificacao->execute([
+        ':sol_id' => $solicitacao_id,
+        ':cpf' => $cpf_servidor,
+        ':msg' => $mensagem_notificacao
+    ]);
+    // --- FIM DA MUDANÇA ---
+
+    // --- 7. Confirmar Transação ---
     $conn->commit();
 
     echo json_encode(['sucesso' => true, 'mensagem' => 'Solicitação enviada com sucesso!']);
 
 } catch (Exception $e) {
-    // --- 7. Reverter Transação em Caso de Erro ---
+    // --- 8. Reverter Transação em Caso de Erro ---
     if ($conn->inTransaction()) {
         $conn->rollBack();
     }

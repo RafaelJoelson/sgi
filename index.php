@@ -64,7 +64,6 @@ require_once 'includes/header.php';
                             <button type="submit" class="btn btn-primary btn-block, btn-login">
                                 <i class="fas fa-sign-in-alt"></i> Entrar
                             </button>
-                            <a href="./includes/tarefas_diarias.php">Bibidi, bobodi, buu!</a>
                         </div>
                     </form>
                 </div>

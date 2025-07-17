@@ -99,17 +99,29 @@ try {
         $qtd_copias,
         $qtd_paginas
     ]);
+    $solicitacao_id = $conn->lastInsertId(); // Pega o ID da solicitação recém-criada
 
-    // --- 6. Confirmar Transação ---
+    // --- 6. MUDANÇA: CRIAÇÃO DA NOTIFICAÇÃO PARA O ALUNO ---
+    $nome_para_msg = $nome_arquivo_final ? basename($nome_arquivo_final) : 'Solicitação no Balcão';
+    $mensagem_notificacao = "Sua solicitação para '{$nome_para_msg}' foi recebida e está aguardando análise.";
+    
+    $stmt_notificacao = $conn->prepare("INSERT INTO Notificacao (solicitacao_id, destinatario_cpf, mensagem) VALUES (:sol_id, :cpf, :msg)");
+    $stmt_notificacao->execute([
+        ':sol_id' => $solicitacao_id,
+        ':cpf' => $cpf_aluno,
+        ':msg' => $mensagem_notificacao
+    ]);
+    // --- FIM DA MUDANÇA ---
+
+    // --- 7. Confirmar Transação ---
     $conn->commit();
 
     echo json_encode(['sucesso' => true, 'mensagem' => 'Solicitação enviada com sucesso!']);
 
 } catch (Exception $e) {
-    // --- 7. Reverter Transação em Caso de Erro ---
+    // --- 8. Reverter Transação em Caso de Erro ---
     if ($conn->inTransaction()) {
         $conn->rollBack();
     }
     echo json_encode(['sucesso' => false, 'mensagem' => 'Erro: ' . $e->getMessage()]);
 }
-?>
