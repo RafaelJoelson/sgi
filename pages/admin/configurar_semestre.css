@@ -156,7 +156,7 @@
   transition: background 0.2s;
 }
 .btn-menu:hover {
-  background-color: #359aff;
+  background-color: #005fa3;
 }
 .form-semestre {
   display: flex;
@@ -205,7 +205,7 @@
   transition: background 0.2s;
 }
 .form-semestre button:hover {
-  background-color: #359aff;
+  background-color: #005fa3;
 }
 .btn-cotas {
   background-color: #0080ff;
@@ -222,7 +222,7 @@
   transition: background 0.2s;
 }
 .btn-cotas:hover {
-  background-color: #359aff;
+  background-color: #005fa3;
 }
 
 table {

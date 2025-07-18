@@ -43,18 +43,37 @@
 }
 
 #tabela-solicitacoes button {
-  background: #0080ff;
   color: #fff;
-  border: none;
+  padding: 0.35rem 0.8rem;
   border-radius: 4px;
-  padding: 0.35em 0.9em;
-  margin: 0 2px;
-  font-size: 0.98em;
-  cursor: pointer;
+  border: none;
+  font-size: 0.95em;
+  text-decoration: none;
+  margin-right: 0.4rem;
   transition: background 0.2s;
+  display: inline-block;
 }
-#tabela-solicitacoes button:hover {
-  background: #005fa3;
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+#tabela-solicitacoes .btn-accept {
+  background-color: #0080ff;
+}
+
+#tabela-solicitacoes .btn-accept:hover {
+  background: #094caa;
+}
+.btn-reject {
+  background-color: #ff0000;
+  color: #fff;
+}
+
+.btn-reject:hover {
+  background-color: #cc0808;
+  cursor: pointer;
 }
 
 #tabela-solicitacoes input[type="number"] {
@@ -66,6 +85,22 @@
   text-align: center;
 }
 
+.dashboard-aside-repro {
+  width: 30%;
+  border-right: 1px solid #e0e0e0;
+  padding: 1.5rem 1rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.dashboard-main-repro {
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 70%;
+  flex: 1;
+  min-width: 0;
+  padding: 1rem 0 1rem 0;
+}
 .dashboard-menu {
   display: flex;
   flex-direction: column;

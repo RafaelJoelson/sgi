@@ -123,12 +123,14 @@ require_once '../../includes/header.php';
         <h1>Relatório de Impressões por Aluno</h1>
         <!-- CORREÇÃO: A classe foi ajustada para 'relatorio-form' e o ID foi garantido -->
         <form method="GET" class="relatorio-form" id="form-relatorio">
-            <label>Data Inicial:
-                <input type="date" name="data_ini" value="<?= htmlspecialchars($data_ini) ?>" class="form-control">
-            </label>
-            <label>Data Final:
-                <input type="date" name="data_fim" value="<?= htmlspecialchars($data_fim) ?>" class="form-control">
-            </label>
+            <div class="form-group">
+                <label>Data Inicial:
+                    <input type="date" name="data_ini" value="<?= htmlspecialchars($data_ini) ?>" class="form-control">
+                </label>
+                <label>Data Final:
+                    <input type="date" name="data_fim" value="<?= htmlspecialchars($data_fim) ?>" class="form-control">
+                </label>
+            </div>
             <hr>
             <label>Curso:
                 <select name="curso_id">
@@ -150,9 +152,12 @@ require_once '../../includes/header.php';
                     <?php endforeach; ?>
                 </select>
             </label>
+            <hr>
             <button type="submit" class="btn-menu">Filtrar</button>
-            <button type="button" class="btn-menu" onclick="imprimirRelatorio()">Imprimir</button>
         </form>
+        <div class="container-imprimir">
+            <button type="button" class="btn-menu" onclick="imprimirRelatorio()"><i class="fas fa-print"></i> Imprimir</button>
+        </div>
         <div>
             <a class="btn-back" href="dashboard_cad.php">&larr; Voltar</a>
         </div>

@@ -2,8 +2,8 @@
 require_once '../../includes/config.php';
 session_start();
 
-// MUDANÇA: Permissão agora é para qualquer administrador (is_admin = true)
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || empty($_SESSION['usuario']['is_admin'])) {
+// Permissão: apenas servidor COEN pode acessar
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'COEN') {
     header('Location: ../../index.php');
     exit;
 }
@@ -82,6 +82,7 @@ include_once '../../includes/header.php';
             <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
             <a class="btn-menu" href="relatorio_servidor.php">Relatório de Impressões</a>
             <a class="btn-menu" href="../admin/form_servidor.php">Cadastrar Novo Servidor</a>
+            <a class="btn-menu" href="../servidor/dashboard_servidor.php">Acessar Modo Solicitante</a>
         </section>
     </aside>
     <main class="dashboard-main">
@@ -118,15 +119,15 @@ include_once '../../includes/header.php';
                             <td data-label="Cota Colorida"> <?= (int)($s->cota_color_usada ?? 0) ?> / <?= (int)($s->cota_color_total ?? 0) ?> </td>
                             <td data-label="Ações">
                                 <div class="action-buttons">
-                                    <a href="../admin/form_servidor.php?siape=<?= htmlspecialchars($s->siape) ?>" class="btn-action btn-edit" title="Editar">Editar<i class="fas fa-edit"></i></a>
-                                    <a type="button" class="btn-action btn-redefinir" data-siape="<?= htmlspecialchars($s->siape) ?>" title="Redefinir Senha">Redefinir Senha<i class="fas fa-key"></i></a>
+                                    <a href="../admin/form_servidor.php?siape=<?= htmlspecialchars($s->siape) ?>" class="btn-action btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
+                                    <a type="button" class="btn-action btn-redefinir" data-siape="<?= htmlspecialchars($s->siape) ?>" title="Redefinir Senha"><i class="fas fa-key"></i></a>
                                     
                                     <?php if ($s->siape !== $siape_logado): // Impede que o admin se autoexclua ?>
                                         <button type="button" 
                                            class="btn-action btn-delete btn-excluir-servidor btn-exc" 
                                            data-siape="<?= htmlspecialchars($s->siape) ?>" 
                                            data-nome="<?= htmlspecialchars($s->nome . ' ' . $s->sobrenome) ?>" 
-                                           title="Excluir Servidor">Excluir
+                                           title="Excluir Servidor">
                                            <i class="fas fa-trash-alt"></i>
                                         </button>
                                     <?php endif; ?>

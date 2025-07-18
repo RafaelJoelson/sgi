@@ -27,7 +27,7 @@ require_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="dashboard_reprografo.css">
 <div class="dashboard-layout">
-    <aside class="dashboard-aside">
+    <aside class="dashboard-aside-repro">
         <div class="container-principal"> <!-- Um container para o conteúdo -->
         <?php
         // Chama a função de migalhas se o usuário estiver logado
@@ -42,7 +42,7 @@ require_once '../../includes/header.php';
             <a href="#" id="btn-alterar-dados" class="dashboard-menu-link">Alterar Meus Dados</a>
         </nav>
     </aside>
-    <main class="dashboard-main">
+    <main class="dashboard-main-repro">
         <div id="toast-notification-container"></div>
         <h2>Painel do Reprográfo</h2>
         <section id="solicitacoes-pendentes">
@@ -189,9 +189,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             <td><span class="badge ${s.colorida == 1 ? 'badge-info' : 'badge-secondary'}">${s.colorida == 1 ? 'Sim' : 'Não'}</span></td>
                             <td>${s.status}</td>
                             <td>${s.data}</td>
-                            <td>
-                                <button onclick="atualizarStatus(${s.id},'Aceita')">Aceitar</button>
-                                <button onclick="atualizarStatus(${s.id},'Rejeitada')">Rejeitar</button>
+                            <td class="actions">
+                                <button class="btn-accept" onclick="atualizarStatus(${s.id},'Aceita')">
+                                <i class="fas fa-check"></i></button>
+                                <button class="btn-reject" onclick="atualizarStatus(${s.id},'Rejeitada')">
+                                <i class="fas fa-times"></i></button>
                             </td>
                         </tr>`;
                     });

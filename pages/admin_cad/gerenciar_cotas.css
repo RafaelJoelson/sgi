@@ -40,7 +40,7 @@
 }
 
 .form-cotas button:hover {
-  background-color: #359aff;
+  background-color: #005fa3;
 }
 
 .btn-cotas {
@@ -54,7 +54,7 @@
 }
 
 .btn-cotas:hover {
-  background-color: #359aff;
+  background-color: #005fa3;
 }
 
 @media (max-width: 900px) {

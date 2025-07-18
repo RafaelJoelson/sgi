@@ -17,7 +17,17 @@ require_once '../../includes/header.php';
         </button>
     <h4>Servidor(a): <?= htmlspecialchars($_SESSION['usuario']['nome'] . (isset($_SESSION['usuario']['sobrenome']) ? ' ' . $_SESSION['usuario']['sobrenome'] : '')) ?></h4>
     <div id="cota-info" style="margin-bottom:1em;font-weight:bold;color:#1a4b2a;"></div>
-    
+    <?php
+        // Exibe botão de acesso ao painel administrativo conforme o tipo/setor do servidor
+        $tipoServidor = $_SESSION['usuario']['tipo_servidor'] ?? '';
+        $setorAdmin = $_SESSION['usuario']['setor_admin'] ?? '';
+        if ($tipoServidor === 'CAD' || $setorAdmin === 'CAD') {
+            echo '<a class="btn-menu" href="../admin_cad/dashboard_cad.php">Acessar Painel CAD</a>';
+        }
+        if ($tipoServidor === 'COEN' || $setorAdmin === 'COEN') {
+            echo '<a class="btn-menu" href="../admin_coen/dashboard_coen.php">Acessar Painel COEN</a>';
+        }
+    ?>
     <form id="form-solicitacao" enctype="multipart/form-data">
         <label>Arquivo para impressão
             <input type="file" name="arquivo" id="arquivo" required accept=".pdf,.doc,.docx,.jpg,.png">

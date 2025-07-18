@@ -111,9 +111,11 @@ require_once '../../includes/header.php';
             <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
         </form>
         <hr>
-        <button type="button" class="btn btn-info btn-block relatorios-imprimir" onclick="imprimirRelatorio()">
-            <i class="fas fa-print"></i> Imprimir Relatório
-        </button>
+        <div class="container-imprimir">
+            <button type="button" class="btn btn-info btn-block relatorios-imprimir" onclick="imprimirRelatorio()">
+                <i class="fas fa-print"></i> Imprimir
+            </button>
+        </div>
         <nav class="btn-container mt-3">
             <a class="btn btn-secondary btn-back" href="dashboard_reprografo.php">&larr; Voltar ao Painel</a>
         </nav>

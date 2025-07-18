@@ -72,7 +72,11 @@ tr:hover {
 .relatorios-form button[type="submit"]:hover {
   background: #005fa3;
 }
-
+.container-imprimir {
+  display: flex;
+  text-align: center;
+  margin-top: 1em;
+}
 .relatorios-imprimir {
   background: #0080ff;
   color: #fff;

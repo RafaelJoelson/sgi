@@ -94,6 +94,7 @@ include_once '../../includes/header.php';
             <a class="btn-menu" href="gerenciar_turmas.php">Gerenciar Turmas</a>
             <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
             <a class="btn-menu" href="relatorio_aluno.php">Relatório de Impressões</a>
+            <a class="btn-menu" href="../servidor/dashboard_servidor.php">Acessar Modo Solicitante</a>
         </section>
     </aside>
     <main class="dashboard-main">
@@ -140,17 +141,21 @@ include_once '../../includes/header.php';
                     <?php foreach ($alunos as $aluno): ?>
                         <tr>
                             <td data-label="Matrícula"><?= htmlspecialchars($aluno->matricula) ?></td>
-                            <td data-label="Nome"><?= htmlspecialchars($aluno->nome) ?></td>
+                            <td data-label="Nome"><?= htmlspecialchars($aluno->nome) ?> <?= htmlspecialchars($aluno->sobrenome) ?></td>
                             <td data-label="Cargo"><?= htmlspecialchars($aluno->cargo) ?></td>
-                            <td data-label="Turma"><?= htmlspecialchars($aluno->nome_completo . ' - ' . $aluno->periodo) ?></td>
+                            <td data-label="Turma" title="<?= htmlspecialchars($aluno->nome_completo . ' - ' . $aluno->periodo) ?>"><?= htmlspecialchars($aluno->sigla . ' - ' . $aluno->periodo) ?></td>
                             <td data-label="Ações">
-                                <!-- MUDANÇA: Botões revertidos para o estilo original de texto -->
                                 <div class="action-buttons">
-                                    <a href="form_aluno.php?matricula=<?= $aluno->matricula ?>">Editar/Renovar</a>
-                                    <a href="#" class="btn-redefinir" data-matricula="<?= $aluno->matricula ?>">Redefinir Senha</a>
-                                    <a class="btn-exc" href="excluir_aluno.php?matricula=<?= $aluno->matricula ?>" 
-                                        onclick="return confirm('Tem certeza que deseja excluir o aluno <?= htmlspecialchars($aluno->nome) ?>?')">
-                                        Excluir
+                                    <a href="form_aluno.php?matricula=<?= $aluno->matricula ?>" title="Editar/Renovar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="btn-redefinir" data-matricula="<?= $aluno->matricula ?>" title="Redefinir Senha">
+                                        <i class="fas fa-key"></i>
+                                    </a>
+                                    <a class="btn-exc" href="excluir_aluno.php?matricula=<?= $aluno->matricula ?>"
+                                    onclick="return confirm('Tem certeza que deseja excluir o aluno <?= htmlspecialchars($aluno->nome) ?>?')"
+                                    title="Excluir">
+                                        <i class="fas fa-trash-alt"></i>
                                     </a>
                                 </div>
                             </td>
@@ -271,14 +276,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         let botaoExcluir = '';
                         if (s.siape !== siapeLogado) {
                             // O botão de excluir aqui continua usando o modal, pois está dentro de um conteúdo dinâmico
-                            botaoExcluir = `<button type="button" class="btn-action btn-delete btn-exc"
-                                            style="font-size:10px;" 
+                            botaoExcluir = `<div class="action-buttons">
+                                                <button type="button" class="btn-action btn-delete btn-exc" 
                                                 data-id="${s.siape}" 
                                                 data-nome="${s.nome} ${s.sobrenome}" 
                                                 data-tipo="servidor"
                                                 title="Excluir Servidor">
-                                                Excluir
-                                            </button>`;
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                            </div>`;
                         }
                         html += `<tr>
                             <td>${s.siape}</td>
@@ -286,7 +292,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <td>${s.email}</td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="../admin/form_servidor.php?siape=${s.siape}" class="btn-action btn-edit" title="Editar">Editar</a>
+                                    <a href="../admin/form_servidor.php?siape=${s.siape}" class="btn-action btn-edit" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
                                     ${botaoExcluir}
                                 </div>
                             </td>

@@ -252,8 +252,12 @@ include_once '../../includes/header.php';
                                 <td data-label="Nome Curso"><?= htmlspecialchars($t->nome_completo) ?></td>
                                 <td data-label="Período"><?= htmlspecialchars($t->periodo) ?></td>
                                 <td data-label="Ações" class="action-links">
-                                    <a href="?editar=<?= $t->id ?>">Editar</a>
-                                    <a href="?excluir=<?= $t->id ?>" onclick="return confirm('Tem certeza que deseja excluir esta turma?')">Excluir</a>
+                                    <a href="?editar=<?= $t->id ?>">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a class="btn-exc" href="?excluir=<?= $t->id ?>" onclick="return confirm('Tem certeza que deseja excluir esta turma?')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
