@@ -22,6 +22,10 @@ header img{
     margin: 10px;
 }
 
+.logo-if-mobile {
+    display: none;
+}
+
 header hr {
     border: 0;
     height: 4px;
@@ -36,33 +40,11 @@ a {
 .logout {
     color: #0080ff;
     font-weight: bold;
-    text-decoration: none;
-    position: relative; /* Essencial para o posicionamento do pseudo-elemento */
-    display: inline-block; /* Garante que o elemento tenha um bloco para o after */
-    padding-bottom: 3px; /* Cria um pequeno espaço para a linha não colar no texto */
+    font-size: 16px;
 }
-
 .logout:hover {
-    color: #0362c2;
+    color: #003d7a;
 }
-
-/* O pseudo-elemento que será a nossa linha animada */
-.logout::after {
-    content: '';
-    position: absolute;
-    width: 0; /* Começa com largura zero (invisível) */
-    height: 2px; /* Espessura da linha */
-    bottom: 0;
-    left: 0;
-    background-color: #005fa3; /* Cor da linha ao aparecer */
-    transition: width 0.3s ease-in-out; /* A animação da largura */
-}
-
-/* Quando o mouse passa por cima, a largura vai para 100% */
-.logout:hover::after {
-    width: 100%;
-}
-
 .user-info {
     display: flex;
     align-items: center;
@@ -73,40 +55,65 @@ a {
 }
 
 @media (max-width: 768px) {
+    header {
+        align-items: center;
+        margin: 5px 10px;
+        border-radius: 18px;
+
+    }
     .header-title {
-        margin-top: 15px;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
     }
     header h1 {
         text-align: center;
-        font-size: 10px;
+        font-size: 12px;
+        margin-bottom: 20px;
     }
-    header h3 {
+    h3 {
         display: none;
     }
     header hr {
-        height: 1px;
-        margin-top: -5px;
+        height: 2px;
+        margin-bottom: 20px;
     }
     header img {
-        width: 100px;
+        display: none;
     }
     .user-info {
         font-size: 10px;
         margin-top: -15px;
         margin-bottom: -5px;
     }
+    .logout {
+        font-size: 12px;
+    }
+    .logo-if-mobile {
+        display: block;
+        width: 32px;
+        margin-top: 10px;
+    }
 }
 
-footer{
-    font-size: 10px;
+footer {
+    display: flex;
+    justify-content: center;
     align-items: center;
-    justify-items: center;
-    margin: 20px 20px;
-    padding: 5px;
-    background-color: #FFF;
+    padding: 10px;
+    margin: 10px 20px;
+    height: 80px;
     border-radius: 18px;
+    text-align: center;
+    font-size: 16px;
+    color: #6c757d;
+    background-color: #FFF;
+    position: relative;
+}
+
+footer p {
+    margin: 0;
+    flex: 1;
 }
 
 /* Estilo do botão de suporte */
@@ -114,6 +121,7 @@ footer{
     position: fixed;
     bottom: 20px;
     right: 20px;
+    margin-right: -150px;
     background-color: #0080ff;
     color: white;
     border: none;
@@ -130,7 +138,7 @@ footer{
 .suporte-btn:hover {
     background-color: #adb300;
     color: black;
-    transform: translateY(-3px);
+    transform: translateX(-150px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -151,26 +159,38 @@ footer{
         height: 24px;
         margin-right: 5px;
     }
-    header hr {
-        height: 1px;
-        margin-top: -5px;
-    }
-    header img {
-        width: 100px;
+    footer {
+        display: block;
+        height: 40px;
+        align-items: center;
+        margin: 5px 10px;
+        border-radius: 18px;
     }
     footer p {
         font-size: 10px;
+        flex: 0;
     }
 }
 
 /* Estilos para o formulário de login */
+
+.card-shadow {
+    display: flex;
+    width: 600px;
+    align-items: center;
+    justify-content: space-around;
+}
+
 .login-container {
-    max-width: 400px;
     margin: 2rem auto;
     padding: 2rem;
     background: white;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.login-icones {
+    color: #313631;
+    font-size: 1.2rem;
 }
 
 @media (max-width: 768px) {
@@ -249,10 +269,9 @@ footer{
 /* Centraliza os filhos no eixo vertical e horizontal */
 .main-login-container {
   display: flex;
-  width: 95%;
   min-height: 700px;
   background: #fff;
-  margin: 2rem auto;
+  margin: 12px 26px;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   align-items: baseline;      /* Centraliza verticalmente */
@@ -261,10 +280,9 @@ footer{
 
 .dashboard-layout {
   display: flex;
-  width: 95%;
   min-height: 700px;
   background: #fff;
-  margin: 2rem auto;
+  margin: 12px 26px;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
@@ -328,6 +346,7 @@ footer{
   .dashboard-main {
     padding: 0;
   }
+
 }
 @media (max-width: 900px) {
   .dashboard-layout {
@@ -352,6 +371,9 @@ footer{
   .dashboard-main {
     padding: 0.5rem 0 1rem 0;
   }
+  header h1 {
+        text-align: center;
+    }
 }
 @media (max-width: 768px) {
   .dashboard-layout {
@@ -369,6 +391,9 @@ footer{
   }
   .dashboard-main {
     padding: 0.2rem 0 0.5rem 0;
+  }
+  .main-login-container {
+    margin: 10px 18px;
   }
 }
 /* Estilos para a Trilha de Migalhas (Breadcrumbs) */
@@ -402,7 +427,7 @@ footer{
     margin: 0 0.5rem;
     color: #6c757d;
 }
-.logo_container {
+.logo-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -412,4 +437,15 @@ footer{
     max-width: 100%;
     height: auto;
     width: 200px;
+}
+@media screen and (max-width: 768px) {
+    .logo-login {
+        width: 150px;
+    }
+    .card-shadow {
+        margin-top: -80px;
+        display: block;
+        width: 100%;
+    }
+    
 }

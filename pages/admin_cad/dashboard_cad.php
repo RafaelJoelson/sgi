@@ -95,6 +95,7 @@ include_once '../../includes/header.php';
             <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
             <a class="btn-menu" href="relatorio_aluno.php">Relatório de Impressões</a>
             <a class="btn-menu" href="../servidor/dashboard_servidor.php">Acessar Modo Solicitante</a>
+            <a class="btn-menu" href="../../includes/tarefas_diarias.php">Simular Cron</a>
         </section>
     </aside>
     <main class="dashboard-main">

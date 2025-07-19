@@ -41,12 +41,15 @@ include_once 'includes/header.php';
 <main class="main-login-container">
     <section class="row justify-content-center">
         <div class="col-md-6 login-container">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="text-center mb-0">Reprografia</h2>
+            <div class="card-shadow">
+                <div class="logo-container">
+                    <img src="./img/logo_sgi.png" alt="Logo do Sistema de Impressões" class="logo-login">                                              
                 </div>
-                
                 <div class="card-body">
+                    <div class="card-header bg-primary text-white">
+                        <p>Reprografia</p>
+                        <h2 class="text-center mb-0">Por favor, realize o Login</h2>
+                    </div>
                     <?php if (isset($_SESSION['erro_login'])): ?>
                         <div class="alert alert-danger" style="color: red;" role="alert">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -54,9 +57,6 @@ include_once 'includes/header.php';
                         </div>
                         <?php unset($_SESSION['erro_login']); ?>
                     <?php endif; ?>
-                    <div class="logo-container">
-                        <img src="./img/logo_sgi.png" alt="Logo do Sistema de Impressões" class="logo-login">                                              
-                    </div>
                     <form action="./includes/login_process_repro.php" method="POST">
                         <div class="form-group">
                             <label for="login">Login:</label>
@@ -78,7 +78,11 @@ include_once 'includes/header.php';
                             <button type="submit" class="btn btn-primary btn-block, btn-login">
                                 <i class="fas fa-sign-in-alt"></i> Entrar
                             </button>
+                
                         </div>
+                        <a class="login-icones" title="Acesso Geral" href="index.php">
+                            <i class="fas fa-home" aria-hidden="true"></i>
+                        </a>
                     </form>
                 </div>
             </div>

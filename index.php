@@ -46,14 +46,17 @@ require_once 'includes/header.php';
 ?>
 
 <main class="main-login-container">
-    <section class="row justify-content-center">
+    <section class="row justify-content-center login-section">
         <div class="col-md-6 login-container">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="text-center mb-0">Por favor, realize o Login</h2>
+            <div class="card-shadow">
+                <div class="logo-container">
+                    <img src="./img/logo_sgi.png" alt="Logo do Sistema de Impressões" class="logo-login">                                              
                 </div>
                 
                 <div class="card-body">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="text-center mb-0">Por favor, realize o Login</h2>
+                    </div>
                     <?php if (isset($_SESSION['erro_login'])): ?>
                         <div class="alert alert-danger" style="color: red;" role="alert">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -61,9 +64,6 @@ require_once 'includes/header.php';
                         </div>
                         <?php unset($_SESSION['erro_login']); ?>
                     <?php endif; ?>
-                    <div class="logo-container">
-                        <img src="./img/logo_sgi.png" alt="Logo do Sistema de Impressões" class="logo-login">                                              
-                    </div>
                     <form action="./includes/login_process.php" method="POST">
                         <div class="form-group">
                             <label for="cpf">CPF (apenas números):</label>
@@ -73,7 +73,6 @@ require_once 'includes/header.php';
                                    maxlength="11"
                                    title="Digite os 11 números do CPF"
                                    required>
-                            <small class="form-text text-muted">Ex: 12345678901</small>
                         </div>
                         
                         <div class="form-group">
@@ -89,6 +88,9 @@ require_once 'includes/header.php';
                                 <i class="fas fa-sign-in-alt"></i> Entrar
                             </button>
                         </div>
+                        <a class="login-icones" title="Acesso Reprografia" href="reprografia.php">
+                            <i class="fas fa-print"></i>
+                        </a>
                     </form>
                 </div>
             </div>

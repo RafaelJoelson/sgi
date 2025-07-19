@@ -13,6 +13,7 @@
 <header>
     <div>
         <img src="<?= BASE_URL ?>/img/logo_horizontal_ifsudestemg.png" alt="logomarca do IF">
+        <img class="logo-if-mobile" src="<?= BASE_URL ?>/img/logo-if.png" alt="logomarca do IF">
     </div>
     <div class="header-title">
         <h1><?= SITE_NAME ?></h1>
@@ -20,7 +21,7 @@
         <?php if (isset($_SESSION['usuario']) && !empty($_SESSION['usuario'])): ?>
             <div class="user-info">
                 <h3>Bem-vindo(a): <?= htmlspecialchars($_SESSION['usuario']['nome'] . (isset($_SESSION['usuario']['sobrenome']) ? ' ' . $_SESSION['usuario']['sobrenome'] : '')) ?></h3>
-                <a href="<?= BASE_URL ?>/includes/logout.php"><h4 class="logout">SAIR</h4></a>
+                <a class="logout" href="<?= BASE_URL ?>/includes/logout.php"><i class="fas fa-sign-out-alt"></i> Sair</a>
             </div>
         <?php endif; ?>
     </div>
