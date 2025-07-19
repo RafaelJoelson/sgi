@@ -1,0 +1,161 @@
+/* Estilos gerais da página de suporte */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+        :root {
+            --cor-primaria: #0056b3;
+            --cor-fundo: #f4f7f6;
+            --cor-superficie: #ffffff;
+            --cor-texto: #212529;
+            --cor-texto-suave: #6c757d;
+            --cor-borda: #dee2e6;
+            --sombra-card: 0 4px 12px rgba(0, 0, 0, 0.07);
+            --raio-borda: 8px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .header-suporte {
+            text-align: center;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--cor-borda);
+            padding-bottom: 1.5rem;
+        }
+
+        .header-suporte h1 {
+            font-size: 2.5rem;
+            color: var(--cor-primaria);
+            margin-bottom: 0.5rem;
+        }
+
+        .header-suporte p {
+            font-size: 1.1rem;
+            color: var(--cor-texto-suave);
+        }
+
+        .secao-suporte {
+            background-color: var(--cor-superficie);
+            padding: 2rem;
+            border-radius: var(--raio-borda);
+            box-shadow: var(--sombra-card);
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+
+        .secao-suporte h2 {
+            font-size: 1.8rem;
+            color: var(--cor-primaria);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Estilos para o FAQ (Perguntas Frequentes) */
+        .faq-item {
+            border-bottom: 1px solid var(--cor-borda);
+            padding: 1rem 0;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-item summary {
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            list-style: none; /* Remove o marcador padrão */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-item summary::-webkit-details-marker {
+            display: none; /* Remove o marcador no Chrome/Safari */
+        }
+
+        .faq-item summary::after {
+            content: '\f078'; /* Ícone de seta para baixo do Font Awesome */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .faq-item[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        .faq-resposta {
+            padding: 1rem 0 0 1rem;
+            color: var(--cor-texto-suave);
+            border-left: 3px solid var(--cor-primaria);
+            margin-top: 1rem;
+        }
+
+        /* Estilos para Manuais e Contato */
+        .lista-manuais, .contato-info {
+            list-style: none;
+            padding: 0;
+        }
+
+        .lista-manuais li, .contato-info li {
+            margin-bottom: 1rem;
+        }
+
+        .lista-manuais a, .contato-info a {
+            color: var(--cor-primaria);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .lista-manuais a:hover, .contato-info a:hover {
+            text-decoration: underline;
+            color: #00418a;
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            text-align: center;
+            margin-top: 2rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--cor-texto-suave);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--raio-borda);
+            transition: background-color 0.2s;
+        }
+
+        .btn-voltar:hover {
+            background-color: #5a6268;
+        }
+        @media (max-width: 768px) {
+            .container {
+                max-width: 90%;
+                padding: 1rem;
+            }
+
+            .header-suporte h1 {
+                font-size: 2rem;
+            }
+
+            .secao-suporte h2 {
+                font-size: 1.5rem;
+            }
+        }

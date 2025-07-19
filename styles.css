@@ -255,7 +255,7 @@ footer{
   margin: 2rem auto;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  align-items: center;      /* Centraliza verticalmente */
+  align-items: baseline;      /* Centraliza verticalmente */
   justify-content: center;  /* Centraliza horizontalmente */
 }
 
@@ -402,4 +402,14 @@ footer{
     margin: 0 0.5rem;
     color: #6c757d;
 }
-
+.logo_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+.logo-login {
+    max-width: 100%;
+    height: auto;
+    width: 200px;
+}

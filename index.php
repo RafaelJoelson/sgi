@@ -61,7 +61,9 @@ require_once 'includes/header.php';
                         </div>
                         <?php unset($_SESSION['erro_login']); ?>
                     <?php endif; ?>
-
+                    <div class="logo-container">
+                        <img src="./img/logo_sgi.png" alt="Logo do Sistema de Impressões" class="logo-login">                                              
+                    </div>
                     <form action="./includes/login_process.php" method="POST">
                         <div class="form-group">
                             <label for="cpf">CPF (apenas números):</label>
