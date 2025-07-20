@@ -11,30 +11,25 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
 // Pega o SIAPE do admin logado para a verificação de autoexclusão na tabela
 $siape_logado = $_SESSION['usuario']['id'];
 
-// Parâmetros de paginação
+// Parâmetros de paginação e busca
 $pagina = isset($_GET['pagina']) && is_numeric($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-$limite = 5; // Itens por página
+$limite = 12;
 $offset = ($pagina - 1) * $limite;
 
-// Condições de busca
 $condicoes = [];
 $params = [];
 $tipo_busca = $_GET['tipo_busca'] ?? '';
 $valor_busca = trim($_GET['valor_busca'] ?? '');
 $filtro_turma = $_GET['turma'] ?? '';
 
-// Montagem da query base com JOIN
 $base_sql = "FROM Aluno a 
              LEFT JOIN CotaAluno ca ON a.cota_id = ca.id
              LEFT JOIN Turma t ON ca.turma_id = t.id
              LEFT JOIN Curso c ON t.curso_id = c.id";
 
 if (!empty($tipo_busca) && !empty($valor_busca)) {
-    if ($tipo_busca === 'cpf') {
-        $condicoes[] = "a.cpf = :valor";
-    } elseif ($tipo_busca === 'matricula') {
-        $condicoes[] = "a.matricula = :valor";
-    }
+    if ($tipo_busca === 'cpf') $condicoes[] = "a.cpf = :valor";
+    elseif ($tipo_busca === 'matricula') $condicoes[] = "a.matricula = :valor";
     $params[':valor'] = $valor_busca;
 }
 if (!empty($filtro_turma)) {
@@ -53,9 +48,7 @@ $total_paginas = ceil($total_resultados / $limite);
 
 $sql_alunos = "SELECT a.*, t.periodo, c.sigla, c.nome_completo " . $base_sql . " " . $where_clause . " ORDER BY a.nome ASC LIMIT :limite OFFSET :offset";
 $stmt = $conn->prepare($sql_alunos);
-foreach ($params as $key => $val) {
-    $stmt->bindValue($key, $val);
-}
+foreach ($params as $key => $val) { $stmt->bindValue($key, $val); }
 $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
@@ -63,23 +56,15 @@ $alunos = $stmt->fetchAll();
 
 // Dados para os cards e filtros
 $total_turmas = $conn->query("SELECT COUNT(DISTINCT turma_id) AS total FROM CotaAluno")->fetch()->total ?? 0;
-$total_alunos = $conn->query("SELECT COUNT(*) AS total FROM Aluno")->fetch()->total ?? 0;
+$total_alunos = $conn->query("SELECT COUNT(*) AS total FROM Aluno WHERE ativo = 1")->fetch()->total ?? 0;
 $stmt_turmas = $conn->query("SELECT t.id, t.periodo, c.sigla, c.nome_completo FROM Turma t JOIN Curso c ON t.curso_id = c.id ORDER BY c.nome_completo ASC, t.periodo ASC");
 $turmas_disponiveis = $stmt_turmas->fetchAll();
-
 
 include_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="dashboard_cad.css">
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
-        <div class="container-principal"> <!-- Um container para o conteúdo -->
-        <?php
-        // Chama a função de migalhas se o usuário estiver logado
-        if (isset($_SESSION['usuario'])) {
-            gerar_migalhas();
-        }
-        ?>
         <section class="dashboard-header">
             <h1>Coordenação de Apoio ao Discente</h1>
         </section>
@@ -95,13 +80,18 @@ include_once '../../includes/header.php';
             <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
             <a class="btn-menu" href="relatorio_aluno.php">Relatório de Impressões</a>
             <a class="btn-menu" href="../servidor/dashboard_servidor.php">Acessar Modo Solicitante</a>
-            <a class="btn-menu" href="../../includes/tarefas_diarias.php">Simular Cron</a>
+            <a class="btn-menu" href="../admin/simular_cron.php">Simular Cron</a>
         </section>
     </aside>
     <main class="dashboard-main">
+        <?php if (!empty($_SESSION['mensagem_sucesso'])): ?>
+            <div id="toast-mensagem" class="mensagem-sucesso">
+                <?= htmlspecialchars($_SESSION['mensagem_sucesso']) ?>
+            </div>
+            <?php unset($_SESSION['mensagem_sucesso']); ?>
+        <?php endif; ?>
         
         <div class="responsive-table">
-            
             <form method="GET" class="busca-form styled-busca-form">
                 <div class="form-group">
                     <label for="tipo_busca">Buscar por:</label>
@@ -142,22 +132,20 @@ include_once '../../includes/header.php';
                     <?php foreach ($alunos as $aluno): ?>
                         <tr>
                             <td data-label="Matrícula"><?= htmlspecialchars($aluno->matricula) ?></td>
-                            <td data-label="Nome"><?= htmlspecialchars($aluno->nome) ?> <?= htmlspecialchars($aluno->sobrenome) ?></td>
+                            <td data-label="Nome"><?= htmlspecialchars($aluno->nome . ' ' . $aluno->sobrenome) ?></td>
                             <td data-label="Cargo"><?= htmlspecialchars($aluno->cargo) ?></td>
                             <td data-label="Turma" title="<?= htmlspecialchars($aluno->nome_completo . ' - ' . $aluno->periodo) ?>"><?= htmlspecialchars($aluno->sigla . ' - ' . $aluno->periodo) ?></td>
                             <td data-label="Ações">
                                 <div class="action-buttons">
-                                    <a href="form_aluno.php?matricula=<?= $aluno->matricula ?>" title="Editar/Renovar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="#" class="btn-redefinir" data-matricula="<?= $aluno->matricula ?>" title="Redefinir Senha">
-                                        <i class="fas fa-key"></i>
-                                    </a>
-                                    <a class="btn-exc" href="excluir_aluno.php?matricula=<?= $aluno->matricula ?>"
-                                    onclick="return confirm('Tem certeza que deseja excluir o aluno <?= htmlspecialchars($aluno->nome) ?>?')"
-                                    title="Excluir">
+                                    <a href="form_aluno.php?matricula=<?= htmlspecialchars($aluno->matricula) ?>" class="btn-action btn-edit" title="Editar/Renovar"><i class="fas fa-edit"></i></a>
+                                    <a type="button" class="btn-action btn-redefinir btn-edit" data-id="<?= htmlspecialchars($aluno->matricula) ?>" title="Redefinir Senha"><i class="fas fa-key"></i></a>
+                                    <button type="button" class="btn-action btn-delete btn-excluir btn-exc" 
+                                        data-id="<?= htmlspecialchars($aluno->matricula) ?>" 
+                                        data-nome="<?= htmlspecialchars($aluno->nome) ?>" 
+                                        data-tipo="aluno"
+                                        title="Excluir Aluno">
                                         <i class="fas fa-trash-alt"></i>
-                                    </a>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -216,48 +204,62 @@ document.addEventListener('DOMContentLoaded', () => {
     const siapeLogado = '<?= htmlspecialchars($siape_logado) ?>';
     const mainContent = document.querySelector('.dashboard-layout');
 
+    // Lógica para exibir o toast de notificação
+    const toast = document.getElementById('toast-mensagem');
+    if (toast) {
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if(toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 600);
+        }, 4000);
+    }
+
+    // --- LÓGICA DE DELEGAÇÃO DE EVENTOS ---
     mainContent.addEventListener('click', function(e) {
-        // MUDANÇA: O seletor agora inclui o link 'a.btn-redefinir'
-        const target = e.target.closest('button.btn-action, a.btn-redefinir, .close, .btn-cancelar-exclusao, #btn-gerenciar-servidores');
+        const target = e.target.closest('button.btn-action, a.btn-action, .close, .btn-cancelar-exclusao, #btn-gerenciar-servidores');
         if (!target) return;
 
-        // Gerenciar Servidores (abrir modal)
-        if (target.id === 'btn-gerenciar-servidores') {
+        // Só previne o default para botões e ações modais, não para links de edição
+        if (
+            !(target.tagName === 'A' && target.classList.contains('btn-edit')) &&
+            !(target.tagName === 'A' && target.classList.contains('btn-action') && target.href && target.closest('#tabela-servidores-cad'))
+        ) {
             e.preventDefault();
+        }
+
+        if (target.id === 'btn-gerenciar-servidores') {
             document.getElementById('modal-servidores').style.display = 'block';
             carregarServidoresCAD();
         }
 
-        // Redefinir senha de aluno (abrir modal)
         if (target.classList.contains('btn-redefinir')) {
-            e.preventDefault();
-            // MUDANÇA: Usa 'data-matricula' do link de texto
-            const matricula = target.dataset.matricula;
+            const matricula = target.dataset.id;
             document.getElementById('matricula-modal-aluno').value = matricula;
             document.getElementById('modal-redefinir-aluno').style.display = 'block';
         }
 
-        // Excluir (abrir modal de confirmação para servidores no modal)
         if (target.classList.contains('btn-excluir')) {
-            e.preventDefault();
             const id = target.dataset.id;
             const nome = target.dataset.nome;
             const tipo = target.dataset.tipo;
             
             document.getElementById('nome-item-excluir').textContent = `o ${tipo} ${nome}`;
-            const linkConfirmar = `../admin/excluir_servidor.php?siape=${id}`;
+            const linkConfirmar = (tipo === 'aluno') 
+                ? `excluir_aluno.php?matricula=${id}` 
+                : `../admin/excluir_servidor.php?siape=${id}`;
             document.getElementById('btn-confirmar-exclusao').href = linkConfirmar;
             document.getElementById('modal-excluir').style.display = 'block';
         }
 
-        // Fechar qualquer modal
         if (target.classList.contains('close') || target.classList.contains('btn-cancelar-exclusao')) {
-            e.preventDefault();
             target.closest('.modal').style.display = 'none';
         }
     });
 
-    // Fechar modal ao clicar fora
     window.addEventListener('click', (e) => {
         if (e.target.classList.contains('modal')) {
             e.target.style.display = 'none';
@@ -275,17 +277,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     data.forEach(s => {
                         let botaoExcluir = '';
-                        if (s.siape !== siapeLogado) {
-                            // O botão de excluir aqui continua usando o modal, pois está dentro de um conteúdo dinâmico
-                            botaoExcluir = `<div class="action-buttons">
-                                                <button type="button" class="btn-action btn-delete btn-exc" 
+                        // CORREÇÃO: Lógica de autoexclusão e proteção de super admin
+                        if (s.siape !== siapeLogado && !(s.is_super_admin == 1)) {
+                            botaoExcluir = `<button type="button" class="btn-action btn-delete btn-excluir" 
                                                 data-id="${s.siape}" 
                                                 data-nome="${s.nome} ${s.sobrenome}" 
                                                 data-tipo="servidor"
                                                 title="Excluir Servidor">
                                                 <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                            </div>`;
+                                            </button>`;
                         }
                         html += `<tr>
                             <td>${s.siape}</td>
@@ -293,9 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <td>${s.email}</td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="../admin/form_servidor.php?siape=${s.siape}" class="btn-action btn-edit" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
+                                    <a href="../admin/form_servidor.php?siape=${s.siape}" class="btn-action btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
                                     ${botaoExcluir}
                                 </div>
                             </td>

@@ -160,3 +160,23 @@ th, td {
     margin-right: 1rem;
   }
 }
+.paginacao {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.paginacao a {
+    margin: 0 5px;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    text-decoration: none;
+    border-radius: 4px;
+    color: #333;
+}
+
+.paginacao .pagina-ativa {
+    background: #00552e;
+    color: white;
+    font-weight: bold;
+}

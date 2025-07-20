@@ -1,4 +1,4 @@
--- SQL Dump Completo
+-- SQL Dump Completo (com Super Admin e Eventos Atualizados)
 -- Versão do servidor: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -159,6 +159,7 @@ CREATE TABLE `Servidor` (
   `cpf` char(11) NOT NULL,
   `senha` varchar(255) NOT NULL,
   `is_admin` tinyint(1) NOT NULL DEFAULT 0,
+  `is_super_admin` tinyint(1) NOT NULL DEFAULT 0,
   `setor_admin` enum('CAD','COEN','NENHUM') NOT NULL DEFAULT 'NENHUM',
   `ativo` tinyint(1) DEFAULT 1,
   `data_fim_validade` date DEFAULT NULL,
@@ -170,10 +171,10 @@ CREATE TABLE `Servidor` (
 -- Inserindo dados para a tabela `Servidor`
 --
 
-INSERT INTO `Servidor` (`siape`, `nome`, `sobrenome`, `email`, `cpf`, `senha`, `is_admin`, `setor_admin`, `ativo`, `data_fim_validade`) VALUES
-('1001', 'Coordenação', 'de Apoio ao Discente', 'cad.sjdr@ifsudestemg.edu.br', '10010011101', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 'CAD', 1, NULL),
-('1002', 'Coordenação', 'de Ensino', 'coen.sjdr@ifsudestemg.edu.br', '20020022202', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 'COEN', 1, NULL),
-('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 'NENHUM', 1, NULL);
+INSERT INTO `Servidor` (`siape`, `nome`, `sobrenome`, `email`, `cpf`, `senha`, `is_admin`, `is_super_admin`, `setor_admin`, `ativo`, `data_fim_validade`) VALUES
+('1001', 'Coordenação', 'de Apoio ao Discente', 'cad.sjdr@ifsudestemg.edu.br', '10010011101', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 1, 'CAD', 1, NULL),
+('1002', 'Coordenação', 'de Ensino', 'coen.sjdr@ifsudestemg.edu.br', '20020022202', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 1, 'COEN', 1, NULL),
+('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL);
 
 -- --------------------------------------------------------
 --
@@ -239,7 +240,7 @@ CREATE TABLE `SolicitacaoImpressao` (
   `status` enum('Nova','Lida','Aceita','Rejeitada') NOT NULL DEFAULT 'Nova',
   `data_criacao` datetime NOT NULL DEFAULT current_timestamp(),
   `reprografo_id` int(11) DEFAULT NULL,
-  `arquivada` BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Marca se a solicitação foi arquivada' AFTER `reprografo_id`;
+  `arquivada` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `reprografo_id` (`reprografo_id`),
   CONSTRAINT `SolicitacaoImpressao_ibfk_1` FOREIGN KEY (`reprografo_id`) REFERENCES `Reprografo` (`id`) ON DELETE SET NULL
@@ -372,27 +373,22 @@ CREATE TABLE `LogSemestreLetivo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- #####################################################################
--- # NOTA IMPORTANTE PARA HOSPEDAGEM (InfinityFree, etc.)
+-- # NOTA IMPORTANTE PARA HOSPEDAGEM
 -- #####################################################################
 --
--- O Agendador de Eventos (MySQL Events) está DESABILITADO neste servidor.
--- Os blocos "CREATE EVENT" abaixo foram comentados para não causar erros
--- durante a importação do banco de dados.
---
--- Para que as tarefas automáticas (limpeza, desativação, etc.) funcionem,
--- você DEVE configurar um CRON JOB no painel de controle da sua hospedagem
--- para executar o script PHP `tarefas_diarias.php` uma vez por dia.
+-- Os blocos "CREATE EVENT" abaixo servem como documentação da lógica
+-- que deve ser implementada no CRON JOB (`tarefas_diarias.php`).
+-- Eles estão comentados para não causar erros durante a importação.
 --
 -- #####################################################################
 
 /*
--- EVENTO PARA DESATIVAR USUÁRIOS EXPIRADOS (SUBSTITUÍDO POR CRON JOB)
+-- EVENTO PARA DESATIVAR USUÁRIOS EXPIRADOS (LÓGICA PARA O CRON JOB)
 DELIMITER //
 CREATE EVENT IF NOT EXISTS desativar_usuarios_expirados
 ON SCHEDULE EVERY 1 DAY
 DO
 BEGIN
-  -- MUDANÇA: Ao desativar o aluno, também reseta seu cargo.
   UPDATE Aluno SET ativo = FALSE, cargo = 'Nenhum' WHERE data_fim_validade IS NOT NULL AND data_fim_validade < CURDATE();
   UPDATE Servidor SET ativo = FALSE WHERE data_fim_validade IS NOT NULL AND data_fim_validade < CURDATE() AND is_admin = FALSE;
 END;//
@@ -400,15 +396,12 @@ DELIMITER ;
 */
 
 /*
--- EVENTO PARA ARQUIVAR SOLICITAÇÕES ANTIGAS (SUBSTITUÍDO POR CRON JOB)
+-- EVENTO PARA ARQUIVAR SOLICITAÇÕES ANTIGAS (LÓGICA PARA O CRON JOB)
 DELIMITER //
 CREATE EVENT IF NOT EXISTS arquivar_solicitacoes_antigas
 ON SCHEDULE EVERY 1 DAY
 DO
 BEGIN
-  -- Arquiva solicitações com mais de 15 dias que já foram concluídas
-  -- Nota: A exclusão do arquivo físico é feita pelo script PHP no Cron Job.
-  -- Este evento apenas atualiza o banco de dados.
   UPDATE SolicitacaoImpressao 
   SET arquivada = TRUE, arquivo_path = NULL
   WHERE data_criacao < NOW() - INTERVAL 15 DAY 
@@ -419,7 +412,7 @@ DELIMITER ;
 */
 
 /*
--- EVENTO PARA RESETAR COTAS NO INÍCIO DE CADA SEMESTRE LETIVO (SUBSTITUÍDO POR CRON JOB)
+-- EVENTO PARA RESETAR COTAS NO INÍCIO DE CADA SEMESTRE LETIVO (LÓGICA PARA O CRON JOB)
 DELIMITER //
 CREATE EVENT IF NOT EXISTS resetar_cotas_semestre
 ON SCHEDULE EVERY 1 DAY
@@ -430,16 +423,13 @@ BEGIN
   DECLARE v_cota_servidor_pb INT;
   DECLARE v_cota_servidor_color INT;
 
-  -- Verifica se hoje é o início de um novo semestre
   SELECT data_inicio INTO prox_semestre_inicio FROM SemestreLetivo WHERE data_inicio = CURDATE() LIMIT 1;
 
   IF prox_semestre_inicio IS NOT NULL THEN
-    -- Busca os valores padrão da tabela de configurações
     SELECT valor INTO v_cota_aluno FROM Configuracoes WHERE chave = 'cota_padrao_aluno' LIMIT 1;
     SELECT valor INTO v_cota_servidor_pb FROM Configuracoes WHERE chave = 'cota_padrao_servidor_pb' LIMIT 1;
     SELECT valor INTO v_cota_servidor_color FROM Configuracoes WHERE chave = 'cota_padrao_servidor_color' LIMIT 1;
 
-    -- Reseta as cotas usando os valores buscados (com fallback se não encontrar)
     UPDATE CotaAluno SET cota_total = IFNULL(v_cota_aluno, 600), cota_usada = 0;
     UPDATE CotaServidor SET cota_pb_total = IFNULL(v_cota_servidor_pb, 1000), cota_pb_usada = 0, cota_color_total = IFNULL(v_cota_servidor_color, 100), cota_color_usada = 0;
   END IF;

@@ -8,24 +8,15 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
     exit;
 }
 
-// Cria tabela de log se não existir (boa prática manter)
-$conn->exec("CREATE TABLE IF NOT EXISTS LogSemestreLetivo (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario VARCHAR(100) NOT NULL,
-    setor VARCHAR(10) NOT NULL,
-    acao VARCHAR(255) NOT NULL,
-    data DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
-)");
-
 // Processa o formulário de adicionar/editar semestre
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ano'])) {
     $ano = filter_input(INPUT_POST, 'ano', FILTER_VALIDATE_INT);
-    $semestre = $_POST['semestre'];
+    $semestre_num = $_POST['semestre'];
     $data_inicio = $_POST['data_inicio'];
     $data_fim = $_POST['data_fim'];
 
     // Validação dos dados
-    if (!$ano || !$semestre || !$data_inicio || !$data_fim) {
+    if (!$ano || !$semestre_num || !$data_inicio || !$data_fim) {
         $_SESSION['mensagem_erro'] = "Todos os campos são obrigatórios.";
     } elseif (strtotime($data_fim) <= strtotime($data_inicio)) {
         $_SESSION['mensagem_erro'] = "A data de fim deve ser posterior à data de início.";
@@ -33,25 +24,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ano'])) {
         try {
             $conn->beginTransaction();
 
-            // Verifica se já existe um semestre para o mesmo ano/período
-            $stmt_check = $conn->prepare("SELECT id FROM SemestreLetivo WHERE ano = :ano AND semestre = :semestre");
-            $stmt_check->execute([':ano' => $ano, ':semestre' => $semestre]);
-            $existe = $stmt_check->fetch();
+            $stmt_check = $conn->prepare("SELECT id, data_fim FROM SemestreLetivo WHERE ano = :ano AND semestre = :semestre");
+            $stmt_check->execute([':ano' => $ano, ':semestre' => $semestre_num]);
+            $semestre_existente = $stmt_check->fetch();
 
-            if ($existe) {
-                // Atualiza o semestre existente
+            if ($semestre_existente) {
+                // MODO EDIÇÃO
+                $antiga_data_fim = $semestre_existente->data_fim;
+                
+                // 1. Atualiza o semestre
                 $stmt_update = $conn->prepare("UPDATE SemestreLetivo SET data_inicio = :inicio, data_fim = :fim WHERE id = :id");
-                $stmt_update->execute([':inicio' => $data_inicio, ':fim' => $data_fim, ':id' => $existe->id]);
-                $acao = "Atualizou semestre $ano/$semestre para " . date('d/m/Y', strtotime($data_inicio)) . " a " . date('d/m/Y', strtotime($data_fim));
+                $stmt_update->execute([':inicio' => $data_inicio, ':fim' => $data_fim, ':id' => $semestre_existente->id]);
+                
+                $usuarios_afetados = 0;
+                // 2. Sincroniza a validade dos usuários, se a data de fim mudou
+                if ($antiga_data_fim !== $data_fim) {
+                    // MUDANÇA: Adicionado "AND ativo = TRUE" para atualizar apenas usuários ativos
+                    $stmt_sync_alunos = $conn->prepare("UPDATE Aluno SET data_fim_validade = :nova_data WHERE data_fim_validade = :antiga_data AND ativo = TRUE");
+                    $stmt_sync_alunos->execute([':nova_data' => $data_fim, ':antiga_data' => $antiga_data_fim]);
+                    $usuarios_afetados += $stmt_sync_alunos->rowCount();
+
+                    $stmt_sync_servidores = $conn->prepare("UPDATE Servidor SET data_fim_validade = :nova_data WHERE data_fim_validade = :antiga_data AND ativo = TRUE");
+                    $stmt_sync_servidores->execute([':nova_data' => $data_fim, ':antiga_data' => $antiga_data_fim]);
+                    $usuarios_afetados += $stmt_sync_servidores->rowCount();
+                }
+
+                $acao = "Atualizou semestre $ano/$semestre_num. Validade de $usuarios_afetados usuários ativos foi sincronizada.";
+
             } else {
-                // Insere um novo semestre
+                // MODO CADASTRO
                 $stmt_insert = $conn->prepare("INSERT INTO SemestreLetivo (ano, semestre, data_inicio, data_fim) VALUES (:ano, :semestre, :inicio, :fim)");
-                $stmt_insert->execute([':ano' => $ano, ':semestre' => $semestre, ':inicio' => $data_inicio, ':fim' => $data_fim]);
-                $acao = "Cadastrou semestre $ano/$semestre: " . date('d/m/Y', strtotime($data_inicio)) . " a " . date('d/m/Y', strtotime($data_fim));
+                $stmt_insert->execute([':ano' => $ano, ':semestre' => $semestre_num, ':inicio' => $data_inicio, ':fim' => $data_fim]);
+                $acao = "Cadastrou semestre $ano/$semestre_num: " . date('d/m/Y', strtotime($data_inicio)) . " a " . date('d/m/Y', strtotime($data_fim));
             }
             
             // Log da ação
-            // CORREÇÃO: Acessando os dados da sessão como um array
             $usuario_log = $_SESSION['usuario']['nome'] . ' ' . ($_SESSION['usuario']['sobrenome'] ?? '') . ' (' . $_SESSION['usuario']['id'] . ')';
             $setor_log = $_SESSION['usuario']['setor_admin'];
             $stmt_log = $conn->prepare("INSERT INTO LogSemestreLetivo (usuario, setor, acao) VALUES (:usuario, :setor, :acao)");
@@ -61,9 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ano'])) {
             $_SESSION['mensagem'] = 'Semestre salvo com sucesso!';
 
         } catch (Exception $e) {
-            if ($conn->inTransaction()) {
-                $conn->rollBack();
-            }
+            if ($conn->inTransaction()) $conn->rollBack();
             $_SESSION['mensagem_erro'] = 'Erro ao salvar semestre: ' . $e->getMessage();
         }
     }

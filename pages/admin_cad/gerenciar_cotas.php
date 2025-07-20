@@ -12,6 +12,9 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
 $stmtTurmas = $conn->query("SELECT t.id, t.periodo, c.sigla, c.nome_completo FROM Turma t JOIN Curso c ON t.curso_id = c.id ORDER BY c.nome_completo ASC, t.periodo ASC");
 $turmas = $stmtTurmas->fetchAll();
 
+// Parâmetros de paginação e busca
+
+
 // Adicionar ou editar cota
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $turma_id = intval($_POST['turma']);
@@ -41,11 +44,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 // Buscar cotas existentes
-$stmt = $conn->query("SELECT ca.*, c.sigla, c.nome_completo, t.periodo 
+
+// Paginação
+$pagina = isset($_GET['pagina']) && is_numeric($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+$limite = 10;
+$offset = ($pagina - 1) * $limite;
+
+// Consulta total de cotas
+$sql_count = "SELECT COUNT(*) AS total FROM CotaAluno";
+$total_resultados = $conn->query($sql_count)->fetch()->total ?? 0;
+$total_paginas = ceil($total_resultados / $limite);
+
+// Consulta principal com paginação
+$stmt = $conn->prepare("SELECT ca.*, c.sigla, c.nome_completo, t.periodo 
                       FROM CotaAluno ca 
                       JOIN Turma t ON ca.turma_id = t.id 
                       JOIN Curso c ON t.curso_id = c.id 
-                      ORDER BY t.periodo DESC, c.sigla ASC");
+                      ORDER BY t.periodo DESC, c.sigla ASC 
+                      LIMIT :limite OFFSET :offset");
+$stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->execute();
 $cotas = $stmt->fetchAll();
 
 include_once '../../includes/header.php';
@@ -109,6 +128,16 @@ include_once '../../includes/header.php';
           <?php endforeach; ?>
         </tbody>
       </table>
+      <?php if ($total_paginas > 1): ?>
+                <nav class="paginacao">
+                    <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
+                        <a class="<?= $i === $pagina ? 'pagina-ativa' : '' ?>"
+                            href="?<?= http_build_query(array_merge($_GET, ['pagina' => $i])) ?>">
+                            <?= $i ?>
+                        </a>
+                    <?php endfor; ?>
+                </nav>
+      <?php endif; ?>
     </div>
   </main>
 </div>

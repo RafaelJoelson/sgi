@@ -193,6 +193,25 @@ tr:hover {
   background-color: #005fa3;
   cursor: pointer;
 }
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.btn-danger:hover {
+  background-color: #c82333;
+}
 .styled-busca-form {
   display: flex;
   flex-wrap: wrap;
