@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         let botaoExcluir = '';
                         // CORREÇÃO: Lógica de autoexclusão e proteção de super admin
                         if (s.siape !== siapeLogado && !(s.is_super_admin == 1)) {
-                            botaoExcluir = `<button type="button" class="btn-action btn-delete btn-excluir" 
+                            botaoExcluir = `<button type="button" class="btn-action btn-delete btn-excluir btn-exc" 
                                                 data-id="${s.siape}" 
                                                 data-nome="${s.nome} ${s.sobrenome}" 
                                                 data-tipo="servidor"

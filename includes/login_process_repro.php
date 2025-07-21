@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'config.php';
-require_once 'tarefas_diarias.php';
+//require_once 'tarefas_diarias.php';
 function redirecionar_com_erro($url, $mensagem) {
     $_SESSION['erro_login'] = $mensagem;
     header('Location: ' . $url);

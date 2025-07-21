@@ -1,262 +1,203 @@
 <?php
-// Dashboard da Reprografia
-session_start();
 require_once '../../includes/config.php';
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografia') {
-    header('Location: ../../reprografia.php');
+session_start();
+
+// Permissão: apenas servidor CAD pode acessar
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'CAD') {
+    header('Location: ../../index.php');
     exit;
 }
-// Limpa arquivos da pasta uploads com mais de 15 dias
-$diretorioUploads = realpath(__DIR__ . '/../../uploads');
-if ($diretorioUploads && is_dir($diretorioUploads)) {
-    $arquivos = scandir($diretorioUploads);
-    $agora = time();
-    $dias = 15 * 24 * 60 * 60; // 15 dias em segundos
 
-    foreach ($arquivos as $arquivo) {
-        $caminho = $diretorioUploads . DIRECTORY_SEPARATOR . $arquivo;
-        if (is_file($caminho)) {
-            $modificadoHa = $agora - filemtime($caminho);
-            if ($modificadoHa > $dias) {
-                @unlink($caminho);
-            }
-        }
-    }
+// Pega o SIAPE do admin logado para a verificação de autoexclusão na tabela
+$siape_logado = $_SESSION['usuario']['id'];
+
+// Parâmetros de paginação e busca
+$pagina = isset($_GET['pagina']) && is_numeric($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+$limite = 12;
+$offset = ($pagina - 1) * $limite;
+
+$condicoes = [];
+$params = [];
+$tipo_busca = $_GET['tipo_busca'] ?? '';
+$valor_busca = trim($_GET['valor_busca'] ?? '');
+$filtro_turma = $_GET['turma'] ?? '';
+
+$base_sql = "FROM Aluno a 
+             LEFT JOIN CotaAluno ca ON a.cota_id = ca.id
+             LEFT JOIN Turma t ON ca.turma_id = t.id
+             LEFT JOIN Curso c ON t.curso_id = c.id";
+
+if (!empty($tipo_busca) && !empty($valor_busca)) {
+    if ($tipo_busca === 'cpf') $condicoes[] = "a.cpf = :valor";
+    elseif ($tipo_busca === 'matricula') $condicoes[] = "a.matricula = :valor";
+    $params[':valor'] = $valor_busca;
 }
-require_once '../../includes/header.php';
+if (!empty($filtro_turma)) {
+    $condicoes[] = "t.id = :turma_id";
+    $params[':turma_id'] = $filtro_turma;
+}
+
+$where_clause = !empty($condicoes) ? 'WHERE ' . implode(' AND ', $condicoes) : '';
+
+// Consultas de total e principal
+$sql_count = "SELECT COUNT(*) AS total " . $base_sql . " " . $where_clause;
+$stmt_count = $conn->prepare($sql_count);
+$stmt_count->execute($params);
+$total_resultados = $stmt_count->fetch()->total ?? 0;
+$total_paginas = ceil($total_resultados / $limite);
+
+$sql_alunos = "SELECT a.*, t.periodo, c.sigla, c.nome_completo " . $base_sql . " " . $where_clause . " ORDER BY a.nome ASC LIMIT :limite OFFSET :offset";
+$stmt = $conn->prepare($sql_alunos);
+foreach ($params as $key => $val) { $stmt->bindValue($key, $val); }
+$stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->execute();
+$alunos = $stmt->fetchAll();
+
+// Dados para os cards e filtros
+$total_turmas = $conn->query("SELECT COUNT(DISTINCT turma_id) AS total FROM CotaAluno")->fetch()->total ?? 0;
+$total_alunos = $conn->query("SELECT COUNT(*) AS total FROM Aluno WHERE ativo = 1")->fetch()->total ?? 0;
+$stmt_turmas = $conn->query("SELECT t.id, t.periodo, c.sigla, c.nome_completo FROM Turma t JOIN Curso c ON t.curso_id = c.id ORDER BY c.nome_completo ASC, t.periodo ASC");
+$turmas_disponiveis = $stmt_turmas->fetchAll();
+
+include_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="dashboard_reprografia.css?v=<?= ASSET_VERSION ?>">
+<link rel="stylesheet" href="dashboard_cad.css">
 <div class="dashboard-layout">
-    <aside class="dashboard-aside-repro">
-        <div class="container-principal">
-        <?php
-        if (isset($_SESSION['usuario'])) {
-            gerar_migalhas();
-        }
-        ?>
-        <nav class="dashboard-menu">
-            <img src="../../img/logo_reprografia.png" alt="Logo da Reprografia">
-            <a href="dashboard_reprografia.php" class="dashboard-menu-link active">Solicitações Pendentes</a>
-            <a href="relatorio_reprografia.php" class="dashboard-menu-link">Relatórios</a>
-            <a href="../admin/limpar_uploads.php" class="dashboard-menu-link">Limpar Pasta Uploads</a>
-            <a href="#" id="btn-alterar-dados" class="dashboard-menu-link">Alterar Meus Dados</a>
-        </nav>
-        </div>
-    </aside>
-    <main class="dashboard-main-repro">
-        <div id="toast-notification-container"></div>
-        <h2>Painel da Reprografia</h2>
-        <section id="solicitacoes-pendentes">
-            <div class="section-header">
-                <h2>Solicitações Pendentes</h2>
-                <button id="btn-ativar-notificacoes" class="btn-notificacao" title="Clique para permitir notificações no navegador">
-                    <i class="fas fa-bell"></i> Ativar Notificações
-                </button>
-            </div>
-            <div id="tabela-solicitacoes" class="table-responsive"></div>
+    <aside class="dashboard-aside">
+        <section class="dashboard-header">
+            <h1>Coordenação de Apoio ao Discente</h1>
         </section>
+        <section class="dashboard-cards">
+            <div class="card">Turmas Ativas: <?= $total_turmas ?></div>
+            <div class="card">Alunos Ativos: <?= $total_alunos ?></div>
+        </section>
+        <section class="dashboard-menu">
+            <a class="btn-menu" href="form_aluno.php">Cadastrar novo aluno</a>
+            <a class="btn-menu" href="#" id="btn-gerenciar-servidores">Gerenciar Servidores (CAD)</a>
+            <a class="btn-menu" href="gerenciar_cotas.php">Gerenciar Cotas</a>
+            <a class="btn-menu" href="gerenciar_turmas.php">Gerenciar Turmas</a>
+            <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
+            <a class="btn-menu" href="relatorio_aluno.php">Relatório de Impressões</a>
+            <a class="btn-menu" href="../servidor/dashboard_servidor.php">Acessar Modo Solicitante</a>
+            <a class="btn-menu" href="../admin/simular_cron.php">Simular Cron</a>
+        </section>
+    </aside>
+    <main class="dashboard-main">
+        <?php if (!empty($_SESSION['mensagem_sucesso'])): ?>
+            <div id="toast-mensagem" class="mensagem-sucesso">
+                <?= htmlspecialchars($_SESSION['mensagem_sucesso']) ?>
+            </div>
+            <?php unset($_SESSION['mensagem_sucesso']); ?>
+        <?php endif; ?>
+        
+        <div class="responsive-table">
+            <form method="GET" class="busca-form styled-busca-form">
+                <div class="form-group">
+                    <label for="tipo_busca">Buscar por:</label>
+                    <select name="tipo_busca" id="tipo_busca">
+                        <option value="cpf" <?= ($tipo_busca === 'cpf' ? 'selected' : '') ?>>CPF</option>
+                        <option value="matricula" <?= ($tipo_busca === 'matricula' ? 'selected' : '') ?>>Matrícula</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="valor_busca">Valor:</label>
+                    <input type="text" id="valor_busca" name="valor_busca" placeholder="Digite o valor..." value="<?= htmlspecialchars($valor_busca) ?>">
+                </div>
+                <div class="form-group filter">
+                    <label for="turma">Filtrar por Turma:</label>
+                    <select name="turma" id="turma">
+                        <option value="">Todas as turmas</option>
+                        <?php foreach ($turmas_disponiveis as $turma): ?>
+                            <option value="<?= $turma->id ?>" <?= ($filtro_turma == $turma->id ? 'selected' : '') ?>>
+                                <?= htmlspecialchars($turma->nome_completo . ' - ' . $turma->periodo) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <button type="submit" class="btn-filtrar">Buscar</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Nome</th>
+                        <th>Cargo</th>
+                        <th>Turma</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($alunos as $aluno): ?>
+                        <tr>
+                            <td data-label="Matrícula"><?= htmlspecialchars($aluno->matricula) ?></td>
+                            <td data-label="Nome"><?= htmlspecialchars($aluno->nome . ' ' . $aluno->sobrenome) ?></td>
+                            <td data-label="Cargo"><?= htmlspecialchars($aluno->cargo) ?></td>
+                            <td data-label="Turma" title="<?= htmlspecialchars($aluno->nome_completo . ' - ' . $aluno->periodo) ?>"><?= htmlspecialchars($aluno->sigla . ' - ' . $aluno->periodo) ?></td>
+                            <td data-label="Ações">
+                                <div class="action-buttons">
+                                    <a href="form_aluno.php?matricula=<?= htmlspecialchars($aluno->matricula) ?>" class="btn-action btn-edit" title="Editar/Renovar"><i class="fas fa-edit"></i></a>
+                                    <a type="button" class="btn-action btn-redefinir btn-edit" data-id="<?= htmlspecialchars($aluno->matricula) ?>" title="Redefinir Senha"><i class="fas fa-key"></i></a>
+                                    <button type="button" class="btn-action btn-delete btn-excluir btn-exc" 
+                                        data-id="<?= htmlspecialchars($aluno->matricula) ?>" 
+                                        data-nome="<?= htmlspecialchars($aluno->nome) ?>" 
+                                        data-tipo="aluno"
+                                        title="Excluir Aluno">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?php if ($total_paginas > 1): ?>
+                <nav class="paginacao">
+                    <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
+                        <a class="<?= $i === $pagina ? 'pagina-ativa' : '' ?>"
+                            href="?<?= http_build_query(array_merge($_GET, ['pagina' => $i])) ?>">
+                            <?= $i ?>
+                        </a>
+                    <?php endfor; ?>
+                </nav>
+            <?php endif; ?>
+        </div>
+        
+        <div id="modal-redefinir-aluno" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Redefinir Senha do Aluno</h2>
+                <form method="POST" action="redefinir_senha.php">
+                    <input type="hidden" name="matricula" id="matricula-modal-aluno">
+                    <label>Nova Senha <input type="password" name="nova_senha" required></label>
+                    <button type="submit">Salvar Nova Senha</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="modal-servidores" class="modal">
+          <div class="modal-content" style="max-width:900px;width:98%;">
+            <span class="close">&times;</span>
+            <h2>Servidores do Setor CAD</h2>
+            <button onclick="window.location.href='../admin/form_servidor.php'" class="btn-menu" style="margin-bottom:1em;">Novo Servidor</button>
+            <div id="tabela-servidores-cad">Carregando...</div>
+          </div>
+        </div>
+
+        <div id="modal-excluir" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Confirmar Exclusão</h2>
+                <p>Você tem certeza que deseja excluir <strong id="nome-item-excluir"></strong>?</p>
+                <p>Esta ação é irreversível.</p>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary btn-cancelar-exclusao">Cancelar</button>
+                    <a href="#" id="btn-confirmar-exclusao" class="btn-danger">Sim, Excluir</a>
+                </div>
+            </div>
+        </div>
     </main>
 </div>
-
-<!-- Modal para editar dados do reprografo -->
-<div id="modal-editar-dados" class="modal">
-    <div class="modal-content">
-        <span class="close" id="close-modal-editar">&times;</span>
-        <h2>Alterar Meus Dados</h2>
-        <form id="form-editar-reprografia" enctype="multipart/form-data">
-            <div id="mensagem-modal-erro" class="mensagem-erro" style="display: none;"></div>
-            <input type="hidden" id="reprografia-id" name="id">
-            <label>Logo da Reprografia (PNG ou WEBP)
-                <input type="file" id="reprografia-logo" name="logo" accept=".png,.webp,image/png,image/webp">
-            </label>
-            <label>Login
-                <input type="text" id="reprografia-login" name="login" readonly disabled style="background-color: #e9ecef;">
-            </label>
-            <label>Nome
-                <input type="text" id="reprografia-nome" name="nome" required>
-            </label>
-            <label>Sobrenome
-                <input type="text" id="reprografia-sobrenome" name="sobrenome" required>
-            </label>
-            <label>Email
-                <input type="email" id="reprografia-email" name="email">
-            </label>
-            <hr>
-            <p>Deixe os campos de senha em branco para não alterá-la.</p>
-            <label>Nova Senha
-                <input type="password" id="reprografia-nova-senha" name="nova_senha" minlength="6">
-            </label>
-            <label>Confirmar Nova Senha
-                <input type="password" id="reprografia-confirma-senha" name="confirma_senha" minlength="6">
-            </label>
-            <button type="submit">Salvar Alterações</button>
-        </form>
-    </div>
-</div>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    let ultimosIds = [];
-    const originalTitle = document.title;
-    let notificationInterval = null;
-    let audioContext;
-
-    // --- LÓGICA DE NOTIFICAÇÃO COMPLETA ---
-    function playNotificationSound() { /* ...código de som... */ }
-    function startTitleFlash(message) { /* ...código de piscar título... */ }
-    function stopTitleFlash() { /* ...código para parar de piscar... */ }
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) stopTitleFlash(); });
-
-    function showOnPageToast(message) {
-        const container = document.getElementById('toast-notification-container');
-        const toast = document.createElement('div');
-        toast.className = 'toast-notification';
-        toast.innerHTML = `<i class="fas fa-bell"></i> ${message}`;
-        container.appendChild(toast);
-        setTimeout(() => toast.classList.add('show'), 100);
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 500);
-        }, 5000);
-    }
-
-    function handleNewNotification(message) {
-        showOnPageToast(message);
-        if (document.hidden) {
-            playNotificationSound();
-            startTitleFlash("Nova Solicitação!");
-        }
-        if ("Notification" in window && Notification.permission === "granted") {
-            new Notification("SGI - Reprografia", { body: message, icon: '../../favicon.ico' });
-        }
-    }
-
-    // --- FUNÇÕES PRINCIPAIS DA PÁGINA ---
-    function carregarSolicitacoes(notify = false) {
-        fetch('listar_solicitacoes_pendentes.php')
-            .then(r => r.json())
-            .then(data => {
-                let html = '<table class="table table-striped table-hover"><thead><tr><th>Arquivo / Tipo</th><th>Solicitante</th><th>Cópias</th><th>Páginas</th><th>Colorida</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead><tbody>';
-                if (data.length === 0) {
-                    html += '<tr><td colspan="8" class="text-center">Nenhuma solicitação pendente.</td></tr>';
-                } else {
-                    data.forEach(s => {
-                        let linkArquivo = s.arquivo ? `<a href="download_arquivo.php?id_solicitacao=${s.id}" target="_blank" title="Baixar ${s.arquivo}"><i class="fas fa-download"></i> ${s.arquivo}</a>` : '<strong><i class="fas fa-store-alt"></i> <em>Solicitação no Balcão</em></strong>';
-                        html += `<tr>
-                            <td>${linkArquivo}</td><td>${s.nome_solicitante}</td><td>${s.qtd_copias}</td>
-                            <td><input type="number" class="form-control form-control-sm" style="width: 70px;" value="${s.qtd_paginas}" onchange="editarPaginas(${s.id}, this.value)"></td>
-                            <td><span class="badge ${s.colorida == 1 ? 'badge-info' : 'badge-secondary'}">${s.colorida == 1 ? 'Sim' : 'Não'}</span></td>
-                            <td>${s.status}</td><td>${s.data}</td>
-                            <td class="actions">
-                                <button class="btn-accept" onclick="atualizarStatus(${s.id},'Aceita')"><i class="fas fa-check"></i></button>
-                                <button class="btn-reject" onclick="atualizarStatus(${s.id},'Rejeitada')"><i class="fas fa-times"></i></button>
-                            </td>
-                        </tr>`;
-                    });
-                }
-                html += '</tbody></table>';
-                document.getElementById('tabela-solicitacoes').innerHTML = html;
-
-                const idsAtuais = data.map(s => s.id);
-                if (notify && ultimosIds.length > 0) {
-                    const novasSolicitacoes = idsAtuais.filter(id => !ultimosIds.includes(id));
-                    if (novasSolicitacoes.length > 0) {
-                        const mensagem = `Você recebeu ${novasSolicitacoes.length} nova(s) solicitação(ões)!`;
-                        handleNewNotification(mensagem);
-                    }
-                }
-                ultimosIds = idsAtuais;
-            });
-    }
-
-    window.atualizarStatus = function(id, status) {
-        if (!confirm(`Tem certeza que deseja "${status}" esta solicitação?`)) return;
-        fetch('atualizar_status_solicitacao.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `id=${id}&status=${status}`
-        }).then(r => r.json()).then(data => {
-            alert(data.mensagem);
-            if (data.sucesso) carregarSolicitacoes();
-        });
-    }
-
-    window.editarPaginas = function(id, valor) {
-        fetch('editar_paginas.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `id=${id}&qtd_paginas=${valor}`
-        }).then(r => r.json()).then(data => {
-            if (!data.sucesso) alert(data.mensagem);
-        });
-    }
-
-    const btnAtivarNotificacoes = document.getElementById('btn-ativar-notificacoes');
-    if (!("Notification" in window) || Notification.permission !== 'default') {
-        btnAtivarNotificacoes.style.display = 'none';
-    }
-    btnAtivarNotificacoes.addEventListener('click', () => { /* ...código existente... */ });
-
-    carregarSolicitacoes();
-    setInterval(() => carregarSolicitacoes(true), 15000);
-
-    // --- LÓGICA DO MODAL DE EDIÇÃO ---
-    const modalEditar = document.getElementById('modal-editar-dados');
-    const formEditar = document.getElementById('form-editar-reprografia');
-
-    document.getElementById('btn-alterar-dados').addEventListener('click', (e) => {
-        e.preventDefault();
-        fetch('obter_dados_reprografia.php')
-            .then(response => response.json())
-            .then(data => {
-                if (data.sucesso && data.dados) {
-                    document.getElementById('reprografia-id').value = data.dados.id;
-                    document.getElementById('reprografia-login').value = data.dados.login;
-                    document.getElementById('reprografia-nome').value = data.dados.nome;
-                    document.getElementById('reprografia-sobrenome').value = data.dados.sobrenome;
-                    document.getElementById('reprografia-email').value = data.dados.email;
-                    modalEditar.style.display = 'block';
-                } else {
-                    alert('Falha ao obter dados: ' + data.mensagem);
-                }
-            });
-    });
-
-    document.getElementById('close-modal-editar').addEventListener('click', () => modalEditar.style.display = 'none');
-    window.addEventListener('click', (e) => { if (e.target === modalEditar) modalEditar.style.display = 'none'; });
-
-    formEditar.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const novaSenha = document.getElementById('reprografia-nova-senha').value;
-        const confirmaSenha = document.getElementById('reprografia-confirma-senha').value;
-        const msgErro = document.getElementById('mensagem-modal-erro');
-
-        if (novaSenha !== confirmaSenha) {
-            msgErro.textContent = 'As senhas não coincidem.';
-            msgErro.style.display = 'block';
-            return;
-        }
-        msgErro.style.display = 'none';
-
-        const formData = new FormData(formEditar);
-        fetch('processar_edicao_reprografia.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.sucesso) {
-                modalEditar.style.display = 'none';
-                showOnPageToast(data.mensagem); // Usa o toast para sucesso
-                if (data.novo_nome) {
-                    const userInfo = document.querySelector('.user-info h3');
-                    if (userInfo) userInfo.textContent = `Bem-vindo: ${data.novo_nome}`;
-                }
-            } else {
-                msgErro.textContent = data.mensagem;
-                msgErro.style.display = 'block';
-            }
-        });
-    });
-});
-</script>
-<?php require_once '../../includes/footer.php'; ?>
+<script src="dashboard_cad.js"></script>
+<?php include_once '../../includes/footer.php'; ?>

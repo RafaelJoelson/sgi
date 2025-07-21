@@ -77,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             <td><span class="badge ${s.colorida == 1 ? 'badge-info' : 'badge-secondary'}">${s.colorida == 1 ? 'Sim' : 'Não'}</span></td>
                             <td>${s.status}</td><td>${s.data}</td>
                             <td class="actions">
-                                <button class="btn-accept" onclick="atualizarStatus(${s.id},'Aceita')"><i class="fas fa-check"></i></button>
-                                <button class="btn-reject" onclick="atualizarStatus(${s.id},'Rejeitada')"><i class="fas fa-times"></i></button>
+                                <button title="Aceitar" class="btn-accept" onclick="atualizarStatus(${s.id},'Aceita')"><i class="fas fa-check"></i></button>
+                                <button title="Rejeitar" class="btn-reject" onclick="atualizarStatus(${s.id},'Rejeitada')"><i class="fas fa-times"></i></button>
                             </td>
                         </tr>`;
                     });
