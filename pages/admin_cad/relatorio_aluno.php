@@ -49,11 +49,18 @@ $periodos = $conn->query("SELECT DISTINCT periodo FROM Turma ORDER BY LENGTH(per
 // Geração de PDF com Dompdf
 if (isset($_GET['gerar_pdf']) && $_GET['gerar_pdf'] == '1') {
     $caminho_imagem = realpath(__DIR__ . '/../../img/logo-if-sjdr-nova-grafia-horizontal.png');
+    $caminho_imagem2 = realpath(__DIR__ . '/../../img/logo_sgi.png');
     $imagem_base64 = '';
     if ($caminho_imagem) {
         $tipo_imagem = pathinfo($caminho_imagem, PATHINFO_EXTENSION);
         $dados_imagem = file_get_contents($caminho_imagem);
         $imagem_base64 = 'data:image/' . $tipo_imagem . ';base64,' . base64_encode($dados_imagem);
+    }
+    $imagem2_base64 = '';
+    if ($caminho_imagem2) {
+        $tipo_imagem = pathinfo($caminho_imagem2, PATHINFO_EXTENSION);
+        $dados_imagem = file_get_contents($caminho_imagem2);
+        $imagem2_base64 = 'data:image/' . $tipo_imagem . ';base64,' . base64_encode($dados_imagem);
     }
 
     ob_start();
@@ -65,8 +72,9 @@ if (isset($_GET['gerar_pdf']) && $_GET['gerar_pdf'] == '1') {
         <title>Relatório de Impressões por Aluno</title>
         <style>
             body { font-family: 'Helvetica', sans-serif; font-size: 10px; color: #333; }
-            .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
-            .header img { height: 50px; }
+            .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; justify-content: space-between; align-items: center; }
+            .logo_if_print { height: 50px; margin: 0 10px; }
+            .sgi_logo_print { height: 50px; margin: 0 10px;}
             .header h1 { font-size: 16px; margin: 5px 0; }
             .header p { font-size: 12px; margin: 0; }
             table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -78,7 +86,10 @@ if (isset($_GET['gerar_pdf']) && $_GET['gerar_pdf'] == '1') {
     <body>
         <div class="header">
             <?php if ($imagem_base64): ?>
-                <img src="<?= $imagem_base64 ?>" alt="Logo">
+                <img class="logo_if_print" src="<?= $imagem_base64 ?>" alt="Logo">
+            <?php endif; ?>
+            <?php if ($imagem2_base64): ?>
+                <img class="sgi_logo_print"src="<?= $imagem2_base64 ?>" alt="Logo SGI">
             <?php endif; ?>
             <h1>Coordenação de Apoio ao Discente</h1>
             <p>Relatório de Impressões por Aluno</p>

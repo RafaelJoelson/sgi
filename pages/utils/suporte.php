@@ -1,3 +1,7 @@
+<?php
+// Configurações do banco de dados
+require_once '../../includes/config.php';
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
