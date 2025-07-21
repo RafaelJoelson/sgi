@@ -138,7 +138,7 @@ include_once '../../includes/header.php';
             <button type="submit">Salvar Semestre</button>
         </form>
 
-        <button type="button" id="btn-abrir-modal-cotas" class="btn-menu" style="background-color: #17a2b8;">Definir Cotas Padrão</button>
+        <button type="button" id="btn-abrir-modal-cotas" class="btn-menu">Definir Cotas Padrão</button>
         <nav class="btn-container" aria-label="Ações">
             <a class="btn-back" href="javascript:history.back()">&larr; Voltar</a>
         </nav>

@@ -58,23 +58,23 @@ include_once '../../includes/header.php';
             <input type="hidden" name="siape" value="<?= htmlspecialchars($servidor->siape) ?>">
         <?php endif; ?>
 
-        <label>SIAPE
+        <label>*SIAPE
             <input type="text" name="siape" maxlength="8" required value="<?= $servidor->siape ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
         </label>
 
-        <label>Nome
+        <label>*Nome
             <input type="text" name="nome" required value="<?= $servidor->nome ?? '' ?>">
         </label>
 
-        <label>Sobrenome
+        <label>*Sobrenome
             <input type="text" name="sobrenome" required value="<?= $servidor->sobrenome ?? '' ?>">
         </label>
 
-        <label>Email
+        <label>*E-mail
             <input type="email" name="email" required value="<?= $servidor->email ?? '' ?>">
         </label>
 
-        <label>CPF
+        <label>*CPF
             <input type="text" name="cpf" required maxlength="11" pattern="\d{11}" title="Digite os 11 números do CPF" value="<?= $servidor->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
         </label>
 
@@ -84,7 +84,7 @@ include_once '../../includes/header.php';
             </label>
         <?php endif; ?>
 
-        <label>Setor Administrativo
+        <label>*Setor Administrativo
             <select name="setor_admin" required>
                 <option value="NENHUM" <?= (isset($servidor) && $servidor->setor_admin === 'NENHUM') ? 'selected' : '' ?>>Nenhum</option>
                 <option value="CAD" <?= (isset($servidor) && $servidor->setor_admin === 'CAD') ? 'selected' : '' ?>>CAD</option>
@@ -92,7 +92,7 @@ include_once '../../includes/header.php';
             </select>
         </label>
 
-        <label>É Administrador?
+        <label>*É Administrador?
             <select name="is_admin" required>
                 <option value="0" <?= (isset($servidor) && !$servidor->is_admin) ? 'selected' : '' ?>>Não</option>
                 <option value="1" <?= (isset($servidor) && $servidor->is_admin) ? 'selected' : '' ?>>Sim</option>
@@ -100,7 +100,7 @@ include_once '../../includes/header.php';
         </label>
 
         <label>Data Fim da Validade
-            <input type="date" name="data_fim_validade" value="<?= htmlspecialchars($data_validade_padrao) ?>">
+            <input type="date" name="data_fim_validade" value="<?= htmlspecialchars($data_validade_padrao) ?>"readonly>
         </label>
 
         <?php if ($modo_edicao): ?>

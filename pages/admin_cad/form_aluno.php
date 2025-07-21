@@ -65,19 +65,19 @@ include_once '../../includes/header.php';
             <input type="hidden" name="matricula" value="<?= htmlspecialchars($aluno->matricula) ?>">
         <?php endif; ?>
 
-        <label>Matrícula
-            <input type="text" name="matricula" required value="<?= $aluno->matricula ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+        <label>*Matrícula
+            <input type="text" name="matricula" maxlength="10" required value="<?= $aluno->matricula ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
         </label>
-        <label>Nome
+        <label>*Nome
             <input type="text" name="nome" required value="<?= $aluno->nome ?? '' ?>">
         </label>
-        <label>Sobrenome
+        <label>*Sobrenome
             <input type="text" name="sobrenome" required value="<?= $aluno->sobrenome ?? '' ?>">
         </label>
-        <label>Email
+        <label>*E-mail
             <input type="email" name="email" required value="<?= $aluno->email ?? '' ?>">
         </label>
-        <label>CPF
+        <label>*CPF
             <input type="text" name="cpf" required maxlength="11" pattern="\d{11}" title="Digite os 11 números do CPF" value="<?= $aluno->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
         </label>
 
@@ -87,7 +87,7 @@ include_once '../../includes/header.php';
             </label>
         <?php endif; ?>
 
-        <label>Cargo
+        <label>*Cargo
             <select name="cargo" required>
                 <option value="Nenhum" <?= (isset($aluno) && $aluno->cargo === 'Nenhum') ? 'selected' : '' ?>>Nenhum</option>
                 <option value="Líder" <?= (isset($aluno) && $aluno->cargo === 'Líder') ? 'selected' : '' ?>>Líder</option>
@@ -96,7 +96,7 @@ include_once '../../includes/header.php';
         </label>
 
         <!-- MUDANÇA: O select agora lista Turmas e envia 'turma_id' -->
-        <label>Turma
+        <label>*Turma
             <select name="turma_id" required>
                 <option value="" disabled <?= !$modo_edicao ? 'selected' : '' ?>>Selecione uma turma</option>
                 <?php foreach ($turmas_disponiveis as $turma): ?>
@@ -108,7 +108,7 @@ include_once '../../includes/header.php';
         </label>
 
         <label>Data Fim da Validade
-            <input type="date" name="data_fim_validade" value="<?= htmlspecialchars($data_validade_padrao) ?>">
+            <input type="date" name="data_fim_validade" value="<?= htmlspecialchars($data_validade_padrao) ?>" readonly>
         </label>
 
         <?php if ($modo_edicao): ?>
