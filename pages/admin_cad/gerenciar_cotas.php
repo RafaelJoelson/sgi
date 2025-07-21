@@ -69,7 +69,7 @@ $cotas = $stmt->fetchAll();
 
 include_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="gerenciar_cotas.css">
+<link rel="stylesheet" href="gerenciar_cotas.css?v=<?= ASSET_VERSION ?>">
 <div class="dashboard-layout">
   <aside class="dashboard-aside-cotas">
     <div class="container-principal"> <!-- Um container para o conteúdo -->

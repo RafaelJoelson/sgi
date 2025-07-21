@@ -44,7 +44,7 @@ $data_validade_padrao = $aluno->data_fim_validade ?? ($semestre_vigente->data_fi
 
 include_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="form_aluno.css">
+<link rel="stylesheet" href="form_aluno.css?v=<?= ASSET_VERSION ?>">
 <main>
 <div class="container-principal"> <!-- Um container para o conteúdo -->
         <?php

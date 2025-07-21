@@ -21,7 +21,7 @@ $stmt->execute([$aluno_cpf]);
 $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!-- Vinculando a mesma folha de estilos do dashboard -->
-<link rel="stylesheet" href="dashboard_aluno.css">
+<link rel="stylesheet" href="dashboard_aluno.css?v=<?= ASSET_VERSION ?>">
 
 <main class="container">
     <div class="container-principal"> <!-- Um container para o conteúdo -->

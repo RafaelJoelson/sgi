@@ -53,7 +53,7 @@ $total_servidores = $conn->query("SELECT COUNT(*) AS total FROM Servidor WHERE a
 
 include_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="dashboard_coen.css">
+<link rel="stylesheet" href="dashboard_coen.css?v=<?= ASSET_VERSION ?>">
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
         <section class="dashboard-header">

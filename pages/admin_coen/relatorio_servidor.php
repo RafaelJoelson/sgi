@@ -95,7 +95,7 @@ if ($is_print_view) :
 // --- VISUALIZAÇÃO DE TELA (DASHBOARD) ---
 require_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="dashboard_coen.css">
+<link rel="stylesheet" href="dashboard_coen.css?v=<?= ASSET_VERSION ?>">
 <main class="dashboard-layout">
     <aside class="dashboard-aside">
         <div class="container-principal"> <!-- Um container para o conteúdo -->

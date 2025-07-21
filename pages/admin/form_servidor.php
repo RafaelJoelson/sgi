@@ -32,7 +32,7 @@ $data_validade_padrao = $servidor->data_fim_validade ?? ($semestre_vigente->data
 
 include_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="form_servidor.css">
+<link rel="stylesheet" href="form_servidor.css?v=<?= ASSET_VERSION ?>">
 <main>
     <div class="container-principal"> <!-- Um container para o conteúdo -->
         <?php

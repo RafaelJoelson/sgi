@@ -149,7 +149,7 @@ $periodos = $stmtPeriodos->fetchAll(PDO::FETCH_COLUMN);
 include_once '../../includes/header.php';
 ?>
 
-<link rel="stylesheet" href="gerenciar_turmas.css">
+<link rel="stylesheet" href="gerenciar_turmas.css?v=<?= ASSET_VERSION ?>">
 <main class="container">
     <div class="dashboard-layout">
         <aside class="dashboard-aside">

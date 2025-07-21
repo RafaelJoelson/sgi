@@ -67,8 +67,7 @@ if ($is_print_view) :
 <head>
     <meta charset="utf-8">
     <title>Relatório de Impressões - <?= date('d/m/Y') ?></title>
-    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../print_base.css">
+    <link rel="stylesheet" href="../../print_base.css?v=<?= ASSET_VERSION ?>">
     <style>
         body { background-color: #fff; }
         .print-header { text-align: center; margin-bottom: 2rem; }
@@ -89,7 +88,7 @@ if ($is_print_view) :
 // --- VISUALIZAÇÃO DE TELA (DASHBOARD) ---
 require_once '../../includes/header.php'; 
 ?>
-<link rel="stylesheet" href="dashboard_relatorio_reprografia.css">
+<link rel="stylesheet" href="dashboard_relatorio_reprografia.css?v=<?= ASSET_VERSION ?>">
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
         <div class="container-principal"> <!-- Um container para o conteúdo -->
