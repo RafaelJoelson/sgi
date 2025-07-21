@@ -4,7 +4,7 @@ define('SITE_NAME', 'Sistema de Gerenciamento de Impressão');
 define('SITE_DESCRIPTION', 'Sistema de Gerencimanto de Impressão (SGI) Instituto Federal do Sudeste de Minas Gerais - Campus São João del-Rei');
 define('CURRENT_YEAR', date('Y'));
 // Versão dos arquivos CSS e JS para controle de cache
-define('ASSET_VERSION', '1.6'); 
+define('ASSET_VERSION', '1.7'); 
 
 // Caminho base do site (ajuste se estiver em subpasta)
 define('BASE_URL', '/sgi'); // ou '/' se estiver na raiz
@@ -15,18 +15,18 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'sgi');
 
-// --- CORREÇÃO CRÍTICA ---
+/*
 // O caminho base DEVE ser o URL completo do seu site para que os links
 // para CSS, imagens e scripts funcionem corretamente com o .htaccess.
 // Use 'https' se você tiver um certificado SSL.
-//define('BASE_URL', 'https://ifsudestesgisjdr.free.nf');
+define('BASE_URL', 'https://ifsudestesgisjdr.free.nf');
 
 // Configurações do banco de dados
-//define('DB_HOST', 'sql102.infinityfree.com');
-//define('DB_USER', 'if0_39311333');
-//define('DB_PASS', 'fOs7jQlfLZG');
-//define('DB_NAME', 'if0_39311333_sgi');
-
+define('DB_HOST', 'sql102.infinityfree.com');
+define('DB_USER', 'if0_39311333');
+define('DB_PASS', 'fOs7jQlfLZG');
+define('DB_NAME', 'if0_39311333_sgi');
+*/
 // Funções úteis
 function isActive($page) {
     return basename($_SERVER['PHP_SELF']) == $page ? 'active' : '';
@@ -47,6 +47,8 @@ try {
     die("Erro na conexão com o banco de dados: " . $e->getMessage());
 }
 
+// Função para gerar a trilha de migalhas (Breadcrumbs)
+// MUDANÇA: Agora ignora diretórios específicos na trilha de migalhas
 function gerar_migalhas() {
     // Define o link da página inicial
     $migalhas = '<a href="' . BASE_URL . '/index.php">Início</a>';
@@ -59,7 +61,7 @@ function gerar_migalhas() {
     }
     $partes = explode('/', trim($caminho, '/'));
 
-    // MUDANÇA: Lista de diretórios a serem ignorados na trilha de migalhas
+    // MUDANÇA: Lista de diretórios a serem ignorados na trilha de migalhas (Breadcrumbs)
     $partes_ignoradas = ['pages', 'admin', 'admin_cad', 'admin_coen', 'aluno', 'servidor', 'reprografo'];
 
     $url_parcial = BASE_URL;

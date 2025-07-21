@@ -15,6 +15,16 @@ require_once '../../includes/header.php';
         <button id="btn-ativar-notificacoes" class="btn-notificacao" title="Clique para permitir notificações no navegador">
             <i class="fas fa-bell"></i> Ativar Notificações
         </button>
+    <!-- Verifica horário de funcionamento -->
+    <?php
+    date_default_timezone_set('America/Sao_Paulo');
+    $horaAtual = (int)date('G');
+    if ($horaAtual < 7 || $horaAtual >= 21): ?>
+        <div class="alert alert-warning" style="margin:1em 0;padding:1em;border:1px solid #f0ad4e;background:#fff8e1;color:#856404;">
+            <strong>Atenção:</strong> Você está fora do horário de funcionamento da reprografia (7h às 22h). 
+            Qualquer solicitação enviada agora só será aceita quando a reprografia abrir.
+        </div>
+    <?php endif; ?>
     <h4>Servidor(a): <?= htmlspecialchars($_SESSION['usuario']['nome'] . (isset($_SESSION['usuario']['sobrenome']) ? ' ' . $_SESSION['usuario']['sobrenome'] : '')) ?></h4>
     <div id="cota-info" style="margin-bottom:1em;font-weight:bold;color:#1a4b2a;"></div>
     <?php
@@ -46,6 +56,7 @@ require_once '../../includes/header.php';
             <input type="number" name="qtd_paginas" id="qtd_paginas" min="1" max="500" required placeholder="Informe o nº de páginas">
         </label>
         <div id="preview-copias-paginas" style="margin:0.5em 0;font-weight:bold;color:#2a3b4b;"></div>
+        <!-- Formatação do preview -->
         <script>
         document.addEventListener('DOMContentLoaded', function() {
             const qtdCopiasInput = document.getElementById('qtd_copias');

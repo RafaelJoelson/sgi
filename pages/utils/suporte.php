@@ -6,7 +6,7 @@
     <title>Suporte - Sistema de Gerenciamento de Impressão</title>
     <!-- Incluindo Font Awesome para os ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="suporte.css">
+    <link rel="stylesheet" href="suporte.css?v=<?= ASSET_VERSION ?>">
 </head>
 <body>
 
@@ -76,10 +76,10 @@
         <section class="secao-suporte">
             <h2><i class="fas fa-book"></i> Manuais e Documentos</h2>
             <ul class="lista-manuais">
-                <li><a href="#" download><i class="fas fa-file-pdf"></i> Manual de Uso do Sistema para Alunos</a></li>
-                <li><a href="#" download><i class="fas fa-file-pdf"></i> Manual de Uso do Sistema para Servidores</a></li>
-                <li><a href="#" download><i class="fas fa-file-pdf"></i> Manual de Uso do Sistema para a Reprografia</a></li>
-                <li><a href="#" download><i class="fas fa-file-alt"></i> Política de Uso da Reprografia</a></li>
+                <li><a href="./documents/" download><i class="fas fa-file-pdf"></i> Manual de Uso do Sistema para Alunos</a></li>
+                <li><a href="./documents/" download><i class="fas fa-file-pdf"></i> Manual de Uso do Sistema para Servidores</a></li>
+                <li><a href="./documents/" download><i class="fas fa-file-pdf"></i> Manual de Uso do Sistema para a Reprografia</a></li>
+                <li><a href="./documents/" download><i class="fas fa-file-alt"></i> Política de Uso da Reprografia</a></li>
             </ul>
         </section>
 
