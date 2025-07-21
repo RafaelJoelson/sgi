@@ -86,9 +86,18 @@ include_once '../../includes/header.php';
 
         <label>*Setor Administrativo
             <select name="setor_admin" required>
-                <option value="NENHUM" <?= (isset($servidor) && $servidor->setor_admin === 'NENHUM') ? 'selected' : '' ?>>Nenhum</option>
-                <option value="CAD" <?= (isset($servidor) && $servidor->setor_admin === 'CAD') ? 'selected' : '' ?>>CAD</option>
-                <option value="COEN" <?= (isset($servidor) && $servidor->setor_admin === 'COEN') ? 'selected' : '' ?>>COEN</option>
+            <?php
+            // Se o usuário logado for admin, setor_admin = CAD. Só listar CAD e NENHUM
+            if (isset($_SESSION['usuario']) && $_SESSION['usuario']['is_admin']) {
+                $setores = ['NENHUM' => 'Nenhum', 'CAD' => 'CAD'];
+            } else {
+                $setores = ['NENHUM' => 'Nenhum', 'CAD' => 'CAD', 'COEN' => 'COEN'];
+            }
+            foreach ($setores as $valor => $label) {
+                $selected = (isset($servidor) && $servidor->setor_admin === $valor) ? 'selected' : '';
+                echo "<option value=\"$valor\" $selected>$label</option>";
+            }
+            ?>
             </select>
         </label>
 

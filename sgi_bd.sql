@@ -300,7 +300,28 @@ INSERT INTO `SolicitacaoImpressao` (`id`, `cpf_solicitante`, `tipo_solicitante`,
 (16, '20020022202', 'Servidor', 'planilha_financeira.pdf', 1, 3, 1, 'Aceita', '2025-07-05 13:45:00', 1),
 (17, '56789012345', 'Aluno', 'capa_trabalho.jpg', 5, 1, 0, 'Aceita', '2025-07-02 18:00:00', 2),
 (18, '12345678901', 'Aluno', 'resumo_livro.docx', 1, 4, 0, 'Nova', '2025-07-12 10:00:00', NULL),
-(19, '10010011101', 'Servidor', 'relatorio_atividades.pdf', 1, 22, 1, 'Nova', '2025-07-14 11:30:00', NULL);
+(19, '10010011101', 'Servidor', 'relatorio_atividades.pdf', 1, 22, 1, 'Nova', '2025-07-14 11:30:00', NULL),
+(20, '67890123456', 'Servidor', 'projeto_extensao.pdf', 2, 10, 0, 'Aceita', '2024-03-15 09:00:00', 1),
+(21, '78901234567', 'Servidor', 'oficio_diretoria.docx', 1, 5, 1, 'Aceita', '2024-04-10 14:20:00', 2),
+(22, '89012345678', 'Servidor', 'memorando_interno.pdf', 3, 2, 0, 'Lida', '2024-05-05 08:30:00', 1),
+(23, '90123456789', 'Servidor', 'relatorio_financeiro.xlsx', 1, 12, 0, 'Aceita', '2024-06-01 11:45:00', 2),
+(24, '91234567890', 'Servidor', 'plano_ensino.pdf', 2, 8, 1, 'Aceita', '2024-07-18 10:10:00', 1),
+(25, '92345678901', 'Servidor', 'documento_administrativo.docx', 1, 6, 0, 'Aceita', '2024-08-22 15:00:00', 2),
+(26, '93456789012', 'Servidor', 'relatorio_pesquisa.pdf', 2, 9, 1, 'Aceita', '2024-09-30 13:25:00', 1),
+(27, '94567890123', 'Servidor', 'comunicado_oficial.pdf', 1, 4, 0, 'Aceita', '2024-10-12 16:40:00', 2),
+
+(29, '96789012345', 'Servidor', 'relatorio_final.pdf', 2, 11, 0, 'Aceita', '2024-12-05 12:15:00', 2),
+-- Solicitações de alunos ao longo de 2023
+(30, '12345678901', 'Aluno', 'projeto_portugues.pdf', 5, 3, 0, 'Aceita', '2023-03-10 09:00:00', 1),
+(31, '23456789012', 'Aluno', 'resenha_literaria.docx', 2, 4, 0, 'Aceita', '2023-04-15 10:30:00', 2),
+(32, '34567890123', 'Aluno', 'trabalho_historia.pdf', 3, 2, 0, 'Aceita', '2023-05-20 14:00:00', 1),
+(33, '45678901234', 'Aluno', 'relatorio_quimica.pdf', 4, 5, 1, 'Aceita', '2023-06-05 11:15:00', 2),
+(34, '56789012345', 'Aluno', 'lista_matematica.pdf', 2, 6, 0, 'Aceita', '2023-07-12 08:45:00', 1),
+(35, '67890123457', 'Aluno', 'projeto_biologia.pdf', 1, 8, 0, 'Aceita', '2023-08-18 13:20:00', 2),
+(36, '78901234568', 'Aluno', 'capa_trabalho.pdf', 2, 1, 0, 'Aceita', '2023-09-25 15:00:00', 1),
+(37, '89012345679', 'Aluno', 'artigo_cientifico.docx', 3, 7, 1, 'Aceita', '2023-10-30 16:40:00', 2),
+(38, '90123456780', 'Aluno', 'resumo_geografia.pdf', 2, 2, 0, 'Aceita', '2023-11-15 09:30:00', 1),
+(39, '012222567891', 'Aluno', 'trabalho_fisica.pdf', 1, 5, 0, 'Aceita', '2023-12-01 10:10:00', 2);
 
 -- --------------------------------------------------------
 --

@@ -1,5 +1,11 @@
 <?php
-// Relatório do Reprográfo
+// Inclui o autoloader do Composer para carregar o dompdf
+require_once '../../vendor/autoload.php';
+
+// Referencia as classes do dompdf
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 require_once '../../includes/config.php';
 session_start();
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografia') {
@@ -44,62 +50,115 @@ $dados_relatorio = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Processa os dados para facilitar a exibição dos totais
 $totais = [
     'pb' => 0,
-    'colorida' => 0
+    'colorida' => 0,
+    'aluno_pb' => 0,
+    'servidor_pb' => 0,
+    'servidor_color' => 0
 ];
 foreach ($dados_relatorio as $dado) {
     if ((int)$dado['colorida'] === 0) {
         $totais['pb'] += (int)$dado['total_paginas'];
+        if ($dado['tipo_solicitante'] === 'Aluno') {
+            $totais['aluno_pb'] = (int)$dado['total_paginas'];
+        } else {
+            $totais['servidor_pb'] = (int)$dado['total_paginas'];
+        }
     } else {
         $totais['colorida'] += (int)$dado['total_paginas'];
+        $totais['servidor_color'] = (int)$dado['total_paginas'];
     }
 }
 
-// Define se a visualização é para impressão
-$is_print_view = isset($_GET['imprimir']) && $_GET['imprimir'] == '1';
+// --- 2. LÓGICA DE GERAÇÃO DE PDF ---
+if (isset($_GET['gerar_pdf']) && $_GET['gerar_pdf'] == '1') {
+    $caminho_logo_if = realpath(__DIR__ . '/../../img/logo-if-sjdr-nova-grafia-horizontal.png');
+    $caminho_logo2_if = realpath(__DIR__ . '/../../img/logo_reprografia.png'); // Ajuste conforme necessário
+    $logo_if_base64 = '';
+    if ($caminho_logo_if) {
+        $tipo = pathinfo($caminho_logo_if, PATHINFO_EXTENSION);
+        $dados = file_get_contents($caminho_logo_if);
+        $logo_if_base64 = 'data:image/' . $tipo . ';base64,' . base64_encode($dados);
+    }
+    $logo2_if_base64 = '';
+    if ($caminho_logo2_if) {
+        $tipo = pathinfo($caminho_logo2_if, PATHINFO_EXTENSION);
+        $dados = file_get_contents($caminho_logo2_if);
+        $logo2_if_base64 = 'data:image/' . $tipo . ';base64,' . base64_encode($dados);
+    }
 
-// --- 2. LÓGICA DE APRESENTAÇÃO (HTML) ---
-
-if ($is_print_view) :
-// --- VISUALIZAÇÃO PARA IMPRESSÃO ---
-?>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="utf-8">
-    <title>Relatório de Impressões - <?= date('d/m/Y') ?></title>
-    <link rel="stylesheet" href="../../print_base.css?v=<?= ASSET_VERSION ?>">
-    <style>
-        body { background-color: #fff; }
-        .print-header { text-align: center; margin-bottom: 2rem; }
-        .print-header img { height: 60px; margin-bottom: 1rem; }
-        @media print { body { -webkit-print-color-adjust: exact; } }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="print-header">
-            <img src="../../img/logo-if-sjdr-nova-grafia-horizontal.png" alt="Logo IFSudesteMG">
-            <h3>Reprografia - Relatório de Impressões</h3>
-            <img src="../../img/logo_reprografia.png" alt="">
-            <p>Período de <?= htmlspecialchars(date('d/m/Y', strtotime($data_ini))) ?> a <?= htmlspecialchars(date('d/m/Y', strtotime($data_fim))) ?></p>
-            <small class="text-muted">Emitido em: <?= date('d/m/Y H:i') ?></small>
+    ob_start();
+    ?>
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <title>Relatório de Impressões - Reprografia</title>
+        <style>
+            body { font-family: 'Helvetica', sans-serif; font-size: 10px; color: #333; }
+            .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; justify-content: space-between; }
+            .header img { height: 50px; margin: 0 10px; }
+            h1 { font-size: 16px; margin: 5px 0; }
+            p { font-size: 12px; margin: 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+            th { background-color: #f2f2f2; font-weight: bold; }
+            tfoot td { font-weight: bold; background-color: #f9f9f9; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <?php if ($logo_if_base64): ?><img src="<?= $logo_if_base64 ?>" alt="Logo"><?php endif; ?>
+            <?php if ($logo2_if_base64): ?><img src="<?= $logo2_if_base64 ?>" alt="Logo2"><?php endif; ?>
+            <h1>Reprografia - Relatório Geral de Impressões</h1>
+            <p>Período: <?= htmlspecialchars(date('d/m/Y', strtotime($data_ini))) ?> a <?= htmlspecialchars(date('d/m/Y', strtotime($data_fim))) ?></p>
         </div>
-<?php else: 
-// --- VISUALIZAÇÃO DE TELA (DASHBOARD) ---
+        <table>
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Total de Páginas Impressas</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Alunos (P&B)</td><td><?= $totais['aluno_pb'] ?></td></tr>
+                <tr><td>Servidores (P&B)</td><td><?= $totais['servidor_pb'] ?></td></tr>
+                <tr><td>Servidores (Colorida)</td><td><?= $totais['servidor_color'] ?></td></tr>
+            </tbody>
+            <tfoot>
+                <tr><td>Total Geral P&B</td><td><?= $totais['pb'] ?></td></tr>
+                <tr><td>Total Geral Colorida</td><td><?= $totais['colorida'] ?></td></tr>
+                <tr style="font-size: 1.1em;"><td><strong>Total Geral (P&B + Colorida)</strong></td><td><strong><?= $totais['pb'] + $totais['colorida'] ?></strong></td></tr>
+            </tfoot>
+        </table>
+        <div style="margin-top:30px;font-size:11px;color:#555;text-align:right;">
+            Relatório gerado em: <?= date('d/m/Y H:i') ?><br>
+            Usuário: <?= htmlspecialchars($_SESSION['usuario']['nome'] . ' ' . ($_SESSION['usuario']['sobrenome'] ?? '')) ?>
+        </div>
+    </body>
+    </html>
+    <?php
+    $html = ob_get_clean();
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isRemoteEnabled', true);
+    $dompdf = new Dompdf($options);
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    $dompdf->stream("relatorio_reprografia_" . date("Y-m-d") . ".pdf", ["Attachment" => true]);
+    exit;
+}
+
+// --- 3. RENDERIZAÇÃO NORMAL DA PÁGINA ---
 require_once '../../includes/header.php'; 
 ?>
 <link rel="stylesheet" href="dashboard_relatorio_reprografia.css?v=<?= ASSET_VERSION ?>">
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
-        <div class="container-principal"> <!-- Um container para o conteúdo -->
-        <?php
-        // Chama a função de migalhas se o usuário estiver logado
-        if (isset($_SESSION['usuario'])) {
-            gerar_migalhas();
-        }
-        ?>
+        <div class="container-principal">
+        <?php if (isset($_SESSION['usuario'])) { gerar_migalhas(); } ?>
         <h3>Filtros do Relatório</h3>
-        <form method="get" class="relatorios-form">
+        <form method="get" class="relatorios-form" id="form-relatorio">
             <div class="form-group">
                 <label for="data_ini">Data inicial</label>
                 <input type="date" id="data_ini" name="data_ini" class="form-control" value="<?= htmlspecialchars($data_ini) ?>">
@@ -112,18 +171,16 @@ require_once '../../includes/header.php';
         </form>
         <hr>
         <div class="container-imprimir">
-            <button type="button" class="btn btn-info btn-block relatorios-imprimir" onclick="imprimirRelatorio()">
-                <i class="fas fa-print"></i> Imprimir
+            <button type="button" class="btn btn-info btn-block relatorios-imprimir" onclick="gerarPDF()">
+                <i class="fas fa-file-pdf"></i> Gerar PDF
             </button>
         </div>
         <nav class="btn-container mt-3">
             <a class="btn btn-secondary btn-back" href="dashboard_reprografia.php">&larr; Voltar ao Painel</a>
         </nav>
+        </div>
     </aside>
     <main class="dashboard-main">
-<?php endif; ?>
-
-        <!-- TABELA DE DADOS (Comum para ambas as visualizações) -->
         <table class="table table-bordered table-hover">
             <thead class="thead-dark">
                 <tr>
@@ -144,7 +201,6 @@ require_once '../../includes/header.php';
                         </tr>
                     <?php endforeach; ?>
                     
-                    <!-- Linhas de Totalização -->
                     <tr class="table-secondary font-weight-bold">
                         <td colspan="2">Total de Páginas P&B (Alunos + Servidores)</td>
                         <td><?= $totais['pb'] ?></td>
@@ -156,22 +212,16 @@ require_once '../../includes/header.php';
                 <?php endif; ?>
             </tbody>
         </table>
-
-<?php if ($is_print_view): ?>
-    </div>
-    <script>window.onload = () => window.print();</script>
-</body>
-</html>
-<?php else: ?>
     </main>
 </div>
 <script>
-function imprimirRelatorio() {
-    const form = document.querySelector('.relatorios-form');
-    const params = new URLSearchParams(new FormData(form));
-    params.append('imprimir', '1');
-    window.open(`relatorio_reprografia.php?${params.toString()}`, '_blank');
+function gerarPDF() {
+    const form = document.getElementById('form-relatorio');
+    if (form) {
+        const params = new URLSearchParams(new FormData(form));
+        params.append('gerar_pdf', '1');
+        window.location.href = `relatorio_reprografia.php?${params.toString()}`;
+    }
 }
 </script>
 <?php require_once '../../includes/footer.php'; ?>
-<?php endif; ?>

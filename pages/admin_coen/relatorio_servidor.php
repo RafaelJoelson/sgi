@@ -1,29 +1,28 @@
 <?php
-// Relatório de Impressões por Servidor (COEN)
+// Inclui o autoloader do Composer para carregar o dompdf
+require_once '../../vendor/autoload.php';
+
+// Referencia as classes do dompdf
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 require_once '../../includes/config.php';
 session_start();
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'COEN') {
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || !in_array($_SESSION['usuario']['setor_admin'], ['CAD', 'COEN'])) {
     header('Location: ../../index.php');
     exit;
 }
 
-// --- 1. DEFINIÇÃO DOS FILTROS ---
-
-// Buscar o semestre vigente para definir as datas padrão
+// --- 1. LÓGICA DE FILTROS E CONSULTA ---
 $hoje = date('Y-m-d');
 $stmt_semestre = $conn->prepare("SELECT data_inicio, data_fim FROM SemestreLetivo WHERE :hoje BETWEEN data_inicio AND data_fim ORDER BY data_fim DESC LIMIT 1");
 $stmt_semestre->execute([':hoje' => $hoje]);
 $semestre_vigente = $stmt_semestre->fetch();
-
-// Define as datas padrão: ou do semestre vigente, ou do mês corrente como fallback
 $default_data_ini = $semestre_vigente ? $semestre_vigente->data_inicio : date('Y-m-01');
 $default_data_fim = $semestre_vigente ? $semestre_vigente->data_fim : date('Y-m-d');
-
-// Usa as datas do GET se existirem, senão usa as datas padrão definidas acima
 $data_ini = $_GET['data_ini'] ?? $default_data_ini;
 $data_fim = $_GET['data_fim'] ?? $default_data_fim;
 
-// --- 2. CONSULTA PRINCIPAL DO RELATÓRIO ---
 $sql = "SELECT s.nome, s.sobrenome, si.data_criacao, si.colorida,
                (si.qtd_copias * si.qtd_paginas) as total_cotas
         FROM SolicitacaoImpressao si
@@ -38,7 +37,7 @@ $stmt->execute([
 ]);
 $relatorio = $stmt->fetchAll();
 
-// --- 3. PROCESSAMENTO DOS DADOS PARA EXIBIÇÃO ---
+// Processamento dos dados para os totais
 $totais_servidor_pb = [];
 $totais_servidor_color = [];
 $total_geral_pb = 0;
@@ -58,53 +57,100 @@ foreach ($relatorio as $r) {
         $total_geral_pb += $r->total_cotas;
     }
 }
-ksort($totais_servidor_pb); // Ordena os servidores por nome
+ksort($totais_servidor_pb);
 
-// Define se a visualização é para impressão
-$is_print_view = isset($_GET['imprimir']) && $_GET['imprimir'] == '1';
+// --- 2. LÓGICA DE GERAÇÃO DE PDF ---
+if (isset($_GET['gerar_pdf']) && $_GET['gerar_pdf'] == '1') {
+    $caminho_imagem = realpath(__DIR__ . '/../../img/logo-if-sjdr-nova-grafia-horizontal.png');
+    $imagem_base64 = '';
+    if ($caminho_imagem) {
+        $tipo_imagem = pathinfo($caminho_imagem, PATHINFO_EXTENSION);
+        $dados_imagem = file_get_contents($caminho_imagem);
+        $imagem_base64 = 'data:image/' . $tipo_imagem . ';base64,' . base64_encode($dados_imagem);
+    }
 
-// --- 4. RENDERIZAÇÃO DO HTML ---
-if ($is_print_view) :
-// --- VISUALIZAÇÃO PARA IMPRESSÃO ---
-?>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="utf-8">
-    <title>Relatório de Impressões por Servidor</title>
-    <link rel="stylesheet" href="../../print_base.css">
-    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/favicon.ico">
-    <style>
-        body { background: #fff; color: #222; font-family: Arial, sans-serif; }
-        .print-header { text-align:center; margin-bottom:1.5rem; }
-        .print-header img { height:50px; margin-bottom:0.5rem; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 1rem; }
-        th, td { border: 1px solid #ccc; padding: 5px 7px; }
-        th { background: #f2f2f2; }
-        tfoot td { font-weight: bold; background: #f9f9f9; }
-    </style>
-</head>
-<body>
-    <div class="print-header">
-        <img src="../../img/logo-if-sjdr-nova-grafia-horizontal.png" alt="Logo IF"><br>
-        <span style="font-size:1.3em;font-weight:bold;">Coordenação de Ensino</span><br>
-        <span style="font-size:1.1em;">Relatório de Impressões por Servidor</span><br>
-        <span style="font-size:1em;">Período: <?= htmlspecialchars(date('d/m/Y', strtotime($data_ini))) ?> a <?= htmlspecialchars(date('d/m/Y', strtotime($data_fim))) ?></span>
+    ob_start();
+    ?>
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <title>Relatório de Impressões por Servidor</title>
+        <style>
+            body { font-family: 'Helvetica', sans-serif; font-size: 10px; color: #333; }
+            .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+            .header img { height: 50px; }
+            h1 { font-size: 16px; margin: 5px 0; }
+            p { font-size: 12px; margin: 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+            th { background-color: #f2f2f2; font-weight: bold; }
+            tfoot td { font-weight: bold; background-color: #f9f9f9; }
+            .total-section { margin-top: 30px; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <?php if ($imagem_base64): ?><img src="<?= $imagem_base64 ?>" alt="Logo"><?php endif; ?>
+            <h1>Coordenação de Ensino</h1>
+            <p>Relatório de Impressões por Servidor</p>
+            <p>Período: <?= htmlspecialchars(date('d/m/Y', strtotime($data_ini))) ?> a <?= htmlspecialchars(date('d/m/Y', strtotime($data_fim))) ?></p>
+        </div>
+        
+        <h2>Total por Servidor</h2>
+        <table>
+            <thead>
+                <tr><th>Servidor</th><th>Dia/Hora</th><th></th>Total P&B</th><th>Total Colorida</th></tr>
+            </thead>
+            <tbody>
+                <?php if (empty($relatorio)): ?>
+                    <tr><td colspan="4" style="text-align:center;">Nenhum registro encontrado.</td></tr>
+                <?php else: ?>
+                    <?php foreach ($relatorio as $r): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($r->nome . ' ' . $r->sobrenome) ?></td>
+                        <td><?= date('d/m/Y H:i', strtotime($r->data_criacao)) ?></td>
+                        <td><?= !$r->colorida ? $r->total_cotas : 0 ?></td>
+                        <td><?= $r->colorida ? $r->total_cotas : 0 ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="2" style="text-align:right;">Total Geral:</td>
+            <td><?= $total_geral_pb ?></td>
+            <td><?= $total_geral_color ?></td>
+        </tr>
+    </tfoot>
+</table>
+    <div style="margin-top:30px;font-size:11px;color:#555;text-align:right;">
+        Relatório gerado em: <?= date('d/m/Y H:i') ?><br>
+        Usuário: <?= htmlspecialchars($_SESSION['usuario']['nome'] . ' ' . ($_SESSION['usuario']['sobrenome'] ?? '')) ?>
     </div>
-<?php else: 
-// --- VISUALIZAÇÃO DE TELA (DASHBOARD) ---
+    </body>
+    </html>
+    <?php
+    $html = ob_get_clean();
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isRemoteEnabled', true);
+    $dompdf = new Dompdf($options);
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    $dompdf->stream("relatorio_servidores_" . date("Y-m-d") . ".pdf", ["Attachment" => true]);
+    exit;
+}
+
+// --- 3. RENDERIZAÇÃO NORMAL DA PÁGINA ---
 require_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="dashboard_coen.css?v=<?= ASSET_VERSION ?>">
 <main class="dashboard-layout">
     <aside class="dashboard-aside">
-        <div class="container-principal"> <!-- Um container para o conteúdo -->
-        <?php
-        // Chama a função de migalhas se o usuário estiver logado
-        if (isset($_SESSION['usuario'])) {
-            gerar_migalhas();
-        }
-        ?>
+        <div class="container-principal">
+        <?php if (isset($_SESSION['usuario'])) { gerar_migalhas(); } ?>
         <h1>Relatório de Impressões por Servidor</h1>
         <form method="GET" class="relatorio-form" id="form-relatorio">
             <label>Data Inicial:
@@ -116,38 +162,45 @@ require_once '../../includes/header.php';
             <button type="submit" class="btn-menu">Filtrar</button>
         </form>
         <div class="container-imprimir">
-            <button type="button" class="btn-menu" onclick="imprimirRelatorio()"><i class="fas fa-print"></i> Imprimir</button>
+            <button type="button" class="btn-menu" onclick="gerarPDF()"><i class="fas fa-file-pdf"></i> Gerar PDF</button>
         </div>
         <a href="dashboard_coen.php" class="btn-back">&larr; Voltar</a>
+        </div>
     </aside>
-<?php endif; ?>
     <main class="dashboard-main">
         <div class="responsive-table">
             <h2>Total por Servidor</h2>
             <table>
                 <thead>
                     <tr>
+                        <td colspan="2" style="text-align:right;">Total Geral:</td>
+                        <td><?= $total_geral_pb ?></td>
+                        <td><?= $total_geral_color ?></td>
+                    </tr>
+                    <tr>
                         <th>Servidor</th>
+                        <th>Dia/Hora</th>
                         <th>Total P&B</th>
                         <th>Total Colorida</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (empty($totais_servidor_pb)): ?>
-                        <tr><td colspan="3" style="text-align:center;">Nenhum registro encontrado.</td></tr>
+                    <?php if (empty($relatorio)): ?>
+                        <tr><td colspan="4" style="text-align:center;">Nenhum registro encontrado.</td></tr>
                     <?php else: ?>
-                        <?php foreach ($totais_servidor_pb as $nome => $total_pb): ?>
+                        <?php foreach ($relatorio as $r): ?>
                         <tr>
-                            <td><?= htmlspecialchars($nome) ?></td>
-                            <td><?= $total_pb ?></td>
-                            <td><?= $totais_servidor_color[$nome] ?? 0 ?></td>
+                            <td><?= htmlspecialchars($r->nome . ' ' . $r->sobrenome) ?></td>
+                            <td><?= date('d/m/Y H:i', strtotime($r->data_criacao)) ?></td>
+                            <td><?= !$r->colorida ? $r->total_cotas : 0 ?></td>
+                            <td><?= $r->colorida ? $r->total_cotas : 0 ?></td>
                         </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td style="text-align:right;">Total Geral:</td>
+                        <td colspan="2" style="text-align:right;">Total Geral:</td>
                         <td><?= $total_geral_pb ?></td>
                         <td><?= $total_geral_color ?></td>
                     </tr>
@@ -156,21 +209,15 @@ require_once '../../includes/header.php';
         </div>
     </main>
 </main>
-<?php if ($is_print_view): ?>
-    <script>window.onload = () => window.print();</script>
-</body>
-</html>
-<?php else: ?>
 </div>
 <script>
-function imprimirRelatorio() {
+function gerarPDF() {
     const form = document.getElementById('form-relatorio');
     if (form) {
         const params = new URLSearchParams(new FormData(form));
-        params.append('imprimir', '1');
-        window.open(`relatorio_servidor.php?${params.toString()}`, '_blank');
+        params.append('gerar_pdf', '1');
+        window.location.href = `relatorio_servidor.php?${params.toString()}`;
     }
 }
 </script>
 <?php require_once '../../includes/footer.php'; ?>
-<?php endif; ?>

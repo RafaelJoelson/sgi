@@ -29,7 +29,14 @@
   padding: 0.5rem;
   font-size: 1rem;
 }
-.form-cotas button, .form-novo-curso button, .btn-cancelar {
+.btns-row {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.form-cotas button, .form-novo-curso button {
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -46,9 +53,33 @@
   text-decoration: none;
   transition: background 0.2s;
 }
-.form-cotas button:hover, .form-novo-curso button:hover, .btn-cancelar:hover {
+
+.btn-cancelar {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 0.2rem;
+  font-size: 1rem;
+  padding: 0.5rem;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.btn-cancelar:hover {
+  background-color: #d32f2f;
+}
+
+.form-cotas button:hover, .form-novo-curso button:hover:hover {
   background-color: #005fa3;
 }
+
+
+
 .mensagem-sucesso {
   background-color: #d4edda;
   border: 1px solid #c3e6cb;
