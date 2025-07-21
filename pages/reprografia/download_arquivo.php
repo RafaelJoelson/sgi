@@ -10,7 +10,7 @@ if (!isset($_SESSION['usuario']['tipo'])) {
 }
 
 // 2. VALIDAÇÃO DO INPUT
-// Aceita tanto 'id' (usado no painel do reprografo) quanto 'id_solicitacao'
+// Aceita tanto 'id' (usado no painel do reprografia) quanto 'id_solicitacao'
 $id_solicitacao = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) 
                 ?: filter_input(INPUT_GET, 'id_solicitacao', FILTER_VALIDATE_INT);
 
@@ -25,7 +25,7 @@ try {
     $params = [':id_solicitacao' => $id_solicitacao];
 
     // 3. LÓGICA DE PERMISSÃO DINÂMICA
-    if ($user_type === 'reprografo') {
+    if ($user_type === 'reprografia') {
         // Reprógrafos podem baixar o arquivo de qualquer solicitação, verificando apenas o ID.
         $sql = "SELECT arquivo_path FROM SolicitacaoImpressao WHERE id = :id_solicitacao";
     } 

@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'config.php';
-
+require_once 'tarefas_diarias.php';
 function redirecionar_com_erro($url, $mensagem) {
     $_SESSION['erro_login'] = $mensagem;
     header('Location: ' . $url);
@@ -21,23 +21,23 @@ if (empty($login) || empty($senha)) {
 }
 
 try {
-    // Busca o reprografo pelo campo 'login'
-    $stmt = $conn->prepare("SELECT * FROM Reprografo WHERE login = :login");
+    // Busca o reprografia pelo campo 'login'
+    $stmt = $conn->prepare("SELECT * FROM Reprografia WHERE login = :login");
     $stmt->execute([':login' => $login]);
-    $reprografo = $stmt->fetch(PDO::FETCH_ASSOC);
+    $reprografia = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($reprografo && password_verify($senha, $reprografo['senha'])) {
+    if ($reprografia && password_verify($senha, $reprografia['senha'])) {
         // Autenticação bem-sucedida
         // MUDANÇA: A sessão agora é criada com o ID numérico como identificador principal.
         $_SESSION['usuario'] = [
-            'id'        => $reprografo['id'], // Usa o ID auto-incremento como identificador único
-            'login'     => $reprografo['login'],
-            'nome'      => $reprografo['nome'],
-            'sobrenome' => $reprografo['sobrenome'] ?? '',
-            'tipo'      => 'reprografo'
+            'id'        => $reprografia['id'], // Usa o ID auto-incremento como identificador único
+            'login'     => $reprografia['login'],
+            'nome'      => $reprografia['nome'],
+            'sobrenome' => $reprografia['sobrenome'] ?? '',
+            'tipo'      => 'reprografia'
         ];
         
-        header('Location: ../pages/reprografo/dashboard_reprografo.php');
+        header('Location: ../pages/reprografia/dashboard_reprografia.php');
         exit;
     } else {
         // Falha na autenticação
@@ -45,6 +45,6 @@ try {
     }
 
 } catch (PDOException $e) {
-    error_log("Erro no login do reprografo: " . $e->getMessage());
+    error_log("Erro no login do reprografia: " . $e->getMessage());
     redirecionar_com_erro('../reprografia.php', 'Ocorreu um erro no servidor. Tente novamente.');
 }

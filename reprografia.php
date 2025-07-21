@@ -11,8 +11,8 @@ if (isset($_SESSION['usuario'])) {
     $redirect_url = '';
 
     // Define o URL de redirecionamento com base no tipo de usuário
-    if ($tipo === 'reprografo') {
-        $redirect_url = 'pages/reprografo/dashboard_reprografo.php';
+    if ($tipo === 'reprografia') {
+        $redirect_url = 'pages/reprografia/dashboard_reprografia.php';
     } elseif ($tipo === 'aluno') {
         $redirect_url = 'pages/aluno/dashboard_aluno.php';
     } elseif ($tipo === 'servidor') {
@@ -43,11 +43,11 @@ include_once 'includes/header.php';
         <div class="col-md-6 login-container">
             <div class="card-shadow">
                 <div class="logo-container">
-                    <img src="./img/logo_sgi.png" alt="Logo do Sistema de Impressões" class="logo-login">                                              
+                    <img src="./img/logo_sgi.png" alt="Logo do Sistema de Impressões" class="logo-login">  
+                    <img src="./img/logo_reprografia.png" alt="Logo da Reprografia" class="logo-login">          
                 </div>
                 <div class="card-body">
                     <div class="card-header bg-primary text-white">
-                        <p>Reprografia</p>
                         <h2 class="text-center mb-0">Por favor, realize o Login</h2>
                     </div>
                     <?php if (isset($_SESSION['erro_login'])): ?>

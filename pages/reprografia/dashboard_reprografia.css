@@ -5,6 +5,10 @@
   margin-bottom: 1.5rem;
   color: #19882c;
 }
+.dashboard-menu img {
+  width: 150px;
+  margin: 0 auto 1rem auto;
+}
 
 #solicitacoes-pendentes h2 {
   font-size: 1.2rem;
@@ -87,6 +91,7 @@
 
 .dashboard-aside-repro {
   width: 30%;
+  max-width: 350px;
   border-right: 1px solid #e0e0e0;
   padding: 1.5rem 1rem 1rem 1rem;
   display: flex;
@@ -234,16 +239,16 @@
   font-size: 1.4rem;
 }
 
-#form-editar-reprografo label {
+#form-editar-reprografia label {
   display: block;
   margin-bottom: 0.8em;
   font-weight: 500;
   color: #333;
 }
 
-#form-editar-reprografo input[type="text"],
-#form-editar-reprografo input[type="email"],
-#form-editar-reprografo input[type="password"] {
+#form-editar-reprografia input[type="text"],
+#form-editar-reprografia input[type="email"],
+#form-editar-reprografia input[type="password"] {
   width: 100%;
   padding: 0.6em 0.8em;
   border: 1px solid #ccc;
@@ -253,13 +258,13 @@
   background-color: #f9f9f9;
 }
 
-#form-editar-reprografo input[readonly],
-#form-editar-reprografo input[disabled] {
+#form-editar-reprografia input[readonly],
+#form-editar-reprografia input[disabled] {
   background-color: #e9ecef;
   color: #666;
 }
 
-#form-editar-reprografo button[type="submit"] {
+#form-editar-reprografia button[type="submit"] {
   background-color: #0080ff;
   color: #fff;
   border: none;
@@ -271,8 +276,32 @@
   transition: background 0.2s;
   margin-top: 1em;
 }
-#form-editar-reprografo button[type="submit"]:hover {
+#form-editar-reprografia button[type="submit"]:hover {
   background-color: #005fa3;
+}
+#form-editar-reprografia input[type="file"] {
+    width: 100%;
+    padding: 0.75em;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+/* Estilo para o botão do input de arquivo */
+#form-editar-reprografia input[type="file"]::file-selector-button {
+    background-color:#0080ff;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 1em;
+    transition: background-color 0.2s;
+}
+
+#form-editar-reprografia input[type="file"]::file-selector-button:hover {
+    background-color: #005fa3;
 }
 
 #mensagem-modal-erro {
@@ -284,4 +313,41 @@
   border-radius: 5px;
   font-size: 0.95em;
 }
-
+/* Estilos para o toast e botão de notificação */
+.section-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 1rem; 
+}
+.btn-notificacao { 
+  background-color: #6c757d; 
+  color: white; border: none; 
+  padding: 0.5rem 1rem; 
+  border-radius: 5px; 
+  cursor: pointer; 
+  font-size: 0.9rem; 
+}
+#toast-notification-container { 
+  position: fixed; 
+  top: 20px; 
+  right: 20px; 
+  z-index: 1050; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 10px; 
+}
+.toast-notification { 
+  background-color: #17a2b8; 
+  color: white; 
+  padding: 15px 20px; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); opacity: 0; transform: translateX(100%); transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+}
+.toast-notification.show { 
+  opacity: 1; 
+  transform: translateX(0); 
+}

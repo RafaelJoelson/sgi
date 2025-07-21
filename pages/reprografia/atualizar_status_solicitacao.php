@@ -4,7 +4,7 @@ require_once '../../includes/config.php';
 header('Content-Type: application/json');
 
 // 1. VERIFICAÇÃO DE PERMISSÃO
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografo') {
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografia') {
     echo json_encode(['sucesso' => false, 'mensagem' => 'Acesso negado.']);
     exit;
 }
@@ -26,7 +26,7 @@ if ($status === 'Aceita' && ($hora_atual < 7 || $hora_atual >= 21)) {
     exit;
 }
 
-$reprografo_id = $_SESSION['usuario']['id'];
+$reprografia_id = $_SESSION['usuario']['id'];
 
 try {
     // 3. INICIA A TRANSAÇÃO
@@ -35,12 +35,12 @@ try {
     // 4. ATUALIZA O STATUS DA SOLICITAÇÃO
     $stmt = $conn->prepare(
         "UPDATE SolicitacaoImpressao 
-         SET status = :status, reprografo_id = :reprografo_id 
+         SET status = :status, reprografia_id = :reprografia_id 
          WHERE id = :id AND status IN ('Nova', 'Lida')"
     );
     $stmt->execute([
         ':status' => $status,
-        ':reprografo_id' => $reprografo_id,
+        ':reprografia_id' => $reprografia_id,
         ':id' => $id
     ]);
 

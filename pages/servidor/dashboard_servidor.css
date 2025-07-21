@@ -277,3 +277,51 @@ input:focus + .slider {
 input:checked + .slider:before {
     transform: translateX(22px);
 }
+.section-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 1rem; 
+}
+.btn-notificacao { 
+    background-color: #6c757d; 
+    color: white; 
+    border: none; 
+    padding: 0.5rem 1rem; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 0.9rem; 
+}
+.btn-notificacao:hover { 
+    background-color: #5a6268; 
+}
+.btn-notificacao i { 
+    margin-right: 5px; 
+}
+
+#toast-notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.toast-notification {
+    background-color: #28a745;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.toast-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}

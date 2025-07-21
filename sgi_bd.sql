@@ -202,10 +202,10 @@ INSERT INTO `CotaServidor` (`siape`, `cota_pb_total`, `cota_pb_usada`, `cota_col
 
 -- --------------------------------------------------------
 --
--- Estrutura da tabela `Reprografo`
+-- Estrutura da tabela `Reprografia`
 --
 
-CREATE TABLE `Reprografo` (
+CREATE TABLE `Reprografia` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `login` VARCHAR(100) NOT NULL,
   `nome` VARCHAR(100) NOT NULL,
@@ -217,10 +217,10 @@ CREATE TABLE `Reprografo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Inserindo dados para a tabela `Reprografo`
+-- Inserindo dados para a tabela `Reprografia`
 --
 
-INSERT INTO `Reprografo` (`id`,`login`, `nome`, `sobrenome`, `email`, `senha`) VALUES
+INSERT INTO `Reprografia` (`id`,`login`, `nome`, `sobrenome`, `email`, `senha`) VALUES
 (1,'copyreiif', 'Paulo', 'Lima', 'paulo.lima@if.edu', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC'),
 (2,'copyreiif2', 'Fernanda', 'Costa', 'fernanda.costa@if.edu', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC');
 
@@ -239,18 +239,18 @@ CREATE TABLE `SolicitacaoImpressao` (
   `colorida` tinyint(1) NOT NULL DEFAULT 0,
   `status` enum('Nova','Lida','Aceita','Rejeitada') NOT NULL DEFAULT 'Nova',
   `data_criacao` datetime NOT NULL DEFAULT current_timestamp(),
-  `reprografo_id` int(11) DEFAULT NULL,
+  `reprografia_id` int(11) DEFAULT NULL,
   `arquivada` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  KEY `reprografo_id` (`reprografo_id`),
-  CONSTRAINT `SolicitacaoImpressao_ibfk_1` FOREIGN KEY (`reprografo_id`) REFERENCES `Reprografo` (`id`) ON DELETE SET NULL
+  KEY `reprografia_id` (`reprografia_id`),
+  CONSTRAINT `SolicitacaoImpressao_ibfk_1` FOREIGN KEY (`reprografia_id`) REFERENCES `Reprografia` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Inserindo dados para a tabela `SolicitacaoImpressao`
 --
 
-INSERT INTO `SolicitacaoImpressao` (`id`, `cpf_solicitante`, `tipo_solicitante`, `arquivo_path`, `qtd_copias`, `qtd_paginas`, `colorida`, `status`, `data_criacao`, `reprografo_id`) VALUES
+INSERT INTO `SolicitacaoImpressao` (`id`, `cpf_solicitante`, `tipo_solicitante`, `arquivo_path`, `qtd_copias`, `qtd_paginas`, `colorida`, `status`, `data_criacao`, `Reprografia_id`) VALUES
 (1, '12345678901', 'Aluno', 'trabalho_ana.pdf', 10, 2, 0, 'Aceita', '2025-06-27 10:00:00', 1),
 (2, '45678901234', 'Aluno', 'relatorio_lucas.pdf', 5, 1, 0, 'Aceita', '2025-06-27 11:00:00', 1),
 (3, '10010011101', 'Servidor', 'oficio_joao.pdf', 3, 1, 0, 'Lida', '2025-07-10 12:00:00', 2),

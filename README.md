@@ -1,4 +1,4 @@
-# SGI - Sistema de Gestão de Impressão Acadêmica V.1.5.3 (alpha)
+# SGI - Sistema de Gestão de Impressão Acadêmica V.1.5.5 (alpha)
 
 Projeto de extensão do Instituto Federal do Sudeste de Minas Gerais - Campus São João del-Rei.
 
@@ -6,7 +6,7 @@ Este sistema tem como objetivo ser implementado no campus para gerenciar cotas d
 
 **Desenvolvido por alunos do curso de Gestão em Tecnologia da Informação (GTI).**
 
-- **Coordenadora:** GILMA APARECIDA S. CAMPOS
+- **Coordenadora:** GILMA APARECIDA SANTOS CAMPOS
 - **Alunos:**
 
   - RAFAEL JOELSON DA SILVA
@@ -35,7 +35,7 @@ pages/
   admin_coen/       # Painel e ações do setor COEN
   aluno/            # Painel do aluno
   servidor/         # Painel do servidor
-  reprografo/       # Painel do reprográfo
+  reprografia/      # Painel do reprografia
   utils/            # Manuais do sistema e página de Suporte
 img/                # Imagens do sistema
 styles.css          # Estilos globais
@@ -50,7 +50,7 @@ sgi_bd.sql          # Script do banco de dados
 - **Servidor:** Visualiza e negocia cotas, solicitações
 - **CAD:** Gerencia turmas, alunos, cotas e semestre letivo
 - **COEN:** Gerencia servidores, cotas e semestre letivo
-- **Reprográfo:** Gerencia solicitações de impressão
+- **Reprografia:** Gerencia solicitações de impressão
 
 ## Banco de Dados
 

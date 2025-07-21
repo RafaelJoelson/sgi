@@ -4,7 +4,7 @@ require_once '../../includes/config.php';
 header('Content-Type: application/json');
 
 // Verifica se é reprografo logado
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografo') {
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografia') {
     echo json_encode([]);
     exit;
 }
@@ -39,6 +39,6 @@ try {
     echo json_encode($solicitacoes);
 
 } catch (Exception $e) {
-    error_log("Erro ao listar solicitações pendentes para reprografo: " . $e->getMessage());
+    error_log("Erro ao listar solicitações pendentes para a reprografia: " . $e->getMessage());
     echo json_encode([]);
 }

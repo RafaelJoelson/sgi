@@ -429,9 +429,11 @@ footer p {
 }
 .logo-container {
     display: flex;
+    flex-direction: column;
+    width: 300px;
+    text-align: center;
     justify-content: center;
     align-items: center;
-    margin-top: 10px;
 }
 .logo-login {
     max-width: 100%;
@@ -446,6 +448,11 @@ footer p {
         margin-top: -80px;
         display: block;
         width: 100%;
+    }
+    .logo-container {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
     }
     
 }

@@ -85,7 +85,8 @@ function gerar_migalhas() {
             'Form Aluno' => 'Formulário de Aluno',
             'Form Servidor' => 'Formulário de Servidor',
             'Historico Solicitacoes' => 'Histórico de Solicitações',
-            'Relatorio Reprografo' => 'Relatório Reprografia',
+            'Relatorio Reprografia' => 'Relatório Reprografia',
+            'Dashboard Reprografia' => 'Painel da Reprografia',
             // Adicione outros mapeamentos conforme necessário
         ];
         $nome_exibicao = $mapa_nomes[$nome_exibicao] ?? $nome_exibicao;

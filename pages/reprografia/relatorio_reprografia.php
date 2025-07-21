@@ -2,7 +2,7 @@
 // Relatório do Reprográfo
 require_once '../../includes/config.php';
 session_start();
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografo') {
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografia') {
     header('Location: ../../reprografia.php');
     exit;
 }
@@ -81,6 +81,7 @@ if ($is_print_view) :
         <div class="print-header">
             <img src="../../img/logo-if-sjdr-nova-grafia-horizontal.png" alt="Logo IFSudesteMG">
             <h3>Reprografia - Relatório de Impressões</h3>
+            <img src="../../img/logo_reprografia.png" alt="">
             <p>Período de <?= htmlspecialchars(date('d/m/Y', strtotime($data_ini))) ?> a <?= htmlspecialchars(date('d/m/Y', strtotime($data_fim))) ?></p>
             <small class="text-muted">Emitido em: <?= date('d/m/Y H:i') ?></small>
         </div>
@@ -88,7 +89,7 @@ if ($is_print_view) :
 // --- VISUALIZAÇÃO DE TELA (DASHBOARD) ---
 require_once '../../includes/header.php'; 
 ?>
-<link rel="stylesheet" href="dashboard_relatorio_reprografo.css">
+<link rel="stylesheet" href="dashboard_relatorio_reprografia.css">
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
         <div class="container-principal"> <!-- Um container para o conteúdo -->
@@ -117,7 +118,7 @@ require_once '../../includes/header.php';
             </button>
         </div>
         <nav class="btn-container mt-3">
-            <a class="btn btn-secondary btn-back" href="dashboard_reprografo.php">&larr; Voltar ao Painel</a>
+            <a class="btn btn-secondary btn-back" href="dashboard_reprografia.php">&larr; Voltar ao Painel</a>
         </nav>
     </aside>
     <main class="dashboard-main">
@@ -170,7 +171,7 @@ function imprimirRelatorio() {
     const form = document.querySelector('.relatorios-form');
     const params = new URLSearchParams(new FormData(form));
     params.append('imprimir', '1');
-    window.open(`relatorio_reprografo.php?${params.toString()}`, '_blank');
+    window.open(`relatorio_reprografia.php?${params.toString()}`, '_blank');
 }
 </script>
 <?php require_once '../../includes/footer.php'; ?>
