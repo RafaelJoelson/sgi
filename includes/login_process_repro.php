@@ -15,7 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $login = trim($_POST['login'] ?? '');
 $senha = $_POST['senha'] ?? '';
-
+// Verifica se os campos de login e senha estão preenchidos
+// MUDANÇA: Adicionada verificação para garantir que os campos não estejam vazios
 if (empty($login) || empty($senha)) {
     redirecionar_com_erro('../reprografia.php', 'Login e senha são obrigatórios.');
 }
