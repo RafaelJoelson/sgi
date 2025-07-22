@@ -106,23 +106,7 @@ tr:hover {
   background-color: #cc0808;
   cursor: pointer;
 }
-.paginacao {
-  display: flex;
-  gap: 0.3rem;
-  margin-top: 0.5rem;
-}
-.paginacao a {
-  padding: 0.3rem 0.7rem;
-  border-radius: 4px;
-  background: #e9ecef;
-  color: #0080ff;
-  text-decoration: none;
-  font-weight: 500;
-}
-.paginacao a.pagina-ativa {
-  background: #0080ff;
-  color: #fff;
-}
+
 .mensagem-sucesso {
   background-color: #d4edda;
   border: 1px solid #c3e6cb;
