@@ -12,7 +12,7 @@ if (isset($_SESSION['usuario'])) {
     if ($tipo === 'aluno') {
         $redirect_url = 'pages/aluno/dashboard_aluno.php';
     } elseif ($tipo === 'reprografia') {
-        $redirect_url = 'pages/reprografa/dashboard_reprografia.php';
+        $redirect_url = 'reprografia.php';
     } elseif ($tipo === 'servidor') {
         if ($is_admin) {
             if ($setor_admin === 'CAD') {
