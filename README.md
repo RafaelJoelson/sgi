@@ -66,6 +66,7 @@ Este sistema tem como objetivo ser implementado no campus para gerenciar cotas d
 │   ├── aluno/             # Painel e ações do Aluno
 │   ├── servidor/          # Painel e ações do Servidor
 │   ├── reprografia/       # Painel e ações da Reprografia
+│   ├── erros/             # Páginas de erros web.
 │   └── utils/             # Página de suporte e manuais
 │       └── documents/     # Manuais em PDF
 ├── uploads/               # Arquivos enviados para impressão

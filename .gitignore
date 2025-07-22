@@ -1,5 +1,3 @@
 # Ignorar arquivos de upload de usuários
 /uploads/
 /vendor/
-pages/admin/mansgi.php
-pages/admin/simular_cron.php
