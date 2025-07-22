@@ -353,3 +353,16 @@ tr:hover {
   text-align: center;
   margin-top: 1em;
 }
+/* Estilos para os badges de permissão */
+.badge-super-admin { 
+  background-color: #dc3545; 
+  color: white; 
+  padding: 0.2em 0.6em; 
+  border-radius: 0.25rem; 
+  font-size: 0.8em; 
+  font-weight: bold; }
+.badge-admin { background-color: #ffc107; 
+  color: #212529; 
+  padding: 0.2em 0.6em; 
+  border-radius: 0.25rem; 
+  font-size: 0.8em; }
