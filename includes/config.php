@@ -4,7 +4,7 @@ define('SITE_NAME', 'Sistema de Gerenciamento de Impressão');
 define('SITE_DESCRIPTION', 'SGI - Instituto Federal do Sudeste de Minas Gerais - Campus São João del-Rei');
 define('CURRENT_YEAR', date('Y'));
 // Versão dos arquivos CSS e JS para controle de cache
-define('ASSET_VERSION', '1.8'); 
+define('ASSET_VERSION', '1.9'); // Atualize essa versão quando fizer alterações significativas
 
 // Caminho base do site (ajuste se estiver em subpasta)
 define('BASE_URL', '/sgi'); // ou '/' se estiver na raiz

@@ -68,32 +68,37 @@ require_once '../../includes/header.php';
         <span class="close" id="close-modal-editar">&times;</span>
         <h2>Alterar Meus Dados</h2>
         <form id="form-editar-reprografia" enctype="multipart/form-data">
-            <div id="mensagem-modal-erro" class="mensagem-erro" style="display: none;"></div>
-            <input type="hidden" id="reprografia-id" name="id">
-            <label>Logo da Reprografia (PNG ou WEBP)
-                <input type="file" id="reprografia-logo" name="logo" accept=".png,.webp,image/png,image/webp">
-            </label>
-            <label>Login
-                <input type="text" id="reprografia-login" name="login" readonly disabled style="background-color: #e9ecef;">
-            </label>
-            <label>Nome
-                <input type="text" id="reprografia-nome" name="nome" required>
-            </label>
-            <label>Sobrenome
-                <input type="text" id="reprografia-sobrenome" name="sobrenome" required>
-            </label>
-            <label>Email
-                <input type="email" id="reprografia-email" name="email">
-            </label>
-            <hr>
-            <p>Deixe os campos de senha em branco para não alterá-la.</p>
-            <label>Nova Senha
-                <input type="password" id="reprografia-nova-senha" name="nova_senha" minlength="6">
-            </label>
-            <label>Confirmar Nova Senha
-                <input type="password" id="reprografia-confirma-senha" name="confirma_senha" minlength="6">
-            </label>
-            <button type="submit">Salvar Alterações</button>
+            <div class="form-editar-form-group">
+                <div id="mensagem-modal-erro" class="mensagem-erro" style="display: none;"></div>
+                <input type="hidden" id="reprografia-id" name="id">
+                <label>Logo da Reprografia (PNG ou WEBP)
+                    <input type="file" id="reprografia-logo" name="logo" accept=".png,.webp,image/png,image/webp">
+                </label>
+                <label>Login
+                    <input type="text" id="reprografia-login" name="login" readonly disabled style="background-color: #e9ecef;">
+                </label>
+                <label>Nome
+                    <input type="text" id="reprografia-nome" name="nome" required>
+                </label>
+                <label>Sobrenome
+                    <input type="text" id="reprografia-sobrenome" name="sobrenome" required>
+                </label>
+            </div>
+            <div class="form-editar-form-group">
+                <label>Email
+                    <input type="email" id="reprografia-email" name="email">
+                </label>
+                <label>Nova Senha
+                    <input type="password" id="reprografia-nova-senha" name="nova_senha" minlength="6">
+                </label>
+                <label>Confirmar Nova Senha
+                    <input type="password" id="reprografia-confirma-senha" name="confirma_senha" minlength="6">
+                </label>
+                <p>Deixe os campos de senha em branco para não alterá-la.</p>
+                <div class="button-container">
+                    <button type="submit">Salvar Alterações</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>

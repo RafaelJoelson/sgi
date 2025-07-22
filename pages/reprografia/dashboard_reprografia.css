@@ -205,7 +205,7 @@
   margin: 5% auto;
   padding: 2em;
   border-radius: 10px;
-  max-width: 500px;
+  max-width: 900px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   border-left: 5px solid #0080ff;
   animation: slideDown 0.3s ease;
@@ -246,10 +246,20 @@
   color: #333;
 }
 
+#form-editar-reprografia {
+  display: flex;
+  gap: 1.2em;
+  flex-direction: row;
+  justify-content: center;
+}
+#form-editar-reprografia .form-editar-form-group {
+  width: 450px;
+}
+
 #form-editar-reprografia input[type="text"],
 #form-editar-reprografia input[type="email"],
 #form-editar-reprografia input[type="password"] {
-  width: 100%;
+  width: 90%;
   padding: 0.6em 0.8em;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -262,6 +272,12 @@
 #form-editar-reprografia input[disabled] {
   background-color: #e9ecef;
   color: #666;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5em;
 }
 
 #form-editar-reprografia button[type="submit"] {
@@ -280,7 +296,7 @@
   background-color: #005fa3;
 }
 #form-editar-reprografia input[type="file"] {
-    width: 100%;
+    width: 97%;
     padding: 0.75em;
     border-radius: 6px;
     border: 1px solid #ccc;
@@ -312,6 +328,31 @@
   border: 1px solid #e0b4b4;
   border-radius: 5px;
   font-size: 0.95em;
+}
+@media screen and (max-width: 1280x) {
+  .modal-content {
+    width: 90%;
+    margin: 5% auto;
+    padding: 1.5em;
+  }
+  .form-editar-reprografia input[type="text"],
+  .form-editar-reprografia input[type="email"],
+  .form-editar-reprografia input[type="password"] {
+    font-size: 0.95em;
+    padding: 0.5em 0.6em;
+  }
+  .form-editar-reprografia button[type="submit"] {
+    font-size: 0.95em;
+    padding: 0.6em 1.2em;
+  }
+  .form-editar-reprografia input[type="file"] {
+    padding: 0.6em;
+  }
+  .form-editar-reprografia input[type="file"]::file-selector-button {
+    padding: 0.4em 0.8em;
+    font-size: 0.95em;
+  }
+  
 }
 /* Estilos para o toast e botão de notificação */
 .section-header { 
