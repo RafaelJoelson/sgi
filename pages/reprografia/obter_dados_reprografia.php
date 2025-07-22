@@ -18,15 +18,16 @@ if (empty($reprografia_id)) {
 }
 
 try {
-    // CORREÇÃO: Garante que a coluna 'id' seja selecionada na consulta.
-    $stmt = $conn->prepare("SELECT id, login, nome, sobrenome, email FROM reprografia WHERE id = :id");
+    // CORREÇÃO: O nome da tabela foi ajustado para 'Reprografo' (com 'R' maiúsculo)
+    // para corresponder à estrutura do banco de dados em servidores case-sensitive (Linux).
+    $stmt = $conn->prepare("SELECT id, login, nome, sobrenome, email FROM Reprografia WHERE id = :id");
     $stmt->execute([':id' => $reprografia_id]);
     $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($dados) {
         echo json_encode(['sucesso' => true, 'dados' => $dados]);
     } else {
-        echo json_encode(['sucesso' => false, 'mensagem' => 'Usuário reprografia não encontrado no banco de dados.']);
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Usuário da reprografia não encontrado no banco de dados.']);
     }
 } catch (PDOException $e) {
     error_log("Erro ao obter dados do reprografia: " . $e->getMessage());

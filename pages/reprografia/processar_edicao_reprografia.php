@@ -42,7 +42,7 @@ try {
     ];
 
     // Constrói a query dinamicamente
-    $sql = "UPDATE reprografia SET nome = :nome, sobrenome = :sobrenome, email = :email";
+    $sql = "UPDATE Reprografia SET nome = :nome, sobrenome = :sobrenome, email = :email";
     
     // Atualiza a senha apenas se for fornecida
     if (!empty($nova_senha)) {
