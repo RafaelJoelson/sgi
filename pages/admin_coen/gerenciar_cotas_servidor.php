@@ -123,7 +123,7 @@ include_once '../../includes/header.php';
       <table>
         <thead>
           <tr>
-            <th>siape</th>
+            <th>SIAPE</th>
             <th>Nome</th>
             <th title="Cotas Preto de Branco: Utilizadas/Total">PB: Utilizadas/Total</th>
             <th title="Cotas Coloridas: Utilizadas/Total">Coloridas: Utilizadas/Total</th>
