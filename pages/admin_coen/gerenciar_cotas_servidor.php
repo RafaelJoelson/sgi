@@ -125,8 +125,8 @@ include_once '../../includes/header.php';
           <tr>
             <th>siape</th>
             <th>Nome</th>
-            <th>Cota PB Usadas / Total</th>
-            <th>Cota Colorida Usadas / Total</th>
+            <th title="Cotas Preto de Branco: Utilizadas/Total">PB: Utilizadas/Total</th>
+            <th title="Cotas Coloridas: Utilizadas/Total">Coloridas: Utilizadas/Total</th>
           </tr>
         </thead>
         <tbody>
