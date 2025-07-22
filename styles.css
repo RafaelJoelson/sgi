@@ -439,6 +439,7 @@ footer p {
 }
 .logo-login {
     max-width: 100%;
+    margin: 5px 0;
     height: auto;
     width: 200px;
 }

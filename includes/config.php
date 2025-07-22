@@ -5,7 +5,8 @@ define('SITE_DESCRIPTION', 'SGI - Instituto Federal do Sudeste de Minas Gerais -
 define('CURRENT_YEAR', date('Y'));
 // Versão dos arquivos CSS e JS para controle de cache
 define('ASSET_VERSION', '1.9'); // Atualize essa versão quando fizer alterações significativas
-
+define('HORARIO_FUNC_INICIO', 17); // Horário de funcionamento da reprografia
+define('HORARIO_FUNC_FIM', 21); // Horário de funcionamento da reprografia
 // Caminho base do site (ajuste se estiver em subpasta)
 define('BASE_URL', '/sgi'); // ou '/' se estiver na raiz
 

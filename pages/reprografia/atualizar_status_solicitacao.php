@@ -21,8 +21,8 @@ if (!$id || !in_array($status, ['Aceita', 'Rejeitada'])) {
 // Verifica horário permitido para aceitação de solicitações
 date_default_timezone_set('America/Sao_Paulo');
 $hora_atual = (int)date('H');
-if ($status === 'Aceita' && ($hora_atual < 7 || $hora_atual >= 21)) {
-    echo json_encode(['sucesso' => false, 'mensagem' => 'Solicitações só podem ser aceitas entre 07:00 e 21:00.']);
+if ($status === 'Aceita' && ($hora_atual < HORARIO_FUNC_INICIO || $hora_atual >= HORARIO_FUNC_FIM)) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Solicitações só podem ser aceitas entre 17:00 e 21:00.']);
     exit;
 }
 
