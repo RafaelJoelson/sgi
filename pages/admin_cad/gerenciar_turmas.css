@@ -206,7 +206,6 @@
 /* Tabela responsiva */
 .responsive-table {
   margin-top: 20px;
-  overflow-x: auto;
   width: 100%;
   min-height: 400px;
 }
