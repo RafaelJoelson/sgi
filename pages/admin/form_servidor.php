@@ -35,7 +35,7 @@ $data_validade_padrao = $servidor->data_fim_validade ?? ($semestre_vigente->data
 
 include_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="form_servidor.css?v=<?= ASSET_VERSION ?>">
+<link rel="stylesheet" href="./css/form_servidor.css?v=<?= ASSET_VERSION ?>">
 <main>
     <div class="container-principal">
         <?php if (isset($_SESSION['usuario'])) { gerar_migalhas(); } ?>

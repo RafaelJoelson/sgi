@@ -2,3 +2,4 @@
 /uploads/
 /vendor/
 pages/admin/mansgi.php
+pages/admin/simular_cron.php

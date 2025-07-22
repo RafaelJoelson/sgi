@@ -8,7 +8,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor')
 }
 require_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="dashboard_servidor.css?v=<?= ASSET_VERSION ?>">
+<link rel="stylesheet" href="./css/dashboard_servidor.css?v=<?= ASSET_VERSION ?>">
 <main class="container">
     <!-- Container para as notificações "toast" -->
     <div id="toast-notification-container"></div>

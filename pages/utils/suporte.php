@@ -10,7 +10,7 @@ require_once '../../includes/config.php';
     <title>Suporte - Sistema de Gerenciamento de Impressão</title>
     <!-- Incluindo Font Awesome para os ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="suporte.css?v=<?= ASSET_VERSION ?>">
+    <link rel="stylesheet" href="./css/suporte.css?v=<?= ASSET_VERSION ?>">
 </head>
 <body>
 

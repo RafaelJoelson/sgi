@@ -79,7 +79,7 @@ $servidores = $stmtServidores->fetchAll();
 
 include_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="gerenciar_cotas_servidor.css">
+<link rel="stylesheet" href="./css/gerenciar_cotas_servidor.css?v=<?= ASSET_VERSION ?>">
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
         <div class="container-principal">

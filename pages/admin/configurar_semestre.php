@@ -103,7 +103,7 @@ $logs = $stmt_logs->fetchAll();
 
 include_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="configurar_semestre.css?v=<?= ASSET_VERSION ?>">
+<link rel="stylesheet" href="./css/configurar_semestre.css?v=<?= ASSET_VERSION ?>">
 
 <div class="dashboard-layout">
     <aside class="dashboard-aside">

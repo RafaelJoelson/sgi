@@ -1,3 +1,4 @@
+
 -- SQL Dump Completo (com Super Admin e Eventos Atualizados)
 -- Versão do servidor: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
@@ -139,20 +140,20 @@ CREATE TABLE `Aluno` (
 --
 
 INSERT INTO `Aluno` (`matricula`, `nome`, `sobrenome`, `cargo`, `email`, `cpf`, `senha`, `ativo`, `cota_id`, `data_fim_validade`) VALUES
-('20250001', 'Ana', 'Silva', 'Líder', 'ana.silva@email.com', '12345678901', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 1, '2025-07-30'),
-('20250002', 'Bruno', 'Souza', 'Nenhum', 'bruno.souza@email.com', '23456789012', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 2, '2025-07-30'),
-('20250003', 'Carla', 'Oliveira', 'Vice-líder', 'carla.oliveira@email.com', '34567890123', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 3, '2025-07-30'),
-('20250004', 'Pedro', 'Oliveira', 'Vice-líder', 'pedro.oliveira@email.com', '34567890124', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 4, '2025-07-30'),
-('20250005', 'Lucas', 'Pereira', 'Nenhum', 'lucas.pereira@email.com', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 5, '2025-07-30'),
-('20250006', 'Mariana', 'Lima', 'Nenhum', 'mariana@email.com', '56789012345', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 6, '2025-07-30'),
-('20250007', 'Rafael', 'Costa', 'Nenhum', 'rafael.costa@email.com', '67890123457', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 7, '2025-07-30'),
-('20250008', 'Juliana', 'Fernandes', 'Nenhum', 'juliana.fernandes@email.com', '78901234568', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 8, '2025-07-30'),
-('20250009', 'Felipe', 'Martins', 'Nenhum', 'felipe.martins@email.com', '89012345679', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 9, '2025-07-30'),
-('20250010', 'Amanda', 'Barros', 'Nenhum', 'amanda.barros@email.com', '90123456780', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 10, '2025-07-30'),
-('20250011', 'Thiago', 'Mendes', 'Nenhum', 'thiago.mendes@email.com', '012222567891', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 11, '2025-07-30'),
-('20250012', 'Patricia', 'Alves', 'Nenhum', 'patricia.alves@email.com', '12000098765', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 12, '2025-07-30'),
-('20250013', 'Rodrigo', 'Santos', 'Nenhum', 'rodrigo.santos@email.com', '23456098765', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 13, '2025-07-30'),
-('20250014', 'Beatriz', 'Gomes', 'Nenhum', 'beatriz.gomes@email.com', '34567098765', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 14, '2025-07-30');
+('20250001', 'Gretchen', 'Rainha', 'Líder', 'gretchen.reidaweb@email.com', '12345678901', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 1, '2025-07-30'),
+('20250002', 'Inês', 'Brasil', 'Nenhum', 'ines.brasil.sensual@email.com', '23456789012', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 2, '2025-07-30'),
+('20250003', 'Carminha', 'Sincera', 'Vice-líder', 'carminha.sincera.meme@email.com', '34567890123', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 3, '2025-07-30'),
+('20250004', 'Chaves', 'SemTeto', 'Vice-líder', 'chaves.sem.teto@email.com', '34567890124', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 4, '2025-07-30'),
+('20250005', 'Nazaré', 'Confusa', 'Nenhum', 'nazare.confusa.tediosa@email.com', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 5, '2025-07-30'),
+('20250006', 'Joelma', 'Calypso', 'Nenhum', 'joelma.nao.sou.chimbinha@email.com', '56789012345', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 6, '2025-07-30'),
+('20250007', 'Cumpadi', 'Washington', 'Nenhum', 'cumpadi.washington.zoeira@email.com', '67890123457', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 7, '2025-07-30'),
+('20250008', 'Dona', 'Hermínia', 'Nenhum', 'dona.herminia.pai@email.com', '78901234568', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 8, '2025-07-30'),
+('20250009', 'Lula', 'Molusco', 'Nenhum', 'lula.molusco.9dedos@email.com', '89012345679', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 9, '2025-07-30'),
+('20250010', 'Tulla', 'Luana', 'Nenhum', 'tulla.luana.topzera@email.com', '90123456780', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 10, '2025-07-30'),
+('20250011', 'Zé', 'Pequeno', 'Nenhum', 'ze.pequeno.cdd@email.com', '012222567891', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 11, '2025-07-30'),
+('20250012', 'Valentina', 'Mansur', 'Nenhum', 'valentina.mansur.bolada@email.com', '12000098765', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 12, '2025-07-30'),
+('20250013', 'Seu', 'Madruga', 'Nenhum', 'seu.madruga.14bis@email.com', '23456098765', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 13, '2025-07-30'),
+('20250014', 'Valesca', 'Popozuda', 'Nenhum', 'valesca.popozuda.funk@email.com', '34567098765', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 14, '2025-07-30');
 
 -- --------------------------------------------------------
 --
@@ -182,29 +183,29 @@ CREATE TABLE `Servidor` (
 INSERT INTO `Servidor` (`siape`, `nome`, `sobrenome`, `email`, `cpf`, `senha`, `is_admin`, `is_super_admin`, `setor_admin`, `ativo`, `data_fim_validade`) VALUES 
 ('1001', 'Coordenação', 'de Apoio ao Discente', 'cad.sjdr@ifsudestemg.edu.br', '10010011101', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 1, 'CAD', 1, NULL),
 ('1002', 'Coordenação', 'de Ensino', 'coen.sjdr@ifsudestemg.edu.br', '20020022202', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 1, 'COEN', 1, NULL),
-('1003', 'Carlos', 'Oliveira', 'carlos.oliveira@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1004', 'João', 'Pereira', 'joao.pereira@if.edu', '78901234567', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1005', 'Maria', 'Fernandes', 'maria.fernandes@if.edu', '89012345678', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1006', 'Eduardo', 'Santos', 'eduardo.santos@if.edu', '90123456789', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1007', 'Ana', 'Lima', 'ana.lima@if.edu', '91234567890', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1008', 'Fernando', 'Alves', 'fernando.alves@if.edu', '92345678901', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1009', 'Juliana', 'Mendes', 'juliana.mendes@if.edu', '93456789012', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1010', 'Roberto', 'Silva', 'roberto.silva@if.edu', '94567890123', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1011', 'Patrícia', 'Costa', 'patricia.costa@if.edu', '95678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1012', 'André', 'Souza', 'andre.souza@if.edu', '96789012345', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1013', 'Luciana', 'Ribeiro', 'luciana.ribeiro@if.edu', '97890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1014', 'Marcos', 'Dias', 'marcos.dias@if.edu', '98901234567', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1015', 'Bruna', 'Souza', 'bruna.souza@if.edu', '99012345678', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1016', 'Tiago', 'Rocha', 'tiago.rocha@if.edu', '90123456780', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1017', 'Rafaela', 'Silveira', 'rafaela.silveira@if.edu', '91234567881', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1018', 'Henrique', 'Cunha', 'henrique.cunha@if.edu', '92345678902', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1019', 'Vanessa', 'Oliveira', 'vanessa.oliveira@if.edu', '93456789013', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1020', 'Bruno', 'Martins', 'bruno.martins@if.edu', '94567890124', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1021', 'Camila', 'Nascimento', 'camila.nascimento@if.edu', '95678901235', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1022', 'Rogério', 'Farias', 'rogerio.farias@if.edu', '96789012346', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1023', 'Letícia', 'Azevedo', 'leticia.azevedo@if.edu', '97890123457', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1024', 'Diego', 'Lopes', 'diego.lopes@if.edu', '98901234568', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
-('1025', 'Natália', 'Garcia', 'natalia.garcia@if.edu', '99012345679', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL);
+('1003', 'Paulo', 'Freire', 'paulo.freire@if.edu', '67890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1004', 'Anísio', 'Teixeira', 'anisio.teixeira@if.edu', '78901234567', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1005', 'Darcy', 'Ribeiro', 'darcy.ribeiro@if.edu', '89012345678', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1006', 'Milton', 'Santos', 'milton.santos@if.edu', '90123456789', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1007', 'Florestan', 'Fernandes', 'florestan.fernandes@if.edu', '91234567890', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1008', 'Celso', 'Furtado', 'celso.furtado@if.edu', '92345678901', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1009', 'Fernanda', 'Wanderley', 'fernanda.wanderley@if.edu', '93456789012', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1010', 'Gilberto', 'Freyre', 'gilberto.freyre@if.edu', '94567890123', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1011', 'Maria', 'Montessori', 'maria.montessori@if.edu', '95678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1012', 'Emília', 'Ferreiro', 'emilia.ferreiro@if.edu', '96789012345', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1013', 'Leôncio', 'Buarque', 'leoncio.buarque@if.edu', '97890123456', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1014', 'José', 'Martins', 'jose.martins@if.edu', '98901234567', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1015', 'Angela', 'Davis', 'angela.davis@if.edu', '99012345678', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1016', 'Sérgio', 'Buci', 'sergio.buci@if.edu', '90123456780', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1017', 'Lélia', 'Gonzalez', 'lelia.gonzalez@if.edu', '91234567881', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1018', 'Caio', 'Prado', 'caio.prado@if.edu', '92345678902', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1019', 'Vera', 'Candau', 'vera.candau@if.edu', '93456789013', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1020', 'Roberto', 'Schwarz', 'roberto.schwarz@if.edu', '94567890124', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1021', 'Maria', 'Carneiro', 'maria.carneiro@if.edu', '95678901235', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1022', 'Octávio', 'Ianni', 'octavio.ianni@if.edu', '96789012346', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1023', 'Cecília', 'Meireles', 'cecilia.meireles@if.edu', '97890123457', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1024', 'Dermeval', 'Saviani', 'dermeval.saviani@if.edu', '98901234568', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL),
+('1025', 'Ana', 'Mae', 'ana.mae@if.edu', '99012345679', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 0, 0, 'NENHUM', 1, NULL);
 
 
 -- --------------------------------------------------------

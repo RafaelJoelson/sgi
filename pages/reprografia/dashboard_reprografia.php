@@ -25,7 +25,7 @@ if ($diretorioUploads && is_dir($diretorioUploads)) {
 }
 require_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="dashboard_reprografia.css?v=<?= ASSET_VERSION ?>">
+<link rel="stylesheet" href="./css/dashboard_reprografia.css?v=<?= ASSET_VERSION ?>">
 <div class="dashboard-layout">
     <aside class="dashboard-aside-repro">
         <div class="container-principal">

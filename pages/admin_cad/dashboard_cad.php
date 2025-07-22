@@ -62,7 +62,7 @@ $turmas_disponiveis = $stmt_turmas->fetchAll();
 
 include_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="dashboard_cad.css">
+<link rel="stylesheet" href="./css/dashboard_cad.css?v=<?= ASSET_VERSION ?>">
 <div class="dashboard-layout">
     <aside class="dashboard-aside">
         <section class="dashboard-header">
