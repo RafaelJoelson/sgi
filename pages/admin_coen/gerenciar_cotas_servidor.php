@@ -104,7 +104,7 @@ include_once '../../includes/header.php';
       </label>
       <button type="submit">Transferir</button>
     </form>
-    <a href="dashboard_coen.php" class="btn-back" style="margin-top:1.5em;">Voltar</a>
+    <a href="dashboard_coen.php" class="btn-back" style="margin-top:1.5em;">&larr; Voltar</a>
     <script>
       // Remove o servidor origem da lista de destino
       document.getElementById('siape_origem').addEventListener('change', function() {
