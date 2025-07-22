@@ -1,7 +1,3 @@
-<?php
-// Configurações do banco de dados
-require_once '../../includes/config.php';
-?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,7 +6,7 @@ require_once '../../includes/config.php';
     <title>Suporte - Sistema de Gerenciamento de Impressão</title>
     <!-- Incluindo Font Awesome para os ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="./css/suporte.css?v=<?= ASSET_VERSION ?>">
+    <link rel="stylesheet" href="./css/suporte.css">
 </head>
 <body>
 
@@ -28,6 +24,9 @@ require_once '../../includes/config.php';
                     <summary>Como faço para solicitar uma impressão?</summary>
                     <div class="faq-resposta">
                         <p>Acesse seu painel (de aluno ou servidor), preencha o formulário de solicitação, anexe o arquivo (se necessário) e clique em "Enviar Solicitação". Você pode acompanhar o status do seu pedido na mesma página.</p>
+                        <p><strong>Nota importante!</strong> Solicitações só podem ser aceitas pela reprografia dentro do horário de funcionamento (17h ás 21h).</p>
+                        <img src="./img/faq1.png" alt="">
+                        <img src="./img/faq1.1.png" alt="">
                     </div>
                 </details>
 
@@ -36,6 +35,7 @@ require_once '../../includes/config.php';
                     <div class="faq-resposta">
                         <p><strong>Alunos:</strong> A cota é compartilhada por turma e é reiniciada a cada semestre letivo. O valor disponível é exibido no seu painel.</p>
                         <p><strong>Servidores:</strong> Cada servidor possui uma cota individual para impressões P&B e coloridas, que também é reiniciada a cada semestre. O saldo é exibido no seu painel.</p>
+                        <img src="./img/faq2.png" alt="">
                     </div>
                 </details>
 
@@ -50,6 +50,7 @@ require_once '../../includes/config.php';
                     <summary>O que significa "Solicitação no Balcão"?</summary>
                     <div class="faq-resposta">
                         <p>Esta opção é para quando você já tem o material físico em mãos (como um livro ou uma folha) e precisa apenas de uma cópia. Ao marcar esta opção, você não precisa enviar um arquivo, apenas informar a quantidade de cópias e páginas. A reprografia entenderá que você levará o material original até eles.</p>
+                        <img src="./img/faq4.jpeg" alt="">
                     </div>
                 </details>
 
@@ -64,6 +65,7 @@ require_once '../../includes/config.php';
                     <summary>(Para Reprógrafo) Como sei quando chega um novo pedido?</summary>
                     <div class="faq-resposta">
                         <p>O sistema foi projetado para te notificar de três formas: com um alerta sonoro, fazendo a aba do navegador piscar e exibindo uma notificação no canto da tela. Para que isso funcione, você precisa permitir que o site envie notificações quando o navegador perguntar.</p>
+                        <img src="./img/faq6.png" alt="">                   
                     </div>
                 </details>
 
@@ -71,6 +73,10 @@ require_once '../../includes/config.php';
                     <summary>(Para Admin) Como funciona o reset de cotas?</summary>
                     <div class="faq-resposta">
                         <p>O reset de cotas é uma tarefa automática. No primeiro dia de cada semestre letivo cadastrado em "Configurar Semestre", o sistema irá zerar as cotas usadas e redefinir os totais para os valores padrão configurados em "Definir Cotas Padrão".</p>
+                        <img src="./img/faq7.jpeg" alt="">
+                        <img src="./img/faq7.2.jpeg" alt="">
+                        <img src="./img/faq7.3.png" alt="">
+                    
                     </div>
                 </details>
             </div>
