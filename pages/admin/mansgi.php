@@ -170,7 +170,7 @@ include_once '../../includes/header.php';
         <a class="btn-menu" href="simular_cron.php">Simular Cron</a>
     </div>
     
-    <a class="btn-back" href="javascript:history.back()">&larr; Voltar</a>
+    <a class="btn-back" href="../../index.php">&larr; Voltar</a>
 </div>
 
 <?php include_once '../../includes/footer.php'; ?>

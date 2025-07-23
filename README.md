@@ -56,7 +56,7 @@ Este sistema tem como objetivo ser implementado no campus para gerenciar cotas d
 
 ## 📁 Estrutura de Pastas
 
-```
+
 
 /
 ├── includes/              # Configurações, header, footer, scripts de login
@@ -78,7 +78,7 @@ Este sistema tem como objetivo ser implementado no campus para gerenciar cotas d
 ├── suporte.php            # Página de ajuda e FAQ
 └── .htaccess              # Regras de URL e segurança
 
-````
+
 
 ---
 
