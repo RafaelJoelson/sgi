@@ -79,7 +79,6 @@ include_once '../../includes/header.php';
             <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
             <a class="btn-menu" href="relatorio_aluno.php">Relatório de Impressões</a>
             <a class="btn-menu" href="../servidor/dashboard_servidor.php">Acessar Modo Solicitante</a>
-            <!--<a class="btn-menu" href="../admin/simular_cron.php">Simular Cron</a>-->
         </section>
     </aside>
     <main class="dashboard-main">
@@ -167,7 +166,7 @@ include_once '../../includes/header.php';
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Redefinir Senha do Aluno</h2>
-                <form method="POST" action="redefinir_senha.php">
+                <form method="POST" action="./functions/redefinir_senha.php">
                     <input type="hidden" name="matricula" id="matricula-modal-aluno">
                     <label>Nova Senha <input type="password" name="nova_senha" required></label>
                     <button type="submit">Salvar Nova Senha</button>
@@ -188,11 +187,5 @@ include_once '../../includes/header.php';
         </div>
     </main>
 </div>
-<script>
-    // Passa as variáveis de permissão do PHP para o JavaScript
-    const siapeLogado = '<?= htmlspecialchars($siape_logado) ?>';
-    const isSuperAdminLogado = <?= !empty($_SESSION['usuario']['is_super_admin']) ? 'true' : 'false' ?>;
-    const isAdminLogado = <?= !empty($_SESSION['usuario']['is_admin']) ? 'true' : 'false' ?>;
-</script>
-<script src="dashboard_cad.js?v=<?= ASSET_VERSION ?>"></script>
+<script src="./js/dashboard_cad.js?v=<?= ASSET_VERSION ?>"></script>
 <?php include_once '../../includes/footer.php'; ?>

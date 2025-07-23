@@ -40,7 +40,7 @@ require_once '../../includes/header.php';
             <a href="relatorio_reprografia.php" class="dashboard-menu-link">Relatórios</a>
             <a href="#" id="btn-alterar-dados" class="dashboard-menu-link">Alterar Meus Dados</a>
             <hr>
-            <a href="limpar_uploads.php" class="dashboard-menu-link"
+            <a href="./functions/limpar_uploads.php" class="dashboard-menu-link"
                onclick="return confirm('Tem certeza que deseja limpar a pasta uploads? Esta ação é irreversível!') && confirm('Confirme novamente: deseja realmente apagar TODOS os arquivos da pasta uploads?');">
                 <i class="fas fa-trash-alt"></i> Limpar Pasta Uploads
             </a>
@@ -102,5 +102,5 @@ require_once '../../includes/header.php';
         </form>
     </div>
 </div>
-<script src="dashboard_reprografia.js?v=<?= ASSET_VERSION ?>"></script>
+<script src="./js/dashboard_reprografia.js?v=<?= ASSET_VERSION ?>"></script>
 <?php require_once '../../includes/footer.php'; ?>

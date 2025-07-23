@@ -1,5 +1,5 @@
 <?php
-require_once '../../includes/config.php'; // Ajuste o caminho se necessário
+require_once '../../../includes/config.php'; // Ajuste o caminho se necessário
 session_start();
 
 // 1. VERIFICAÇÃO DE PERMISSÃO BÁSICA

@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 // Retorna as cotas PB e colorida do servidor logado
-require_once '../../includes/config.php';
+require_once '../../../includes/config.php';
 session_start();
 header('Content-Type: application/json');
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor') {

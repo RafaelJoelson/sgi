@@ -1,6 +1,6 @@
 <?php
 // Processa envio de solicitação de impressão do servidor
-require_once '../../includes/config.php';
+require_once '../../../includes/config.php';
 session_start();
 header('Content-Type: application/json');
 

@@ -1,16 +1,16 @@
 <?php
-require_once '../../includes/config.php';
+require_once '../../../includes/config.php';
 session_start();
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografia') {
     echo json_encode(['sucesso'=>false,'mensagem'=>'Acesso negado.']);
     exit;
 }
 
-$uploadsDir = '../../uploads';
+$uploadsDir = '../../../uploads';
 
 if (!is_dir($uploadsDir)) {
     $_SESSION['mensagem_erro'] = "Pasta de uploads não encontrada: $uploadsDir";
-    header('Location: dashboard_reprografia.php');
+    header('Location: ../dashboard_reprografia.php');
     exit;
 }
 

@@ -61,8 +61,11 @@ main h1 {
 }
 
 .form-aluno input[type="checkbox"] {
-  width: auto;
+  width: 1.1em;
+  height: 1.1em;
+  accent-color: #0080ff;
   margin-right: 0.5em;
+  vertical-align: middle;
 }
 
 .form-aluno button[type="submit"] {

@@ -68,9 +68,16 @@ include_once '../../includes/header.php';
             <a class="btn-menu" href="gerenciar_cotas_servidor.php">Gerenciar Cotas de Servidor</a>
             <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
             <a class="btn-menu" href="relatorio_servidor.php">Relatório de Impressões</a>
+            <a class="btn-menu" href="../servidor/dashboard_servidor.php">Acessar Modo Solicitante</a>
         </section>
     </aside>
     <main class="dashboard-main">
+        <?php if (!empty($_SESSION['mensagem_sucesso'])): ?>
+            <div id="toast-mensagem" class="mensagem-sucesso">
+                <?= htmlspecialchars($_SESSION['mensagem_sucesso']) ?>
+            </div>
+            <?php unset($_SESSION['mensagem_sucesso']); ?>
+        <?php endif; ?>
         <div class="responsive-table">
             <table>
                 <thead>
@@ -161,13 +168,12 @@ include_once '../../includes/header.php';
                     <?php endfor; ?>
                 </nav>
             <?php endif; ?>
-        </div>
-        
+        </div>       
         <div id="modal-redefinir" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Redefinir Senha do Servidor</h2>
-                <form method="POST" action="redefinir_senha_servidor.php">
+                <form method="POST" action="./functions/redefinir_senha_servidor.php">
                     <input type="hidden" name="siape" id="siape-modal">
                     <label>Nova Senha <input type="password" name="nova_senha" required></label>
                     <button type="submit">Salvar Nova Senha</button>
@@ -189,5 +195,5 @@ include_once '../../includes/header.php';
         </div>
     </main>
 </div>
-<script src="dashboard_coen.js?v=<?= ASSET_VERSION ?>"></script>
+<script src="./js/dashboard_coen.js?v=<?= ASSET_VERSION ?>"></script>
 <?php include_once '../../includes/footer.php'; ?>

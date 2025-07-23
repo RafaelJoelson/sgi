@@ -78,5 +78,5 @@ require_once '../../includes/header.php';
 
     <button onclick="window.location.href='historico_solicitacoes.php'">Ver Histórico Completo</button>
 </main>
-<script src="dashboard_aluno.js"></script>
+<script src="./js/dashboard_aluno.js?v=<?= ASSET_VERSION ?>"></script>
 <?php require_once '../../includes/footer.php'; ?>

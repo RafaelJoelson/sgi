@@ -147,6 +147,9 @@ button[onclick^="window.location.href"]:hover {
 }
 
 /* --- Tabela de Solicitações --- */
+.tabela-container {
+    min-height: 600px;
+}
 #tabela-solicitacoes {
     overflow-x: auto;
     border: 1px solid var(--cor-borda);

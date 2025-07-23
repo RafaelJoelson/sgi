@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const siapeLogado = '<?= htmlspecialchars($siape_logado) ?>';
     const mainContent = document.querySelector('.dashboard-layout');
 
     // Lógica para exibir o toast de notificação
@@ -18,20 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- LÓGICA DE DELEGAÇÃO DE EVENTOS ---
     mainContent.addEventListener('click', function(e) {
-        const target = e.target.closest('button.btn-action, a.btn-action, .close, .btn-cancelar-exclusao, #btn-gerenciar-servidores');
+        // MUDANÇA: Seletor simplificado, removido #btn-gerenciar-servidores
+        const target = e.target.closest('button.btn-action, a.btn-action, .close, .btn-cancelar-exclusao');
         if (!target) return;
 
-        // Só previne o default para botões e ações modais, não para links de edição
-        if (
-            !(target.tagName === 'A' && target.classList.contains('btn-edit')) &&
-            !(target.tagName === 'A' && target.classList.contains('btn-action') && target.href && target.closest('#tabela-servidores-cad'))
-        ) {
+        if (target.tagName === 'BUTTON' || target.classList.contains('close') || target.classList.contains('btn-cancelar-exclusao')) {
             e.preventDefault();
-        }
-
-        if (target.id === 'btn-gerenciar-servidores') {
-            document.getElementById('modal-servidores').style.display = 'block';
-            carregarServidoresCAD();
         }
 
         if (target.classList.contains('btn-redefinir')) {
@@ -45,12 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const nome = target.dataset.nome;
             const tipo = target.dataset.tipo;
             
-            document.getElementById('nome-item-excluir').textContent = `o ${tipo} ${nome}`;
-            const linkConfirmar = (tipo === 'aluno') 
-                ? `excluir_aluno.php?matricula=${id}` 
-                : `../admin/excluir_servidor.php?siape=${id}`;
-            document.getElementById('btn-confirmar-exclusao').href = linkConfirmar;
-            document.getElementById('modal-excluir').style.display = 'block';
+            // A lógica agora só precisa de lidar com o tipo 'aluno'
+            if (tipo === 'aluno') {
+                document.getElementById('nome-item-excluir').textContent = `o aluno ${nome}`;
+                document.getElementById('btn-confirmar-exclusao').href = `./functions/excluir_aluno.php?matricula=${id}`;
+                document.getElementById('modal-excluir').style.display = 'block';
+            }
         }
 
         if (target.classList.contains('close') || target.classList.contains('btn-cancelar-exclusao')) {
@@ -63,5 +54,4 @@ document.addEventListener('DOMContentLoaded', () => {
             e.target.style.display = 'none';
         }
     });
-
 });

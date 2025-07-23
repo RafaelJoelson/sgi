@@ -58,7 +58,7 @@ include_once '../../includes/header.php';
             <?php unset($_SESSION['mensagem_erro']); ?>
         <?php endif; ?>
 
-        <form action="<?= $modo_edicao ? 'processar_edicao_servidor.php' : 'processar_cadastro_servidor.php' ?>" method="POST" class="form-servidor">
+        <form action="<?= $modo_edicao ? './functions/processar_edicao_servidor.php' : './functions/processar_cadastro_servidor.php' ?>" method="POST" class="form-servidor">
             <?php if ($modo_edicao): ?>
                 <input type="hidden" name="siape" value="<?= htmlspecialchars($servidor->siape) ?>">
             <?php endif; ?>
@@ -116,34 +116,5 @@ include_once '../../includes/header.php';
         <a class="btn-back" href="javascript:history.back()">&larr; Voltar</a>
     </div>
 </main>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const isAdminSelect = document.getElementById('is_admin');
-    const setorAdminSelect = document.getElementById('setor_admin');
-    const nenhumOption = setorAdminSelect.querySelector('option[value="NENHUM"]');
-
-    function toggleSetorAdmin() {
-        if (isAdminSelect.value === '0') {
-            // Se NÃO é admin: força "Nenhum", desativa o campo e garante que "Nenhum" seja uma opção válida
-            setorAdminSelect.value = 'NENHUM';
-            setorAdminSelect.disabled = true;
-            if (nenhumOption) nenhumOption.disabled = false;
-        } else {
-            // Se É admin: ativa o campo, desativa a opção "Nenhum"
-            setorAdminSelect.disabled = false;
-            if (nenhumOption) nenhumOption.disabled = true;
-            // Se "Nenhum" estava selecionado, força o usuário a escolher um setor válido
-            if (setorAdminSelect.value === 'NENHUM') {
-                setorAdminSelect.value = ''; // Limpa a seleção
-            }
-        }
-    }
-
-    // Executa a função quando a página carrega para definir o estado inicial
-    toggleSetorAdmin();
-
-    // Adiciona o ouvinte de evento para futuras mudanças
-    isAdminSelect.addEventListener('change', toggleSetorAdmin);
-});
-</script>
+<script src="./js/form_servidor.js?v=<?= ASSET_VERSION ?>"></script>
 <?php include_once '../../includes/footer.php'; ?>

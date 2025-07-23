@@ -54,18 +54,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // --- LÓGICA DE PAGINAÇÃO ---
 $pagina = isset($_GET['pagina']) && is_numeric($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-$limite = 10; // Número de registros por página
+$limite = 10;
 $offset = ($pagina - 1) * $limite;
 
-// Contar o total de servidores para a paginação
-$stmt_count = $conn->query("SELECT COUNT(*) AS total FROM Servidor s JOIN CotaServidor cs ON s.siape = cs.siape");
+// MUDANÇA: Adicionado "AND s.ativo = TRUE" para contar apenas servidores ativos
+$stmt_count = $conn->query("SELECT COUNT(*) AS total FROM Servidor s JOIN CotaServidor cs ON s.siape = cs.siape WHERE s.is_super_admin = FALSE AND s.ativo = TRUE");
 $total_resultados = $stmt_count->fetch()->total ?? 0;
 $total_paginas = ceil($total_resultados / $limite);
 
-// Buscar cotas da página atual
+// MUDANÇA: Adicionado "AND s.ativo = TRUE" para listar apenas servidores ativos na tabela
 $stmt = $conn->prepare("SELECT s.siape, s.nome, s.sobrenome, cs.cota_pb_total, cs.cota_pb_usada, cs.cota_color_total, cs.cota_color_usada 
                       FROM Servidor s 
                       JOIN CotaServidor cs ON s.siape = cs.siape 
+                      WHERE s.is_super_admin = FALSE AND s.ativo = TRUE
                       ORDER BY s.nome ASC, s.sobrenome ASC 
                       LIMIT :limite OFFSET :offset");
 $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
@@ -73,8 +74,8 @@ $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $cotas = $stmt->fetchAll();
 
-// Buscar todos os servidores para os menus de seleção (sem paginação)
-$stmtServidores = $conn->query("SELECT siape, nome, sobrenome FROM Servidor ORDER BY nome ASC, sobrenome ASC");
+// MUDANÇA: Adicionado "AND ativo = TRUE" para listar apenas servidores ativos nos selects
+$stmtServidores = $conn->query("SELECT siape, nome, sobrenome FROM Servidor WHERE is_super_admin = FALSE AND ativo = TRUE ORDER BY nome ASC, sobrenome ASC");
 $servidores = $stmtServidores->fetchAll();
 
 include_once '../../includes/header.php';

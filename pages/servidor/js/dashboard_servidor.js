@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function verificarNotificacoes() {
-        fetch('verificar_notificacoes.php')
+        fetch('./functions/verificar_notificacoes.php')
             .then(response => response.ok ? response.json() : Promise.reject(response))
             .then(data => {
                 if (data.sucesso && data.notificacoes.length > 0) {
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES DE CARREGAMENTO E FORMULÁRIO (RESTAURADAS) ---
     function carregarCota() {
-        fetch('cota_servidor.php')
+        fetch('./functions/cota_servidor.php')
             .then(r => r.json())
             .then(data => {
                 if(data.sucesso) {
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function carregarSolicitacoes() {
-        fetch('listar_solicitacoes.php')
+        fetch('./functions/listar_solicitacoes.php')
             .then(r => r.json())
             .then(data => {
                 let html = '<table style="width:100%;font-size:0.98em;"><thead><tr><th>Arquivo / Tipo</th><th>Cópias</th><th>Páginas</th><th>Tipo</th><th>Status</th><th>Data</th></tr></thead><tbody>';
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     html += '<tr><td colspan="6">Nenhuma solicitação recente.</td></tr>';
                 } else {
                     data.forEach(s => {
-                        let nomeArquivoExibido = !s.arquivo ? '<strong><i class="fas fa-store-alt"></i> <em>Solicitação no Balcão</em></strong>' : `<a href="download.php?id_solicitacao=${s.id}" target="_blank" title="Baixar ${s.arquivo}"><i class="fas fa-download"></i> ${s.arquivo}</a>`;
+                        let nomeArquivoExibido = !s.arquivo ? '<strong><i class="fas fa-store-alt"></i> <em>Solicitação no Balcão</em></strong>' : `<a href="./functions/download.php?id_solicitacao=${s.id}" target="_blank" title="Baixar ${s.arquivo}"><i class="fas fa-download"></i> ${s.arquivo}</a>`;
                         const dataExibicao = s.data_formatada || s.data;
                         html += `<tr>
                             <td>${nomeArquivoExibido}</td>
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(form);
-        fetch('enviar_solicitacao.php', {
+        fetch('./functions/enviar_solicitacao.php', {
             method: 'POST',
             body: formData
         })

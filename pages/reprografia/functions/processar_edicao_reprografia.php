@@ -1,5 +1,5 @@
 <?php
-require_once '../../includes/config.php';
+require_once '../../../includes/config.php';
 session_start();
 header('Content-Type: application/json');
 
@@ -52,7 +52,7 @@ try {
 
     // Lida com o upload do logo
     if ($logo_file && $logo_file['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = '../../img/';
+        $upload_dir = '../../../img/';
         // Garante que o nome do arquivo seja sempre 'logo_reprografia.png'
         $file_extension = strtolower(pathinfo($logo_file['name'], PATHINFO_EXTENSION));
         $new_filename = 'logo_reprografia.' . $file_extension;

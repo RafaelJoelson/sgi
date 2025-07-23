@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const mensagemModal = document.getElementById('mensagem-modal-cotas');
 
     btnAbrirModal.addEventListener('click', () => {
-        fetch('obter_configuracoes.php')
+        fetch('./functions/obter_configuracoes.php')
             .then(response => response.json())
             .then(data => {
                 if (data.sucesso) {
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         const formData = new FormData(formCotas);
 
-        fetch('salvar_configuracoes.php', {
+        fetch('./functions/salvar_configuracoes.php', {
             method: 'POST',
             body: formData
         })

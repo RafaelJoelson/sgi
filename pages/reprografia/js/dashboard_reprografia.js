@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES PRINCIPAIS DA PÁGINA ---
     function carregarSolicitacoes(notify = false) {
-        fetch('listar_solicitacoes_pendentes.php')
+        fetch('./functions/listar_solicitacoes_pendentes.php')
             .then(r => r.json())
             .then(data => {
                 let html = '<table class="table table-striped table-hover"><thead><tr><th>Arquivo / Tipo</th><th>Solicitante</th><th>Cópias</th><th>Páginas</th><th>Colorida</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead><tbody>';
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     html += '<tr><td colspan="8" class="text-center">Nenhuma solicitação pendente.</td></tr>';
                 } else {
                     data.forEach(s => {
-                        let linkArquivo = s.arquivo ? `<a href="download_arquivo.php?id_solicitacao=${s.id}" target="_blank" title="Baixar ${s.arquivo}"><i class="fas fa-download"></i> ${s.arquivo}</a>` : '<strong><i class="fas fa-store-alt"></i> <em>Solicitação no Balcão</em></strong>';
+                        let linkArquivo = s.arquivo ? `<a href="./functions/download_arquivo.php?id_solicitacao=${s.id}" target="_blank" title="Baixar ${s.arquivo}"><i class="fas fa-download"></i> ${s.arquivo}</a>` : '<strong><i class="fas fa-store-alt"></i> <em>Solicitação no Balcão</em></strong>';
                         html += `<tr>
                             <td>${linkArquivo}</td><td>${s.nome_solicitante}</td><td>${s.qtd_copias}</td>
                             <td><input type="number" class="form-control form-control-sm" style="width: 70px;" value="${s.qtd_paginas}" onchange="editarPaginas(${s.id}, this.value)"></td>
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // CORREÇÃO: Funções restauradas
     window.atualizarStatus = function(id, status) {
         if (!confirm(`Tem certeza que deseja "${status}" esta solicitação?`)) return;
-        fetch('atualizar_status_solicitacao.php', {
+        fetch('./functions/atualizar_status_solicitacao.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: `id=${id}&status=${status}`
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.editarPaginas = function(id, valor) {
-        fetch('editar_paginas.php', {
+        fetch('./functions/editar_paginas.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: `id=${id}&qtd_paginas=${valor}`
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btn-alterar-dados').addEventListener('click', (e) => {
         e.preventDefault();
-        fetch('obter_dados_reprografia.php')
+        fetch('./functions/obter_dados_reprografia.php')
             .then(response => response.json())
             .then(data => {
                 if (data.sucesso && data.dados) {
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         msgErro.style.display = 'none';
 
         const formData = new FormData(formEditar);
-        fetch('processar_edicao_reprografia.php', {
+        fetch('./functions/processar_edicao_reprografia.php', {
             method: 'POST',
             body: formData
         })

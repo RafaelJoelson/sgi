@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../../includes/config.php';
+require_once '../../../includes/config.php';
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'aluno') {

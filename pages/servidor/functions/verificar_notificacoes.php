@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../../includes/config.php';
+require_once '../../../includes/config.php';
 header('Content-Type: application/json');
 
 // Garante que há um usuário logado com CPF

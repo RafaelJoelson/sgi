@@ -212,5 +212,5 @@ include_once '../../includes/header.php';
         </form>
     </div>
 </div>
-<script src="configurar_semestre.js"></script>
+<script src="./js/configurar_semestre.js?v=<?= ASSET_VERSION ?>"></script>
 <?php include_once '../../includes/footer.php'; ?>

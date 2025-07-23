@@ -60,7 +60,7 @@ include_once '../../includes/header.php';
         <?php unset($_SESSION['mensagem_erro']); ?>
     <?php endif; ?>
 
-    <form action="<?= $modo_edicao ? 'processar_edicao_aluno.php' : 'processar_cadastro_aluno.php' ?>" method="POST" class="form-aluno">
+    <form action="<?= $modo_edicao ? './functions/processar_edicao_aluno.php' : './functions/processar_cadastro_aluno.php' ?>" method="POST" class="form-aluno">
         <?php if ($modo_edicao): ?>
             <input type="hidden" name="matricula" value="<?= htmlspecialchars($aluno->matricula) ?>">
         <?php endif; ?>

@@ -183,6 +183,7 @@ INSERT INTO `Aluno` (`matricula`, `nome`, `sobrenome`, `cargo`, `email`, `cpf`, 
 ('20250017', 'Clóvis', 'Basílio', 'Nenhum', 'oatorkidbengala@email.com', '84567098744', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 14, '2025-07-30'),
 ('20250018', 'Jair', 'Tornozeleira', 'Nenhum', 'deuspatriaerachadinha@email.com', '012157567891', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 11, '2025-07-30'),
 ('20250019', 'Chico', 'Tadala', 'Nenhum', 'chicoduro@email.com', '812069567891', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 11, '2025-07-30');
+
 -- --------------------------------------------------------
 --
 -- Estrutura da tabela `Servidor`
