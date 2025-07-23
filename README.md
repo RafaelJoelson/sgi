@@ -1,7 +1,3 @@
-Aqui está o conteúdo formatado do `README.md` em **Markdown** moderno, com seções bem estruturadas, cabeçalhos claros e elementos visuais que facilitam a leitura:
-
----
-
 ```markdown
 # SGI - Sistema de Gestão de Impressão Acadêmica V.2.4 (Beta)
 
