@@ -64,42 +64,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- FUNÇÃO PARA CARREGAR SERVIDORES ---
-    function carregarServidoresCAD() {
-        fetch('../admin/listar_servidores_cad.php')
-            .then(r => r.json())
-            .then(data => {
-                let html = '<table style="width:100%;"><thead><tr><th>SIAPE</th><th>Nome</th><th>Email</th><th>Ações</th></tr></thead><tbody>';
-                if (data.length === 0) {
-                    html += '<tr><td colspan="4">Nenhum servidor CAD encontrado.</td></tr>';
-                } else {
-                    data.forEach(s => {
-                        let botaoExcluir = '';
-                        // CORREÇÃO: Lógica de autoexclusão e proteção de super admin
-                        if (s.siape !== siapeLogado && !(s.is_super_admin == 1)) {
-                            botaoExcluir = `<button type="button" class="btn-action btn-delete btn-excluir btn-exc" 
-                                                data-id="${s.siape}" 
-                                                data-nome="${s.nome} ${s.sobrenome}" 
-                                                data-tipo="servidor"
-                                                title="Excluir Servidor">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>`;
-                        }
-                        html += `<tr>
-                            <td>${s.siape}</td>
-                            <td>${s.nome} ${s.sobrenome}</td>
-                            <td>${s.email}</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <a href="../admin/form_servidor.php?siape=${s.siape}" class="btn-action btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
-                                    ${botaoExcluir}
-                                </div>
-                            </td>
-                        </tr>`;
-                    });
-                }
-                html += '</tbody></table>';
-                document.getElementById('tabela-servidores-cad').innerHTML = html;
-            });
-    }
 });

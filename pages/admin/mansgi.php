@@ -86,7 +86,7 @@ $Reprografias = $conn->query("SELECT id, login, nome, sobrenome FROM Reprografia
 
 include_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="../admin_cad/dashboard_cad.css?v=<?= ASSET_VERSION ?>">
+<link rel="stylesheet" href="../admin_cad/css/dashboard_cad.css?v=<?= ASSET_VERSION ?>">
 <style>
     .maintenance-container { max-width: 900px; margin: 2rem auto; }
     .card-maintenance { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 2rem; }

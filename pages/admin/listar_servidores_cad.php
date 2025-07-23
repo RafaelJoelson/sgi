@@ -9,7 +9,6 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
     exit;
 }
 
-$stmt = $conn->prepare("SELECT siape, nome, sobrenome, email, setor_admin, is_super_admin FROM Servidor WHERE setor_admin = 'CAD' ORDER BY nome ASC");
-$stmt->execute();
+$stmt = $conn->prepare("SELECT siape, nome, sobrenome, email, setor_admin, is_super_admin FROM Servidor WHERE setor_admin = 'CAD' AND is_super_admin != 1 AND is_admin != 1 ORDER BY nome ASC");$stmt->execute();
 $servidores = $stmt->fetchAll();
 echo json_encode($servidores);

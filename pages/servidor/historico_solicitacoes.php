@@ -21,7 +21,7 @@ $stmt->execute([$cpf_servidor]);
 $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!-- Vinculando a folha de estilos do servidor (que deve ser similar à do aluno) -->
-<link rel="stylesheet" href="dashboard_servidor.css?v=<?= ASSET_VERSION ?>">
+<link rel="stylesheet" href="./css/dashboard_servidor.css?v=<?= ASSET_VERSION ?>">
 
 <main class="container">
     <div class="container-principal"> <!-- Um container para o conteúdo -->

@@ -158,4 +158,8 @@
             .secao-suporte h2 {
                 font-size: 1.5rem;
             }
+            .faq-item img {
+                max-width: 100%;
+                height: auto;
+            }
         }

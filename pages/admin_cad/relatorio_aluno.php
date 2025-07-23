@@ -150,10 +150,22 @@ if (isset($_GET['imprimir']) && $_GET['imprimir'] == '1') {
     <head>
         <meta charset="utf-8">
         <title>Relatório de Impressões por Aluno</title>
-        <link rel="stylesheet" href="../../print_base.css">
         <link rel="icon" type="image/png" href="<?= BASE_URL ?>/favicon.ico">
         <script>window.onload = () => window.print();</script>
     </head>
+    <style>
+        body { font-family: 'Helvetica', sans-serif; font-size: 10px; color: #333; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; justify-content: space-between; align-items: center; }
+        .logo_if_print { height: 50px; margin: 0 10px; }
+        .sgi_logo_print { height: 50px; margin: 0 10px;}
+        h1 { font-size: 16px; margin: 5px 0; }
+        p { font-size: 12px; margin: 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        tfoot td { font-weight: bold; background-color: #f9f9f9; }
+        .total-section { margin-top: 30px; }
+    </style>
     <body>
         <div style="text-align:center;margin-bottom:2em;">
             <img src="../../img/logo-if-sjdr-nova-grafia-horizontal.png" alt="Logo IFSudesteMG" style="height:60px;margin-bottom:0.5em;"><br>
@@ -197,7 +209,7 @@ if (isset($_GET['imprimir']) && $_GET['imprimir'] == '1') {
 // --- 3. RENDERIZAÇÃO NORMAL DA PÁGINA ---
 require_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="dashboard_cad.css?v=<?= ASSET_VERSION ?>">
+<link rel="stylesheet" href="./css/dashboard_cad.css?v=<?= ASSET_VERSION ?>">
 <main class="dashboard-layout">
     <aside class="dashboard-aside-relatorio">
         <div class="container-principal">

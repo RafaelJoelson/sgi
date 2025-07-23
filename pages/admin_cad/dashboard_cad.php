@@ -3,7 +3,7 @@ require_once '../../includes/config.php';
 session_start();
 
 // Permissão: apenas servidor CAD pode acessar
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'CAD') {
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'CAD' || empty($_SESSION['usuario']['is_admin'])) {
     header('Location: ../../index.php');
     exit;
 }
@@ -74,7 +74,6 @@ include_once '../../includes/header.php';
         </section>
         <section class="dashboard-menu">
             <a class="btn-menu" href="form_aluno.php">Cadastrar novo aluno</a>
-            <a class="btn-menu" href="#" id="btn-gerenciar-servidores">Gerenciar Servidores (CAD)</a>
             <a class="btn-menu" href="gerenciar_cotas.php">Gerenciar Cotas</a>
             <a class="btn-menu" href="gerenciar_turmas.php">Gerenciar Turmas</a>
             <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
@@ -175,16 +174,6 @@ include_once '../../includes/header.php';
                 </form>
             </div>
         </div>
-
-        <div id="modal-servidores" class="modal">
-          <div class="modal-content" style="max-width:900px;width:98%;">
-            <span class="close">&times;</span>
-            <h2>Servidores do Setor CAD</h2>
-            <button onclick="window.location.href='../admin/form_servidor.php'" class="btn-menu" style="margin-bottom:1em;">Novo Servidor</button>
-            <div id="tabela-servidores-cad">Carregando...</div>
-          </div>
-        </div>
-
         <div id="modal-excluir" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
@@ -199,5 +188,11 @@ include_once '../../includes/header.php';
         </div>
     </main>
 </div>
-<script src="dashboard_cad.js"></script>
+<script>
+    // Passa as variáveis de permissão do PHP para o JavaScript
+    const siapeLogado = '<?= htmlspecialchars($siape_logado) ?>';
+    const isSuperAdminLogado = <?= !empty($_SESSION['usuario']['is_super_admin']) ? 'true' : 'false' ?>;
+    const isAdminLogado = <?= !empty($_SESSION['usuario']['is_admin']) ? 'true' : 'false' ?>;
+</script>
+<script src="dashboard_cad.js?v=<?= ASSET_VERSION ?>"></script>
 <?php include_once '../../includes/footer.php'; ?>

@@ -102,5 +102,5 @@ require_once '../../includes/header.php';
         </form>
     </div>
 </div>
-<script src="dashboard_reprografia.js"></script>
+<script src="dashboard_reprografia.js?v=<?= ASSET_VERSION ?>"></script>
 <?php require_once '../../includes/footer.php'; ?>

@@ -3,7 +3,7 @@ Aqui está o conteúdo formatado do `README.md` em **Markdown** moderno, com se�
 ---
 
 ```markdown
-# SGI - Sistema de Gestão de Impressão Acadêmica V.2.2 (Beta)
+# SGI - Sistema de Gestão de Impressão Acadêmica V.2.3 (Beta)
 
 **Projeto de extensão do Instituto Federal do Sudeste de Minas Gerais - Campus São João del-Rei**
 

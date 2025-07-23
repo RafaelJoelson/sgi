@@ -92,8 +92,32 @@ CREATE TABLE `CotaAluno` (
 --
 
 INSERT INTO `CotaAluno` (`id`, `turma_id`, `cota_total`, `cota_usada`) VALUES
-(1, 1, 250, 100), (2, 4, 200, 50), (3, 7, 180, 30), (4, 10, 220, 80), (5, 13, 150, 20), (6, 16, 170, 10),
-(7, 19, 0, 0), (8, 20, 0, 0), (9, 23, 0, 0), (10, 25, 0, 0), (11, 27, 0, 0), (12, 29, 0, 0), (13, 31, 0, 0), (14, 32, 0, 0);
+(1, 1, 600, 100),
+(2, 4, 600, 50),
+(3, 7, 600, 30),
+(4, 10, 600, 80),
+(5, 13, 600, 20),
+(6, 16, 600, 10),
+(7, 19, 600, 150),
+(8, 22, 600, 120),
+(9, 25, 600, 90),
+(10, 28, 600, 60),
+(11, 31, 600, 40),
+(12, 34, 600, 70),
+(13, 37, 600, 110),
+(14, 39, 600, 180),
+(15, 2, 600, 50),
+(16, 5, 600, 30),
+(17, 8, 600, 80),
+(18, 11, 600, 20),
+(19, 14, 600, 10),
+(20, 17, 600, 150),
+(21, 20, 600, 120),
+(22, 23, 600, 90),
+(23, 26, 600, 60),
+(24, 29, 600, 40),
+(25, 32, 600, 70),
+(26, 35, 600, 110);
 
 -- --------------------------------------------------------
 --
@@ -144,7 +168,7 @@ INSERT INTO `Aluno` (`matricula`, `nome`, `sobrenome`, `cargo`, `email`, `cpf`, 
 ('20250002', 'Inês', 'Brasil', 'Nenhum', 'ines.brasil.sensual@email.com', '23456789012', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 2, '2025-07-30'),
 ('20250003', 'Carminha', 'Sincera', 'Vice-líder', 'carminha.sincera.meme@email.com', '34567890123', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 3, '2025-07-30'),
 ('20250004', 'Chaves', 'SemTeto', 'Vice-líder', 'chaves.sem.teto@email.com', '34567890124', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 4, '2025-07-30'),
-('20250005', 'Nazaré', 'Confusa', 'Nenhum', 'nazare.confusa.tediosa@email.com', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 5, '2025-07-30'),
+('20250005', 'Nazaré', 'Tedesco', 'Nenhum', 'nazare.confusa.tediosa@email.com', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 5, '2025-07-30'),
 ('20250006', 'Joelma', 'Calypso', 'Nenhum', 'joelma.nao.sou.chimbinha@email.com', '56789012345', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 6, '2025-07-30'),
 ('20250007', 'Cumpadi', 'Washington', 'Nenhum', 'cumpadi.washington.zoeira@email.com', '67890123457', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 7, '2025-07-30'),
 ('20250008', 'Dona', 'Hermínia', 'Nenhum', 'dona.herminia.pai@email.com', '78901234568', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 8, '2025-07-30'),
@@ -153,8 +177,12 @@ INSERT INTO `Aluno` (`matricula`, `nome`, `sobrenome`, `cargo`, `email`, `cpf`, 
 ('20250011', 'Zé', 'Pequeno', 'Nenhum', 'ze.pequeno.cdd@email.com', '012222567891', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 11, '2025-07-30'),
 ('20250012', 'Valentina', 'Mansur', 'Nenhum', 'valentina.mansur.bolada@email.com', '12000098765', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 12, '2025-07-30'),
 ('20250013', 'Seu', 'Madruga', 'Nenhum', 'seu.madruga.14bis@email.com', '23456098765', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 13, '2025-07-30'),
-('20250014', 'Valesca', 'Popozuda', 'Nenhum', 'valesca.popozuda.funk@email.com', '34567098765', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 14, '2025-07-30');
-
+('20250014', 'Valesca', 'Popozuda', 'Nenhum', 'valesca.popozuda.funk@email.com', '34567033365', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 14, '2025-07-30'),
+('20250015', 'Simas', '(Aquele Mesmo)', 'Nenhum', 'simasturbo@email.com', '30567098005', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 14, '2025-07-30'),
+('20250016', 'Luva', 'de Pedreiro', 'Nenhum', 'luva@email.com', '24557098765', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 14, '2025-07-30'),
+('20250017', 'Clóvis', 'Basílio', 'Nenhum', 'oatorkidbengala@email.com', '84567098744', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 14, '2025-07-30'),
+('20250018', 'Jair', 'Tornozeleira', 'Nenhum', 'deuspatriaerachadinha@email.com', '012157567891', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 11, '2025-07-30'),
+('20250019', 'Chico', 'Tadala', 'Nenhum', 'chicoduro@email.com', '812069567891', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 11, '2025-07-30');
 -- --------------------------------------------------------
 --
 -- Estrutura da tabela `Servidor`
@@ -228,9 +256,32 @@ CREATE TABLE `CotaServidor` (
 --
 
 INSERT INTO `CotaServidor` (`siape`, `cota_pb_total`, `cota_pb_usada`, `cota_color_total`, `cota_color_usada`) VALUES
-('1001', 1000, 0, 100, 0),
-('1002', 1000, 0, 100, 0),
-('1003', 1000, 0, 100, 0);
+('1001', 0, 0, 0, 0),
+('1002', 0, 0, 0, 0),
+('1003', 1000, 234, 100, 28),
+('1004', 1000, 756, 100, 19),
+('1005', 1000, 500, 100, 50),
+('1006', 1000, 300, 100, 10),
+('1007', 1000, 200, 100, 5),
+('1008', 1000, 400, 100, 20),
+('1009', 1000, 600, 100, 30),
+('1010', 1000, 800, 100, 40),
+('1011', 1000, 900, 100, 60),
+('1012', 1000, 700, 100, 70),
+('1013', 1000, 500, 100, 80),
+('1014', 1000, 300, 100, 90),
+('1015', 1000, 200, 100, 95),
+('1016', 1000, 400, 100, 85),
+('1017', 1000, 600, 100, 75),
+('1018', 1000, 800, 100, 65),
+('1019', 1000, 900, 100, 55),
+('1020', 1000, 700, 100, 45),
+('1021', 1000, 500, 100, 35),
+('1022', 1000, 300, 100, 25),
+('1023', 1000, 200, 100, 15),
+('1024', 1000, 400, 100, 5),
+('1025', 1000, 600, 100, 2);
+
 
 -- --------------------------------------------------------
 --

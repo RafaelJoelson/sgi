@@ -42,7 +42,6 @@ include_once '../../includes/header.php';
         
         <h1><?= $modo_edicao ? 'Editar Servidor' : 'Cadastrar Novo Servidor' ?></h1>
 
-        <!-- MENSAGEM DE AVISO PARA SUPER ADMIN -->
         <?php if ($modo_edicao && $is_super_admin_edit): ?>
             <div class="mensagem-aviso">
                 <i class="fas fa-shield-alt"></i> 
@@ -50,7 +49,6 @@ include_once '../../includes/header.php';
             </div>
         <?php endif; ?>
 
-        <!-- Exibe mensagens de sucesso ou erro da sessão -->
         <?php if (isset($_SESSION['mensagem_sucesso'])): ?>
             <div class="mensagem-sucesso" style="display:block;"><?= htmlspecialchars($_SESSION['mensagem_sucesso']) ?></div>
             <?php unset($_SESSION['mensagem_sucesso']); ?>
@@ -66,43 +64,39 @@ include_once '../../includes/header.php';
             <?php endif; ?>
 
             <label>*SIAPE
-                <input type="text" name="siape" maxlength="8" required value="<?= $servidor->siape ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+                <input type="text" name="siape" placeholder="Somente números" maxlength="7" pattern="\d{7}" title="Digite os 7 números do SIAPE" required value="<?= $servidor->siape ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
             </label>
-
             <label>*Nome
                 <input type="text" name="nome" required value="<?= $servidor->nome ?? '' ?>" <?= $is_super_admin_edit ? 'disabled' : '' ?>>
             </label>
-
             <label>*Sobrenome
                 <input type="text" name="sobrenome" required value="<?= $servidor->sobrenome ?? '' ?>" <?= $is_super_admin_edit ? 'disabled' : '' ?>>
             </label>
-
             <label>*E-mail
-                <input type="email" name="email" required value="<?= $servidor->email ?? '' ?>" <?= $is_super_admin_edit ? 'disabled' : '' ?>>
+                <input type="email" name="email" placeholder="email@mail.com" required value="<?= $servidor->email ?? '' ?>" <?= $is_super_admin_edit ? 'disabled' : '' ?>>
             </label>
-
             <label>*CPF
-                <input type="text" name="cpf" required maxlength="11" pattern="\d{11}" title="Digite os 11 números do CPF" value="<?= $servidor->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+                <input type="text" name="cpf" required placeholder="Somente números" maxlength="11" pattern="\d{11}" title="Digite os 11 números do CPF" value="<?= $servidor->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
             </label>
-
             <?php if (!$modo_edicao): ?>
                 <label>Senha
                     <input type="password" name="senha" required minlength="6">
                 </label>
             <?php endif; ?>
-
-            <label>*Setor Administrativo
-                <select name="setor_admin" required <?= $is_super_admin_edit ? 'disabled' : '' ?>>
-                    <option value="NENHUM" <?= (isset($servidor) && $servidor->setor_admin === 'NENHUM') ? 'selected' : '' ?>>Nenhum</option>
-                    <option value="CAD" <?= (isset($servidor) && $servidor->setor_admin === 'CAD') ? 'selected' : '' ?>>CAD</option>
-                    <option value="COEN" <?= (isset($servidor) && $servidor->setor_admin === 'COEN') ? 'selected' : '' ?>>COEN</option>
+            
+            <label>*É Administrador?
+                <select name="is_admin" id="is_admin" required <?= $is_super_admin_edit ? 'disabled' : '' ?>>
+                    <option value="0" <?= (isset($servidor) && !$servidor->is_admin) ? 'selected' : '' ?>>Não</option>
+                    <option value="1" <?= (isset($servidor) && $servidor->is_admin) ? 'selected' : '' ?>>Sim</option>
                 </select>
             </label>
 
-            <label>*É Administrador?
-                <select name="is_admin" required <?= $is_super_admin_edit ? 'disabled' : '' ?>>
-                    <option value="0" <?= (isset($servidor) && !$servidor->is_admin) ? 'selected' : '' ?>>Não</option>
-                    <option value="1" <?= (isset($servidor) && $servidor->is_admin) ? 'selected' : '' ?>>Sim</option>
+            <label>*Setor Administrativo
+                <select name="setor_admin" id="setor_admin" required <?= $is_super_admin_edit ? 'disabled' : '' ?>>
+                    <option value="" disabled>Selecione um setor</option>
+                    <option value="NENHUM" <?= (isset($servidor) && $servidor->setor_admin === 'NENHUM') ? 'selected' : '' ?>>Nenhum</option>
+                    <option value="CAD" <?= (isset($servidor) && $servidor->setor_admin === 'CAD') ? 'selected' : '' ?>>CAD</option>
+                    <option value="COEN" <?= (isset($servidor) && $servidor->setor_admin === 'COEN') ? 'selected' : '' ?>>COEN</option>
                 </select>
             </label>
 
@@ -122,4 +116,34 @@ include_once '../../includes/header.php';
         <a class="btn-back" href="javascript:history.back()">&larr; Voltar</a>
     </div>
 </main>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const isAdminSelect = document.getElementById('is_admin');
+    const setorAdminSelect = document.getElementById('setor_admin');
+    const nenhumOption = setorAdminSelect.querySelector('option[value="NENHUM"]');
+
+    function toggleSetorAdmin() {
+        if (isAdminSelect.value === '0') {
+            // Se NÃO é admin: força "Nenhum", desativa o campo e garante que "Nenhum" seja uma opção válida
+            setorAdminSelect.value = 'NENHUM';
+            setorAdminSelect.disabled = true;
+            if (nenhumOption) nenhumOption.disabled = false;
+        } else {
+            // Se É admin: ativa o campo, desativa a opção "Nenhum"
+            setorAdminSelect.disabled = false;
+            if (nenhumOption) nenhumOption.disabled = true;
+            // Se "Nenhum" estava selecionado, força o usuário a escolher um setor válido
+            if (setorAdminSelect.value === 'NENHUM') {
+                setorAdminSelect.value = ''; // Limpa a seleção
+            }
+        }
+    }
+
+    // Executa a função quando a página carrega para definir o estado inicial
+    toggleSetorAdmin();
+
+    // Adiciona o ouvinte de evento para futuras mudanças
+    isAdminSelect.addEventListener('change', toggleSetorAdmin);
+});
+</script>
 <?php include_once '../../includes/footer.php'; ?>

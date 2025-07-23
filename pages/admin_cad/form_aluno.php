@@ -66,7 +66,7 @@ include_once '../../includes/header.php';
         <?php endif; ?>
 
         <label>*Matrícula
-            <input type="text" name="matricula" maxlength="10" required value="<?= $aluno->matricula ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+            <input type="text" name="matricula" placeholder="Somente números" maxlength="10" pattern="\d{10}" title="Digite os 10 números da matrícula" required value="<?= $aluno->matricula ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
         </label>
         <label>*Nome
             <input type="text" name="nome" required value="<?= $aluno->nome ?? '' ?>">
@@ -75,10 +75,10 @@ include_once '../../includes/header.php';
             <input type="text" name="sobrenome" required value="<?= $aluno->sobrenome ?? '' ?>">
         </label>
         <label>*E-mail
-            <input type="email" name="email" required value="<?= $aluno->email ?? '' ?>">
+            <input type="email" name="email" placeholder="email@mail.com" required value="<?= $aluno->email ?? '' ?>">
         </label>
         <label>*CPF
-            <input type="text" name="cpf" required maxlength="11" pattern="\d{11}" title="Digite os 11 números do CPF" value="<?= $aluno->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+            <input type="text" name="cpf" placeholder="Somente números" required maxlength="11" pattern="\d{11}" title="Digite os 11 números do CPF" value="<?= $aluno->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
         </label>
 
         <?php if (!$modo_edicao): ?>

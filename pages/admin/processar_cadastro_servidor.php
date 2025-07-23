@@ -3,16 +3,14 @@ require_once '../../includes/config.php';
 session_start();
 
 // 1. VERIFICAÇÃO DE PERMISSÃO
-// Apenas um administrador (CAD ou COEN) pode acessar esta página.
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || empty($_SESSION['usuario']['is_admin'])) {
     $_SESSION['mensagem_erro'] = 'Acesso negado.';
-    header('Location: ' . BASE_URL . '/index.php'); // Redirecionamento seguro
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
-// Verifica se o formulário foi enviado via POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ' . BASE_URL . '/pages/admin/form_servidor.php'); // Redirecionamento seguro
+    header('Location: ' . BASE_URL . '/pages/admin/form_servidor.php');
     exit;
 }
 
@@ -23,22 +21,21 @@ $sobrenome = trim($_POST['sobrenome'] ?? '');
 $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
 $cpf = preg_replace('/\D/', '', trim($_POST['cpf'] ?? ''));
 $setor_admin = in_array($_POST['setor_admin'], ['CAD', 'COEN', 'NENHUM']) ? $_POST['setor_admin'] : 'NENHUM';
-$is_admin = isset($_POST['is_admin']) ? 1 : 0;
+// CORREÇÃO: Verifica o VALOR de 'is_admin', não apenas se ele existe.
+$is_admin = (isset($_POST['is_admin']) && $_POST['is_admin'] == '1') ? 1 : 0;
 $data_fim_validade = !empty($_POST['data_fim_validade']) ? $_POST['data_fim_validade'] : null;
 $senha = $_POST['senha'] ?? '';
 
-// Validações básicas
 if (empty($siape) || empty($nome) || empty($email) || strlen($cpf) !== 11 || empty($senha)) {
     $_SESSION['mensagem_erro'] = 'Todos os campos obrigatórios devem ser preenchidos corretamente.';
-    header('Location: ' . BASE_URL . '/pages/admin/form_servidor.php'); // Redirecionamento seguro
+    header('Location: ' . BASE_URL . '/pages/admin/form_servidor.php');
     exit;
 }
 
 try {
-    // 3. INICIA A TRANSAÇÃO NO BANCO DE DADOS
     $conn->beginTransaction();
 
-    // 4. VERIFICAÇÃO COMPLETA DE DUPLICIDADE (CPF e SIAPE)
+    // 3. VERIFICAÇÃO DE DUPLICIDADE
     $stmt_check_siape = $conn->prepare("SELECT siape FROM Servidor WHERE siape = :siape");
     $stmt_check_siape->execute([':siape' => $siape]);
     if ($stmt_check_siape->fetch()) {
@@ -53,7 +50,7 @@ try {
 
     $hash_senha = password_hash($senha, PASSWORD_DEFAULT);
 
-    // 5. INSERÇÃO NAS TABELAS
+    // 4. INSERÇÃO NAS TABELAS
     $stmt_insert_servidor = $conn->prepare(
         'INSERT INTO Servidor (siape, nome, sobrenome, email, cpf, senha, is_admin, setor_admin, ativo, data_fim_validade) 
          VALUES (:siape, :nome, :sobrenome, :email, :cpf, :senha, :is_admin, :setor_admin, 1, :data_fim_validade)'
@@ -70,13 +67,11 @@ try {
     );
     $stmt_insert_cota->execute([':siape' => $siape]);
 
-    // 6. CONFIRMA A TRANSAÇÃO
     $conn->commit();
     $_SESSION['mensagem_sucesso'] = 'Servidor cadastrado com sucesso!';
     
-    // 7. REDIRECIONAMENTO DINÂMICO
+    // 5. REDIRECIONAMENTO DINÂMICO
     $setor_logado = $_SESSION['usuario']['setor_admin'];
-    
     $path = ($setor_logado === 'CAD') ? '/pages/admin_cad/dashboard_cad.php' : '/pages/admin_coen/dashboard_coen.php';
     $redirect_url = BASE_URL . $path;
     
@@ -84,9 +79,8 @@ try {
     exit;
 
 } catch (Exception $e) {
-    // 8. REVERTE A TRANSAÇÃO EM CASO DE ERRO
     if ($conn->inTransaction()) $conn->rollBack();
     $_SESSION['mensagem_erro'] = 'Erro ao cadastrar servidor: ' . $e->getMessage();
-    header('Location: ' . BASE_URL . '/pages/admin/form_servidor.php'); // Redirecionamento seguro
+    header('Location: ' . BASE_URL . '/pages/admin/form_servidor.php');
     exit;
 }

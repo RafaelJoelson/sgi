@@ -3,7 +3,7 @@ require_once '../../includes/config.php';
 session_start();
 
 // Permissão: apenas administradores podem acessar
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || empty($_SESSION['usuario']['is_admin'])) {
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'COEN' || empty($_SESSION['usuario']['is_admin'])) {
     header('Location: ../../index.php');
     exit;
 }
@@ -163,10 +163,31 @@ include_once '../../includes/header.php';
             <?php endif; ?>
         </div>
         
-        <!-- Modais (redefinir e excluir) -->
-        <div id="modal-redefinir" class="modal"></div>
-        <div id="modal-excluir" class="modal"></div>
+        <div id="modal-redefinir" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Redefinir Senha do Servidor</h2>
+                <form method="POST" action="redefinir_senha_servidor.php">
+                    <input type="hidden" name="siape" id="siape-modal">
+                    <label>Nova Senha <input type="password" name="nova_senha" required></label>
+                    <button type="submit">Salvar Nova Senha</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="modal-excluir" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Confirmar Exclusão</h2>
+                <p>Você tem certeza que deseja excluir o servidor <strong id="nome-servidor-excluir"></strong>?</p>
+                <p>Esta ação é irreversível.</p>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary btn-cancelar-exclusao">Cancelar</button>
+                    <a href="#" id="btn-confirmar-exclusao" class="btn-danger">Sim, Excluir</a>
+                </div>
+            </div>
+        </div>
     </main>
 </div>
-<script src="dashboard_coen.js"></script>
+<script src="dashboard_coen.js?v=<?= ASSET_VERSION ?>"></script>
 <?php include_once '../../includes/footer.php'; ?>

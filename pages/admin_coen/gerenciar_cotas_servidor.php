@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // --- LÓGICA DE PAGINAÇÃO ---
 $pagina = isset($_GET['pagina']) && is_numeric($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-$limite = 2;
+$limite = 10; // Número de registros por página
 $offset = ($pagina - 1) * $limite;
 
 // Contar o total de servidores para a paginação

@@ -155,7 +155,7 @@ if (isset($_GET['gerar_pdf']) && $_GET['gerar_pdf'] == '1') {
 // --- 3. RENDERIZAÇÃO NORMAL DA PÁGINA ---
 require_once '../../includes/header.php';
 ?>
-<link rel="stylesheet" href="dashboard_coen.css?v=<?= ASSET_VERSION ?>">
+<link rel="stylesheet" href="./css/dashboard_coen.css?v=<?= ASSET_VERSION ?>">
 <main class="dashboard-layout">
     <aside class="dashboard-aside">
         <div class="container-principal">
