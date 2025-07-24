@@ -82,40 +82,44 @@ include_once '../../includes/header.php';
         </section>
     </aside>
     <main class="dashboard-main">
+        <div id="toast-notification-container"></div>
         <?php if (!empty($_SESSION['mensagem_sucesso'])): ?>
-            <div id="toast-mensagem" class="mensagem-sucesso">
+            <div id="toast-mensagem" class="mensagem-sucesso" style="display: none;">
                 <?= htmlspecialchars($_SESSION['mensagem_sucesso']) ?>
             </div>
             <?php unset($_SESSION['mensagem_sucesso']); ?>
         <?php endif; ?>
-        
+        <!-- Formulário de Busca -->
+        <form method="GET" class="form-busca" style="margin-bottom: 1em;">
+            <label>
+                Tipo de Busca:
+                <select name="tipo_busca" required>
+                    <option value="" disabled <?= empty($tipo_busca) ? 'selected' : '' ?>>Selecione</option>
+                    <option value="cpf" <?= $tipo_busca === 'cpf' ? 'selected' : '' ?>>CPF</option>
+                    <option value="matricula" <?= $tipo_busca === 'matricula' ? 'selected' : '' ?>>Matrícula</option>
+                </select>
+            </label>
+            <label>
+                Valor:
+                <input type="text" name="valor_busca" value="<?= htmlspecialchars($valor_busca) ?>" maxlength="11" placeholder="Digite o CPF ou Matrícula" required>
+            </label>
+            <label>
+                Filtrar por Turma:
+                <select name="turma" id="turma">
+                    <option value="" <?= empty($filtro_turma) ? 'selected' : '' ?>>Todas as turmas</option>
+                    <?php foreach ($turmas_disponiveis as $turma): ?>
+                        <option value="<?= $turma->id ?>" <?= $filtro_turma == $turma->id ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($turma->nome_completo . ' - ' . $turma->periodo) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+            <button type="submit">Buscar</button>
+            <?php if (!empty($tipo_busca) || !empty($valor_busca) || !empty($filtro_turma)): ?>
+                <a href="?pagina=1" class="btn-limpar">Limpar Filtro</a>
+            <?php endif; ?>
+        </form>
         <div class="responsive-table">
-            <form method="GET" class="busca-form styled-busca-form">
-                <div class="form-group">
-                    <label for="tipo_busca">Buscar por:</label>
-                    <select name="tipo_busca" id="tipo_busca">
-                        <option value="cpf" <?= ($tipo_busca === 'cpf' ? 'selected' : '') ?>>CPF</option>
-                        <option value="matricula" <?= ($tipo_busca === 'matricula' ? 'selected' : '') ?>>Matrícula</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="valor_busca">Valor:</label>
-                    <input type="text" id="valor_busca" name="valor_busca" placeholder="Digite o valor..." value="<?= htmlspecialchars($valor_busca) ?>">
-                </div>
-                <div class="form-group filter">
-                    <label for="turma">Filtrar por Turma:</label>
-                    <select name="turma" id="turma">
-                        <option value="">Todas as turmas</option>
-                        <?php foreach ($turmas_disponiveis as $turma): ?>
-                            <option value="<?= $turma->id ?>" <?= ($filtro_turma == $turma->id ? 'selected' : '') ?>>
-                                <?= htmlspecialchars($turma->nome_completo . ' - ' . $turma->periodo) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <button type="submit" class="btn-filtrar">Buscar</button>
-            </form>
-
             <table>
                 <thead>
                     <tr>
@@ -127,27 +131,33 @@ include_once '../../includes/header.php';
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($alunos as $aluno): ?>
+                    <?php if (empty($alunos)): ?>
                         <tr>
-                            <td data-label="Matrícula"><?= htmlspecialchars($aluno->matricula) ?></td>
-                            <td data-label="Nome"><?= htmlspecialchars($aluno->nome . ' ' . $aluno->sobrenome) ?></td>
-                            <td data-label="Cargo"><?= htmlspecialchars($aluno->cargo) ?></td>
-                            <td data-label="Turma" title="<?= htmlspecialchars($aluno->nome_completo . ' - ' . $aluno->periodo) ?>"><?= htmlspecialchars($aluno->sigla . ' - ' . $aluno->periodo) ?></td>
-                            <td data-label="Ações">
-                                <div class="action-buttons">
-                                    <a href="form_aluno.php?matricula=<?= htmlspecialchars($aluno->matricula) ?>" class="btn-action btn-edit" title="Editar/Renovar"><i class="fas fa-edit"></i></a>
-                                    <a type="button" class="btn-action btn-redefinir btn-edit" data-id="<?= htmlspecialchars($aluno->matricula) ?>" title="Redefinir Senha"><i class="fas fa-key"></i></a>
-                                    <button type="button" class="btn-action btn-delete btn-excluir btn-exc" 
-                                        data-id="<?= htmlspecialchars($aluno->matricula) ?>" 
-                                        data-nome="<?= htmlspecialchars($aluno->nome) ?>" 
-                                        data-tipo="aluno"
-                                        title="Excluir Aluno">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </div>
-                            </td>
+                            <td colspan="5" class="text-center">Nenhum aluno encontrado para os critérios de busca.</td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php else: ?>
+                        <?php foreach ($alunos as $aluno): ?>
+                            <tr>
+                                <td data-label="Matrícula"><?= htmlspecialchars($aluno->matricula) ?></td>
+                                <td data-label="Nome"><?= htmlspecialchars($aluno->nome . ' ' . $aluno->sobrenome) ?></td>
+                                <td data-label="Cargo"><?= htmlspecialchars($aluno->cargo) ?></td>
+                                <td data-label="Turma" title="<?= htmlspecialchars($aluno->nome_completo . ' - ' . $aluno->periodo) ?>"><?= htmlspecialchars($aluno->sigla . ' - ' . $aluno->periodo) ?></td>
+                                <td data-label="Ações">
+                                    <div class="action-buttons">
+                                        <a href="form_aluno.php?matricula=<?= htmlspecialchars($aluno->matricula) ?>" class="btn-action btn-edit" title="Editar/Renovar"><i class="fas fa-edit"></i></a>
+                                        <a type="button" class="btn-action btn-redefinir btn-edit" data-id="<?= htmlspecialchars($aluno->matricula) ?>" title="Redefinir Senha"><i class="fas fa-key"></i></a>
+                                        <button type="button" class="btn-action btn-delete btn-excluir btn-exc" 
+                                            data-id="<?= htmlspecialchars($aluno->matricula) ?>" 
+                                            data-nome="<?= htmlspecialchars($aluno->nome) ?>" 
+                                            data-tipo="aluno"
+                                            title="Excluir Aluno">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
             <?php if ($total_paginas > 1): ?>
@@ -161,10 +171,9 @@ include_once '../../includes/header.php';
                 </nav>
             <?php endif; ?>
         </div>
-        
         <div id="modal-redefinir-aluno" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
+                <span class="close">×</span>
                 <h2>Redefinir Senha do Aluno</h2>
                 <form method="POST" action="./functions/redefinir_senha.php">
                     <input type="hidden" name="matricula" id="matricula-modal-aluno">
@@ -175,7 +184,7 @@ include_once '../../includes/header.php';
         </div>
         <div id="modal-excluir" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
+                <span class="close">×</span>
                 <h2>Confirmar Exclusão</h2>
                 <p>Você tem certeza que deseja excluir <strong id="nome-item-excluir"></strong>?</p>
                 <p>Esta ação é irreversível.</p>

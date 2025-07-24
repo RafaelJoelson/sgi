@@ -1,19 +1,60 @@
 document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.querySelector('.dashboard-layout');
 
-    // Lógica para exibir o toast de notificação
-    const toast = document.getElementById('toast-mensagem');
-    if (toast) {
-        toast.classList.add('show');
+    // --- LÓGICA PARA TOAST DE NOTIFICAÇÃO ---
+    function showOnPageToast(message) {
+        const container = document.getElementById('toast-notification-container');
+        if (!container) {
+            console.error('Contêiner de toast não encontrado.');
+            return;
+        }
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 100);
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => {
-                if(toast.parentNode) toast.parentNode.removeChild(toast);
-            }, 600);
-        }, 4000);
+                if (container.contains(toast)) {
+                    container.removeChild(toast);
+                }
+            }, 500);
+        }, 5000);
     }
 
-    // Delegação de eventos para todos os botões e modais
+    // Exibir mensagem de sucesso, se existir
+    const toastMensagem = document.getElementById('toast-mensagem');
+    if (toastMensagem && toastMensagem.textContent.trim()) {
+        showOnPageToast(toastMensagem.textContent);
+        toastMensagem.style.display = 'none';
+    }
+
+    // --- VALIDAÇÃO DO FORMULÁRIO DE BUSCA ---
+    const formBusca = document.querySelector('.form-busca');
+    if (formBusca) {
+        formBusca.addEventListener('submit', (e) => {
+            const tipoBusca = formBusca.querySelector('select[name="tipo_busca"]').value;
+            const valorBusca = formBusca.querySelector('input[name="valor_busca"]').value.trim();
+            if (!tipoBusca || !valorBusca) {
+                e.preventDefault();
+                showOnPageToast('Por favor, selecione o tipo de busca e insira um valor.');
+                return;
+            }
+            if (tipoBusca === 'cpf' && !/^\d{11}$/.test(valorBusca)) {
+                e.preventDefault();
+                showOnPageToast('O CPF deve conter 11 dígitos numéricos.');
+                return;
+            }
+            if (tipoBusca === 'siape' && !/^\d{7}$/.test(valorBusca)) {
+                e.preventDefault();
+                showOnPageToast('O SIAPE deve conter 7 dígitos numéricos.');
+                return;
+            }
+        });
+    }
+
+    // --- LÓGICA DOS MODAIS ---
     mainContent.addEventListener('click', function(e) {
         const target = e.target.closest('.btn-redefinir, .btn-excluir-servidor, .modal .close, .btn-cancelar-exclusao');
         if (!target) return;

@@ -107,6 +107,56 @@ tr:hover {
   cursor: pointer;
 }
 
+.form-busca {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.form-busca label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+}
+
+.form-busca select,
+.form-busca input[type="text"] {
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.form-busca button {
+    padding: 0.8em;
+    background-color: #0080ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1.3rem;
+}
+
+.form-busca button:hover {
+    background-color: #094caa;
+}
+
+.form-busca .btn-limpar {
+    padding: 0.5em 1em;
+    background-color: #f44336;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.form-busca .btn-limpar:hover {
+    background-color: #d32f2f;
+}
+
+.text-center {
+    text-align: center;
+}
 .modal {
   display: none;
   position: fixed;
@@ -173,51 +223,7 @@ tr:hover {
 .btn-danger:hover {
   background-color: #c82333;
 }
-.styled-busca-form {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.7rem;
-  background: #f5faff;
-  border-radius: 8px;
-  padding: 1rem 1.2rem;
-  margin-bottom: 1.2rem;
-  box-shadow: 0 1px 4px rgba(0,128,255,0.06);
-}
-.styled-busca-form label {
-  font-weight: 600;
-  color: #0080ff;
-  margin-bottom: 0;
-}
-.styled-busca-form select,
-.styled-busca-form input[type="text"] {
-  border: 1px solid #bcd6f7;
-  border-radius: 4px;
-  padding: 0.45rem 0.7rem;
-  font-size: 1em;
-  background: #fff;
-  transition: border 0.2s;
-  min-width: 120px;
-}
-.styled-busca-form select:focus,
-.styled-busca-form input[type="text"]:focus {
-  border-color: #0080ff;
-  outline: none;
-}
-.styled-busca-form button {
-  background: #0080ff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1.2rem;
-  font-size: 1em;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.styled-busca-form button:hover {
-  background: #005fa3;
-}
+
 @media (max-width: 900px) {
   .dashboard-layout {
     flex-direction: column;
@@ -251,15 +257,7 @@ tr:hover {
     font-size: 0.98em;
     padding: 0.5rem 0.3rem;
   }
-  .styled-busca-form {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
-    padding: 0.7rem 0.5rem;
-  }
-  .styled-busca-form label {
-    margin-bottom: 0.1rem;
-  }
+
 }
 .relatorio-form {
   display: flex;
@@ -322,8 +320,10 @@ tr:hover {
   border-radius: 0.25rem; 
   font-size: 0.8em; 
   font-weight: bold; }
-.badge-admin { background-color: #ffc107; 
+.badge-admin { 
+  background-color: #ffc107; 
   color: #212529; 
   padding: 0.2em 0.6em; 
   border-radius: 0.25rem; 
-  font-size: 0.8em; }
+  font-size: 0.8em; 
+}

@@ -72,12 +72,32 @@ include_once '../../includes/header.php';
         </section>
     </aside>
     <main class="dashboard-main">
+        <div id="toast-notification-container"></div>
         <?php if (!empty($_SESSION['mensagem_sucesso'])): ?>
-            <div id="toast-mensagem" class="mensagem-sucesso">
+            <div id="toast-mensagem" class="mensagem-sucesso" style="display: none;">
                 <?= htmlspecialchars($_SESSION['mensagem_sucesso']) ?>
             </div>
             <?php unset($_SESSION['mensagem_sucesso']); ?>
         <?php endif; ?>
+        <!-- Formulário de Busca -->
+        <form method="GET" class="form-busca" style="margin-bottom: 1em;">
+            <label>
+                Tipo de Busca:
+                <select name="tipo_busca" required>
+                    <option value="" disabled <?= empty($tipo_busca) ? 'selected' : '' ?>>Selecione</option>
+                    <option value="cpf" <?= $tipo_busca === 'cpf' ? 'selected' : '' ?>>CPF</option>
+                    <option value="siape" <?= $tipo_busca === 'siape' ? 'selected' : '' ?>>SIAPE</option>
+                </select>
+            </label>
+            <label>
+                Valor:
+                <input type="text" name="valor_busca" value="<?= htmlspecialchars($valor_busca) ?>" maxlength="11" placeholder="Digite o CPF ou SIAPE" required>
+            </label>
+            <button type="submit">Buscar</button>
+            <?php if (!empty($tipo_busca) && !empty($valor_busca)): ?>
+                <a href="?pagina=1" class="btn-limpar">Limpar Filtro</a>
+            <?php endif; ?>
+        </form>
         <div class="responsive-table">
             <table>
                 <thead>
@@ -90,72 +110,72 @@ include_once '../../includes/header.php';
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($servidores as $s):
-                        // Define as permissões para a linha atual
-                        $is_row_super_admin = !empty($s->is_super_admin);
-                        $is_row_admin = !empty($s->is_admin);
-                        $is_self = ($s->siape === $siape_logado);
-
-                        // Lógica para determinar quais botões mostrar
-                        $can_edit = false;
-                        $can_reset_password = false;
-                        $can_delete = false;
-
-                        if ($is_super_admin_logado) {
-                            // SUPER ADMIN LOGADO: Pode fazer tudo, exceto em si mesmo ou noutros super admins.
-                            if (!$is_row_super_admin && !$is_self) {
-                                $can_edit = true;
-                                $can_reset_password = true;
-                                $can_delete = true;
-                            }
-                        } else { 
-                            // ADMIN NORMAL LOGADO
-                            if (!$is_row_super_admin) {
-                                // Pode editar a si mesmo e outros admins normais.
-                                $can_edit = true;
-                            }
-                            // CORREÇÃO: Pode redefinir a própria senha ou a de não-admins.
-                            if (!$is_row_super_admin && ($is_self || !$is_row_admin)) {
-                                $can_reset_password = true;
-                            }
-                            // Só pode excluir utilizadores que não são admins e não são ele mesmo.
-                            if (!$is_row_admin && !$is_self) {
-                                $can_delete = true;
-                            }
-                        }
-                    ?>
+                    <?php if (empty($servidores)): ?>
                         <tr>
-                            <td data-label="SIAPE"><?= htmlspecialchars($s->siape) ?></td>
-                            <td data-label="Nome"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome) ?></td>
-                            <td data-label="Permissão">
-                                <?php if($is_row_super_admin): echo '<span class="badge-super-admin">Super Admin</span>'; ?>
-                                <?php elseif($is_row_admin): echo '<span class="badge-admin">Admin</span>'; ?>
-                                <?php else: echo '<span>Usuário</span>'; ?>
-                                <?php endif; ?>
-                            </td>
-                            <td data-label="Setor"><?= htmlspecialchars($s->setor_admin) ?></td>
-                            <td data-label="Ações">
-                                <div class="action-buttons">
-                                    <?php if ($can_edit): ?>
-                                        <a href="../admin/form_servidor.php?siape=<?= htmlspecialchars($s->siape) ?>" class="btn-action btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
-                                    <?php endif; ?>
-                                    
-                                    <?php if ($can_reset_password): ?>
-                                        <a type="button" class="btn-action btn-redefinir" data-siape="<?= htmlspecialchars($s->siape) ?>" title="Redefinir Senha"><i class="fas fa-key"></i></a>
-                                    <?php endif; ?>
-                                    
-                                    <?php if ($can_delete): ?>
-                                        <button type="button" class="btn-action btn-delete btn-excluir-servidor btn-exc" 
-                                           data-siape="<?= htmlspecialchars($s->siape) ?>" 
-                                           data-nome="<?= htmlspecialchars($s->nome . ' ' . $s->sobrenome) ?>" 
-                                           title="Excluir Servidor">
-                                           <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    <?php endif; ?>
-                                </div>
-                            </td>
+                            <td colspan="5" class="text-center">Nenhum servidor encontrado para os critérios de busca.</td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php else: ?>
+                        <?php foreach ($servidores as $s):
+                            $is_row_super_admin = !empty($s->is_super_admin);
+                            $is_row_admin = !empty($s->is_admin);
+                            $is_self = ($s->siape === $siape_logado);
+
+                            $can_edit = false;
+                            $can_reset_password = false;
+                            $can_delete = false;
+
+                            if ($is_super_admin_logado) {
+                                if (!$is_row_super_admin && !$is_self) {
+                                    $can_edit = true;
+                                    $can_reset_password = true;
+                                    $can_delete = true;
+                                }
+                            } else { 
+                                if (!$is_row_super_admin) {
+                                    $can_edit = true;
+                                }
+                                if (!$is_row_super_admin && ($is_self || !$is_row_admin)) {
+                                    $can_reset_password = true;
+                                }
+                                if (!$is_row_admin && !$is_self) {
+                                    $can_delete = true;
+                                }
+                            }
+                        ?>
+                            <tr>
+                                <td data-label="SIAPE"><?= htmlspecialchars($s->siape) ?></td>
+                                <td data-label="Nome"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome) ?></td>
+                                <td data-label="Permissão">
+                                    <?php if($is_row_super_admin): ?>
+                                        <span class="badge-super-admin">Super Admin</span>
+                                    <?php elseif($is_row_admin): ?>
+                                        <span class="badge-admin">Admin</span>
+                                    <?php else: ?>
+                                        <span>Usuário</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td data-label="Setor"><?= htmlspecialchars($s->setor_admin) ?></td>
+                                <td data-label="Ações">
+                                    <div class="action-buttons">
+                                        <?php if ($can_edit): ?>
+                                            <a href="../admin/form_servidor.php?siape=<?= htmlspecialchars($s->siape) ?>" class="btn-action btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
+                                        <?php endif; ?>
+                                        <?php if ($can_reset_password): ?>
+                                            <a type="button" class="btn-action btn-redefinir" data-siape="<?= htmlspecialchars($s->siape) ?>" title="Redefinir Senha"><i class="fas fa-key"></i></a>
+                                        <?php endif; ?>
+                                        <?php if ($can_delete): ?>
+                                            <button type="button" class="btn-action btn-delete btn-excluir-servidor btn-exc" 
+                                               data-siape="<?= htmlspecialchars($s->siape) ?>" 
+                                               data-nome="<?= htmlspecialchars($s->nome . ' ' . $s->sobrenome) ?>" 
+                                               title="Excluir Servidor">
+                                               <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
             <?php if ($total_paginas > 1): ?>
@@ -171,7 +191,7 @@ include_once '../../includes/header.php';
         </div>       
         <div id="modal-redefinir" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
+                <span class="close">×</span>
                 <h2>Redefinir Senha do Servidor</h2>
                 <form method="POST" action="./functions/redefinir_senha_servidor.php">
                     <input type="hidden" name="siape" id="siape-modal">
@@ -183,7 +203,7 @@ include_once '../../includes/header.php';
 
         <div id="modal-excluir" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
+                <span class="close">×</span>
                 <h2>Confirmar Exclusão</h2>
                 <p>Você tem certeza que deseja excluir o servidor <strong id="nome-servidor-excluir"></strong>?</p>
                 <p>Esta ação é irreversível.</p>
