@@ -46,9 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 showOnPageToast('O CPF deve conter 11 dígitos numéricos.');
                 return;
             }
-            if (tipoBusca === 'matricula' && !/^\d{8}$/.test(valorBusca)) {
+            if (tipoBusca === 'matricula' && !/^\d{10}$/.test(valorBusca)) {
                 e.preventDefault();
-                showOnPageToast('A matrícula deve conter 8 dígitos numéricos.');
+                showOnPageToast('A matrícula deve conter 10 dígitos numéricos.');
                 return;
             }
         });
