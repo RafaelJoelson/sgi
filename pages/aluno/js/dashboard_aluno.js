@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const copias = parseInt(qtdCopiasInput.value, 10) || 0;
         const paginas = parseInt(qtdPaginasInput.value, 10) || 0;
         if (copias > 0 && paginas > 0) {
-            previewDiv.textContent = `Total: ${copias} cópias x ${paginas} páginas = ${copias * paginas} impressões`;
+            previewDiv.textContent = `Total: ${copias} cópias x ${paginas} páginas do arquivo = ${copias * paginas} cotas de impressões <i class="fas fa-info-circle" title="Cada cópia conta como uma impressão separada."></i>`;
         } else {
             previewDiv.textContent = '';
         }
