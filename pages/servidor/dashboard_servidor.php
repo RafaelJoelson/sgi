@@ -10,11 +10,10 @@ require_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="./css/dashboard_servidor.css?v=<?= ASSET_VERSION ?>">
 <main class="container">
-    <!-- Container para as notificações "toast" -->
     <div id="toast-notification-container"></div>
-        <button id="btn-ativar-notificacoes" class="btn-notificacao" title="Clique para permitir notificações no navegador">
-            <i class="fas fa-bell"></i> Ativar Notificações
-        </button>
+    <button id="btn-ativar-notificacoes" class="btn-notificacao" title="Clique para permitir notificações no navegador">
+        <i class="fas fa-bell"></i> Ativar Notificações
+    </button>
     <!-- Verifica horário de funcionamento -->
     <?php
     date_default_timezone_set('America/Sao_Paulo');
@@ -39,8 +38,14 @@ require_once '../../includes/header.php';
         }
     ?>
     <form id="form-solicitacao" enctype="multipart/form-data">
-        <label>Arquivo para impressão
-            <input type="file" name="arquivo" id="arquivo" required accept=".pdf,.doc,.docx,.jpg,.png">
+        <span class="file-hint" id="file-hint">
+        </span>
+        <span class="file-label-text file-hint" id="file-hint">Arquivo para impressão    
+            (Dica) <i class="fas fa-info-circle" title="Dica: Dê preferência para PDFs, as páginas são contabilizadas automaticamente."></i>
+            <span class="hint-text"> Dê preferência para PDFs, as páginas são contabilizadas automaticamente.</span>
+        </span>
+        <label for="arquivo" class="file-label">
+            <input type="file" name="arquivo" id="arquivo" required accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.odt" aria-describedby="file-hint">
         </label>
         <label class="toggle-switch-label">
             <span>Solicitar cópia no balcão</span>
@@ -49,34 +54,13 @@ require_once '../../includes/header.php';
                 <span class="slider"></span>
             </div>
         </label>
-        <label>Quantidade de cópias
+        <label>*Quantidade de cópias ou impressões
             <input type="number" name="qtd_copias" id="qtd_copias" min="1" max="100" required>
         </label>
-        <label>Número de páginas
+        <label>*Número de páginas do arquivo
             <input type="number" name="qtd_paginas" id="qtd_paginas" min="1" max="500" required placeholder="Informe o nº de páginas">
         </label>
         <div id="preview-copias-paginas" style="margin:0.5em 0;font-weight:bold;color:#2a3b4b;"></div>
-        <!-- Formatação do preview -->
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const qtdCopiasInput = document.getElementById('qtd_copias');
-            const qtdPaginasInput = document.getElementById('qtd_paginas');
-            const previewDiv = document.getElementById('preview-copias-paginas');
-
-            function atualizarPreview() {
-            const copias = parseInt(qtdCopiasInput.value, 10) || 0;
-            const paginas = parseInt(qtdPaginasInput.value, 10) || 0;
-            if (copias > 0 && paginas > 0) {
-                previewDiv.textContent = `Total: ${copias} cópias x ${paginas} páginas = ${copias * paginas} impressões`;
-            } else {
-                previewDiv.textContent = '';
-            }
-            }
-
-            qtdCopiasInput.addEventListener('input', atualizarPreview);
-            qtdPaginasInput.addEventListener('input', atualizarPreview);
-        });
-        </script>
         <label>Tipo de impressão
             <select name="tipo_impressao" id="tipo_impressao" required>
                 <option value="pb">Preto e Branco</option>
@@ -95,5 +79,6 @@ require_once '../../includes/header.php';
 
     <button onclick="window.location.href='historico_solicitacoes.php'">Ver Histórico Completo</button>
 </main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
 <script src="./js/dashboard_servidor.js?v=<?= ASSET_VERSION ?>"></script>
 <?php require_once '../../includes/footer.php'; ?>

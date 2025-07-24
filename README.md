@@ -1,5 +1,5 @@
 ```markdown
-# SGI - Sistema de Gestão de Impressão Acadêmica V.2.6 (Beta)
+# SGI - Sistema de Gestão de Impressão Acadêmica V.2.6.3 (Beta)
 
 **Projeto de extensão do Instituto Federal do Sudeste de Minas Gerais - Campus São João del-Rei**
 

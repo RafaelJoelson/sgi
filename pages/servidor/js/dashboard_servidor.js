@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function showOnPageToast(message) {
+    function showOnPageToast(message, isError = false) {
         const container = document.getElementById('toast-notification-container');
         if (!container) {
             console.error('Contêiner de toast não encontrado.');
@@ -49,7 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const toast = document.createElement('div');
         toast.className = 'toast-notification';
-        toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+        toast.style.backgroundColor = isError ? '#f44336' : '#4CAF50';
+        toast.innerHTML = `<i class="fas fa-${isError ? 'exclamation-circle' : 'check-circle'}"></i> ${message}`;
         container.appendChild(toast);
         setTimeout(() => toast.classList.add('show'), 100);
         setTimeout(() => {
@@ -72,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             new Notification("Atualização de Solicitação", { body: message, icon: '../../favicon.ico' });
         }
         if (status === 'Aceita') {
-            carregarCota(); // Atualizar cota quando a solicitação é aceita
+            carregarCota();
         }
     }
 
@@ -129,15 +130,108 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
+    // --- VALIDAÇÃO DO ARQUIVO ---
+    const inputArquivo = document.getElementById('arquivo');
+    const inputPaginas = document.getElementById('qtd_paginas');
+    if (inputArquivo) {
+        inputArquivo.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) {
+                inputPaginas.value = '';
+                inputPaginas.disabled = false;
+                atualizarPreview();
+                return;
+            }
+
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            const validExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'odt'];
+
+            // Verificar extensão válida
+            if (!validExtensions.includes(fileExtension)) {
+                showOnPageToast('Extensão de arquivo inválida. Permitido: .pdf, .jpg, .jpeg, .png, .doc, .docx, .odt', true);
+                inputArquivo.value = '';
+                inputPaginas.value = '';
+                inputPaginas.disabled = false;
+                atualizarPreview();
+                return;
+            }
+
+            // Lógica para imagens
+            if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+                inputPaginas.value = 1;
+                inputPaginas.disabled = true;
+                showOnPageToast('Arquivo de imagem selecionado. Número de páginas fixado em 1.');
+            }
+            // Lógica para PDFs
+            else if (fileExtension === 'pdf') {
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    const numPages = pdf.numPages;
+                    inputPaginas.value = numPages;
+                    inputPaginas.disabled = true;
+                    showOnPageToast(`PDF com ${numPages} página(s) detectado.`);
+                } catch (error) {
+                    showOnPageToast('Erro ao carregar o PDF. Por favor, insira o número de páginas manualmente.', true);
+                    inputPaginas.value = '';
+                    inputPaginas.disabled = false;
+                }
+            }
+            // Lógica para documentos do Office
+            else if (['doc', 'docx', 'odt'].includes(fileExtension)) {
+                inputPaginas.value = '';
+                inputPaginas.disabled = false;
+                showOnPageToast('Documento do Office selecionado. Insira o número de páginas manualmente.');
+            }
+
+            // Atualizar preview após validação do arquivo
+            inputPaginas.dispatchEvent(new Event('input')); // Disparar evento input para atualizar o preview
+            atualizarPreview();
+        });
+    }
+
+    // --- LÓGICA DO FORMULÁRIO ---
     const form = document.getElementById('form-solicitacao');
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        const copias = parseInt(document.getElementById('qtd_copias').value);
-        const paginas = parseInt(document.getElementById('qtd_paginas').value);
-        if (copias <= 0 || paginas <= 0) {
-            showOnPageToast('Quantidade de cópias e páginas devem ser maiores que zero.');
+        const copiasInput = document.getElementById('qtd_copias');
+        const paginasInput = document.getElementById('qtd_paginas');
+        const copias = parseInt(copiasInput.value, 10) || 0;
+        let paginas = parseInt(paginasInput.value, 10) || 0;
+        const file = inputArquivo.files[0];
+        const solicitarBalcao = document.getElementById('solicitar_balcao').checked;
+
+        // Se qtd_paginas está desativado, usar o valor atual do campo
+        if (paginasInput.disabled) {
+            paginas = parseInt(paginasInput.value, 10) || 1; // Usa 1 como padrão se inválido
+            paginasInput.value = paginas; // Garante que o valor esteja no campo
+        }
+
+        // Garantir que qtd_paginas seja 1 para solicitação no balcão
+        if (solicitarBalcao) {
+            paginas = 1;
+            paginasInput.value = 1;
+        }
+
+        if (!solicitarBalcao && !file) {
+            showOnPageToast('Por favor, selecione um arquivo.', true);
             return;
         }
+        if (isNaN(copias) || copias <= 0 || copias > 100) {
+            showOnPageToast('A quantidade de cópias deve estar entre 1 e 100.', true);
+            return;
+        }
+        if (isNaN(paginas) || paginas <= 0 || paginas > 500) {
+            showOnPageToast('O número de páginas deve estar entre 1 e 500.', true);
+            return;
+        }
+
+        // Reativar temporariamente qtd_paginas para incluir no FormData
+        const wasDisabled = paginasInput.disabled;
+        if (wasDisabled) {
+            paginasInput.disabled = false;
+        }
+
         const formData = new FormData(form);
         fetch('./functions/enviar_solicitacao.php', {
             method: 'POST',
@@ -145,38 +239,38 @@ document.addEventListener('DOMContentLoaded', () => {
         })
             .then(r => r.json())
             .then(data => {
-                showOnPageToast(data.mensagem);
+                showOnPageToast(data.mensagem, !data.sucesso);
                 if (data.sucesso) {
                     form.reset();
-                    document.getElementById('arquivo').disabled = false;
-                    document.getElementById('arquivo').setAttribute('required', 'required');
+                    inputArquivo.disabled = false;
+                    inputArquivo.setAttribute('required', 'required');
+                    inputPaginas.disabled = false;
                     document.getElementById('preview-copias-paginas').innerText = '';
                     carregarSolicitacoes();
                     carregarCota();
                 }
+            })
+            .finally(() => {
+                // Restaurar o estado disabled se necessário
+                if (wasDisabled) {
+                    paginasInput.disabled = true;
+                }
             });
     });
 
+    // --- AJUSTE NO EVENTO DE SOLICITAR BALCÃO ---
     document.getElementById('solicitar_balcao').addEventListener('change', function () {
         const uploadInput = document.getElementById('arquivo');
+        const paginasInput = document.getElementById('qtd_paginas');
         uploadInput.disabled = this.checked;
+        paginasInput.disabled = this.checked;
         this.checked ? uploadInput.removeAttribute('required') : uploadInput.setAttribute('required', 'required');
-    });
-
-    // --- LÓGICA DE ATIVAÇÃO DAS NOTIFICAÇÕES ---
-    const btnAtivarNotificacoes = document.getElementById('btn-ativar-notificacoes');
-    if (!("Notification" in window) || Notification.permission !== 'default') {
-        btnAtivarNotificacoes.style.display = 'none';
-    }
-    btnAtivarNotificacoes.addEventListener('click', () => {
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                showOnPageToast('Notificações ativadas com sucesso!');
-                btnAtivarNotificacoes.style.display = 'none';
-            } else {
-                showOnPageToast('Você bloqueou as notificações. Para ativá-las, altere as configurações do seu navegador.');
-            }
-        });
+        paginasInput.value = this.checked ? 1 : '';
+        if (this.checked) {
+            showOnPageToast('Solicitação no balcão selecionada. Número de páginas fixado em 1.');
+            paginasInput.dispatchEvent(new Event('input')); // Disparar evento input para atualizar o preview
+        }
+        atualizarPreview();
     });
 
     // --- PREVIEW DE CÓPIAS E PÁGINAS ---
@@ -188,9 +282,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const copias = parseInt(qtdCopiasInput.value, 10) || 0;
         const paginas = parseInt(qtdPaginasInput.value, 10) || 0;
         if (copias > 0 && paginas > 0) {
-            previewDiv.textContent = `Total: ${copias} cópias x ${paginas} páginas do arquivo = ${copias * paginas} cotas de impressões <i class="fas fa-info-circle" title="Cada cópia conta como uma impressão separada."></i>`
+            previewDiv.innerHTML = `<p>Total: ${copias} cópias x ${paginas} páginas = ${copias * paginas} impressões. <i class="fas fa-info-circle" title="Cada cópia conta como uma impressão separada."></i></p>`;
         } else {
-            previewDiv.textContent = '';
+            previewDiv.innerHTML = '';
         }
     }
 

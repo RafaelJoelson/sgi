@@ -322,3 +322,79 @@ input:checked + .slider:before {
     opacity: 1;
     transform: translateY(0);
 }
+/* Estilos para o rótulo do arquivo */
+.file-label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1em;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Estilos para o texto do rótulo */
+.file-label-text {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Estilos para a dica */
+.file-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+/* Estilos para o ícone */
+.file-hint .fa-info-circle {
+    font-size: 1.4em;
+    color: #4CAF50; /* Cor verde para destacar */
+    cursor: pointer; /* Indicador de interatividade */
+}
+
+/* Estilos para o texto da dica */
+.hint-text {
+    display: none; /* Oculta por padrão em mobile */
+}
+
+/* Exibir a dica completa em hover no desktop */
+.file-hint:hover .hint-text {
+    display: inline;
+}
+
+/* Media query para dispositivos móveis (telas menores que 600px) */
+@media (max-width: 600px) {
+    .file-label {
+        font-size: 0.95em;
+    }
+
+    .file-hint {
+        font-size: 0.8em;
+        gap: 6px;
+    }
+
+    .file-hint .fa-info-circle {
+        font-size: 1.2em;
+        padding: 4px; /* Área de toque maior para mobile */
+    }
+
+    /* Exibir a dica completa apenas ao clicar no ícone em mobile */
+    .hint-text {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        padding: 8px;
+        border-radius: 4px;
+        max-width: 90%;
+        z-index: 10;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Mostrar a dica quando o ícone for clicado (controlado por JS) */
+    .file-hint.active .hint-text {
+        display: block;
+    }
+}
