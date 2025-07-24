@@ -1,4 +1,4 @@
-/* form_servidor.css - visual idêntico ao form_aluno.css, adaptado para formulário de servidor (SGI) */
+/* form_servidor.css - visual idêntico ao form_servidor.css, adaptado para formulário de servidor (SGI) */
 
 main {
   width: 100%;
@@ -145,4 +145,31 @@ main h1 {
   background: #f5f5f5;
   color: #888;
   cursor: not-allowed;
+}
+.servidor-mensagem-sucesso,
+.servidor-mensagem-erro {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid transparent;
+    border-radius: 8px; /* Bordas mais arredondadas */
+    font-weight: 500;
+    display: block; /* Garante que a mensagem seja exibida */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Espaço entre o ícone e o texto */
+}
+
+/* Estilo para a mensagem de sucesso (verde) */
+.servidor-mensagem-sucesso {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+}
+
+/* Estilo para a mensagem de erro (vermelho) */
+.servidor-mensagem-erro {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
 }

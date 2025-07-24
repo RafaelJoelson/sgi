@@ -1,13 +1,13 @@
 <?php
-require_once '../../includes/config.php';
+require_once '../../../includes/config.php';
 session_start();
 
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'CAD') {
-    header('Location: ../../index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: form_aluno.php');
+    header('Location: ' . BASE_URL . '/pages/admin_cad/form_aluno.php');
     exit;
 }
 
@@ -16,26 +16,37 @@ $nome = trim($_POST['nome'] ?? '');
 $sobrenome = trim($_POST['sobrenome'] ?? '');
 $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
 $cargo = $_POST['cargo'] ?? 'Nenhum';
-$turma_id = filter_input(INPUT_POST, 'turma_id', FILTER_VALIDATE_INT); // MUDANÇA: Recebe turma_id
+$turma_id = filter_input(INPUT_POST, 'turma_id', FILTER_VALIDATE_INT);
 $ativo = isset($_POST['ativo']) ? 1 : 0;
 $data_fim_validade = !empty($_POST['data_fim_validade']) ? $_POST['data_fim_validade'] : null;
 
 if (empty($matricula) || empty($nome) || empty($email) || empty($turma_id)) {
     $_SESSION['mensagem_erro'] = 'Os campos Matrícula, Nome, E-mail e Turma são obrigatórios.';
-    header('Location: form_aluno.php?matricula=' . urlencode($matricula));
+    header('Location: ' . BASE_URL . '/pages/admin_cad/form_aluno.php?matricula=' . urlencode($matricula));
     exit;
 }
+
+// --- MUDANÇA: REGRAS DE NEGÓCIO PARA O CARGO ---
+if ($ativo == 0) {
+    // Se o aluno está sendo inativado, seu cargo DEVE ser 'Nenhum'.
+    $cargo = 'Nenhum';
+} elseif ($ativo == 1 && $cargo === 'Nenhum') {
+    // Se o aluno está ativo, ele NÃO PODE ter o cargo 'Nenhum'.
+    $_SESSION['mensagem_erro'] = 'Um aluno ativo deve ter o cargo de "Líder" ou "Vice-líder".';
+    header('Location: ' . BASE_URL . '/pages/admin_cad/form_aluno.php?matricula=' . urlencode($matricula));
+    exit;
+}
+// --- FIM DA MUDANÇA ---
 
 try {
     $conn->beginTransaction();
 
-    // MUDANÇA: Encontra ou cria o registro de cota para a turma selecionada
     $stmt_cota = $conn->prepare("SELECT id FROM CotaAluno WHERE turma_id = :turma_id");
     $stmt_cota->execute([':turma_id' => $turma_id]);
     $cota_id = $stmt_cota->fetchColumn();
 
     if (!$cota_id) {
-        $stmt_create_cota = $conn->prepare("INSERT INTO CotaAluno (turma_id, cota_total, cota_usada) VALUES (:turma_id, 0, 0)");
+        $stmt_create_cota = $conn->prepare("INSERT INTO CotaAluno (turma_id) VALUES (:turma_id)");
         $stmt_create_cota->execute([':turma_id' => $turma_id]);
         $cota_id = $conn->lastInsertId();
     }
@@ -61,12 +72,12 @@ try {
     
     $conn->commit();
     $_SESSION['mensagem_sucesso'] = 'Aluno atualizado com sucesso!';
-    header('Location: dashboard_cad.php');
+    header('Location: ' . BASE_URL . '/pages/admin_cad/dashboard_cad.php');
     exit;
 
 } catch (Exception $e) {
     if ($conn->inTransaction()) $conn->rollBack();
     $_SESSION['mensagem_erro'] = 'Erro ao atualizar aluno: ' . $e->getMessage();
-    header('Location: form_aluno.php?matricula=' . urlencode($matricula));
+    header('Location: ' . BASE_URL . '/pages/admin_cad/form_aluno.php?matricula=' . urlencode($matricula));
     exit;
 }

@@ -48,6 +48,18 @@ require_once '../../includes/header.php';
         </div>
     </aside>
     <main class="dashboard-main-repro">
+        <?php if (!empty($_SESSION['mensagem_sucesso'])): ?>
+            <div id="toast-mensagem" class="mensagem-sucesso">
+                <?= htmlspecialchars($_SESSION['mensagem_sucesso']) ?>
+            </div>
+            <?php unset($_SESSION['mensagem_sucesso']); ?>
+        <?php endif; ?>
+        <?php if (!empty($_SESSION['mensagem_erro'])): ?>
+            <div id="toast-mensagem" class="mensagem-erro">
+                <?= htmlspecialchars($_SESSION['mensagem_erro']) ?>
+            </div>
+            <?php unset($_SESSION['mensagem_erro']); ?>
+        <?php endif; ?>
         <div id="toast-notification-container"></div>
         <h2>Painel da Reprografia</h2>
         <section id="solicitacoes-pendentes">

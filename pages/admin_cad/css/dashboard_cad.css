@@ -9,37 +9,6 @@
   text-align: center;
 }
 
-.mensagem-sucesso {
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
-  color: #155724;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 5px;
-  font-weight: bold;
-
-  /* Posição fixa tipo toast */
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  min-width: 250px;
-  max-width: 350px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-
-  opacity: 0;
-  pointer-events: none;
-
-  /* Para a transição */
-  transition: opacity 0.6s ease-in-out;
-  z-index: 9999;
-}
-
-/* Mostrar */
-.mensagem-sucesso.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-
 /* Removido: .dashboard-layout, .dashboard-aside, .dashboard-main e suas media queries, pois agora estão em styles.css global */
 
 aside {

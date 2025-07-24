@@ -109,8 +109,8 @@ main h1 {
     padding: 0.5rem 0;
   }
 }
-.mensagem-sucesso,
-.mensagem-erro {
+.aluno-mensagem-sucesso,
+.aluno-mensagem-erro {
     padding: 1rem;
     margin-bottom: 1.5rem;
     border: 1px solid transparent;
@@ -124,27 +124,27 @@ main h1 {
 }
 
 /* Estilo para a mensagem de sucesso (verde) */
-.mensagem-sucesso {
+.aluno-mensagem-sucesso {
     color: #0f5132;
     background-color: #d1e7dd;
     border-color: #badbcc;
 }
 
 /* Estilo para a mensagem de erro (vermelho) */
-.mensagem-erro {
+.aluno-mensagem-erro {
     color: #842029;
     background-color: #f8d7da;
     border-color: #f5c2c7;
 }
 
 /* Adiciona um ícone antes da mensagem para melhor feedback visual */
-.mensagem-sucesso::before {
+.aluno-mensagem-sucesso::before {
     font-family: "Font Awesome 5 Free"; /* Requer Font Awesome */
     font-weight: 900;
     content: "\f058"; /* Ícone de círculo de verificação */
 }
 
-.mensagem-erro::before {
+.aluno-mensagem-erro::before {
     font-family: "Font Awesome 5 Free"; /* Requer Font Awesome */
     font-weight: 900;
     content: "\f071"; /* Ícone de triângulo de aviso */

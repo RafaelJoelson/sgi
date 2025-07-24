@@ -43,18 +43,18 @@ include_once '../../includes/header.php';
         <h1><?= $modo_edicao ? 'Editar Servidor' : 'Cadastrar Novo Servidor' ?></h1>
 
         <?php if ($modo_edicao && $is_super_admin_edit): ?>
-            <div class="mensagem-aviso">
+            <div class="mensagem-aviso" style="margin:1em 0;padding:1em;border:1px solid #f0ad4e;background:#fff8e1;color:#856404;">
                 <i class="fas fa-shield-alt"></i> 
                 Este é um Super Administrador. A edição de seus dados e permissões só pode ser feita diretamente no banco de dados pela equipe de TI.
             </div>
         <?php endif; ?>
 
         <?php if (isset($_SESSION['mensagem_sucesso'])): ?>
-            <div class="mensagem-sucesso" style="display:block;"><?= htmlspecialchars($_SESSION['mensagem_sucesso']) ?></div>
+            <div class="servidor-mensagem-sucesso" style="display:block;"><?= htmlspecialchars($_SESSION['mensagem_sucesso']) ?></div>
             <?php unset($_SESSION['mensagem_sucesso']); ?>
         <?php endif; ?>
         <?php if (isset($_SESSION['mensagem_erro'])): ?>
-            <div class="mensagem-erro" style="display:block;"><?= htmlspecialchars($_SESSION['mensagem_erro']) ?></div>
+            <div class="servidor-mensagem-erro" style="display:block;"><?= htmlspecialchars($_SESSION['mensagem_erro']) ?></div>
             <?php unset($_SESSION['mensagem_erro']); ?>
         <?php endif; ?>
 

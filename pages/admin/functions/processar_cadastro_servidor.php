@@ -1,5 +1,5 @@
 <?php
-require_once '../../includes/config.php';
+require_once '../../../includes/config.php';
 session_start();
 
 // 1. VERIFICAÇÃO DE PERMISSÃO
@@ -21,7 +21,6 @@ $sobrenome = trim($_POST['sobrenome'] ?? '');
 $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
 $cpf = preg_replace('/\D/', '', trim($_POST['cpf'] ?? ''));
 $setor_admin = in_array($_POST['setor_admin'], ['CAD', 'COEN', 'NENHUM']) ? $_POST['setor_admin'] : 'NENHUM';
-// CORREÇÃO: Verifica o VALOR de 'is_admin', não apenas se ele existe.
 $is_admin = (isset($_POST['is_admin']) && $_POST['is_admin'] == '1') ? 1 : 0;
 $data_fim_validade = !empty($_POST['data_fim_validade']) ? $_POST['data_fim_validade'] : null;
 $senha = $_POST['senha'] ?? '';
@@ -50,7 +49,7 @@ try {
 
     $hash_senha = password_hash($senha, PASSWORD_DEFAULT);
 
-    // 4. INSERÇÃO NAS TABELAS
+    // 4. INSERÇÃO NA TABELA SERVIDOR
     $stmt_insert_servidor = $conn->prepare(
         'INSERT INTO Servidor (siape, nome, sobrenome, email, cpf, senha, is_admin, setor_admin, ativo, data_fim_validade) 
          VALUES (:siape, :nome, :sobrenome, :email, :cpf, :senha, :is_admin, :setor_admin, 1, :data_fim_validade)'
@@ -61,16 +60,28 @@ try {
         ':setor_admin' => $setor_admin, ':data_fim_validade' => $data_fim_validade
     ]);
 
+    // MUDANÇA: Busca os valores padrão da tabela de configurações
+    $configs_stmt = $conn->query("SELECT chave, valor FROM Configuracoes WHERE chave LIKE 'cota_padrao_servidor_%'");
+    $configs = $configs_stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+    $cota_servidor_pb = $configs['cota_padrao_servidor_pb'] ?? 1000; // Fallback para 1000
+    $cota_servidor_color = $configs['cota_padrao_servidor_color'] ?? 100; // Fallback para 100
+
+    // 5. INSERÇÃO NA TABELA DE COTAS DO SERVIDOR COM VALORES DINÂMICOS
     $stmt_insert_cota = $conn->prepare(
         'INSERT INTO CotaServidor (siape, cota_pb_total, cota_pb_usada, cota_color_total, cota_color_usada) 
-         VALUES (:siape, 1000, 0, 100, 0)'
+         VALUES (:siape, :cota_pb, 0, :cota_color, 0)'
     );
-    $stmt_insert_cota->execute([':siape' => $siape]);
+    $stmt_insert_cota->execute([
+        ':siape' => $siape,
+        ':cota_pb' => $cota_servidor_pb,
+        ':cota_color' => $cota_servidor_color
+    ]);
 
     $conn->commit();
     $_SESSION['mensagem_sucesso'] = 'Servidor cadastrado com sucesso!';
     
-    // 5. REDIRECIONAMENTO DINÂMICO
+    // 6. REDIRECIONAMENTO DINÂMICO
     $setor_logado = $_SESSION['usuario']['setor_admin'];
     $path = ($setor_logado === 'CAD') ? '/pages/admin_cad/dashboard_cad.php' : '/pages/admin_coen/dashboard_coen.php';
     $redirect_url = BASE_URL . $path;

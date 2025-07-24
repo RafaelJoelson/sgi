@@ -1,5 +1,5 @@
 <?php
-require_once '../../includes/config.php';
+require_once '../../../includes/config.php';
 header('Content-Type: application/json');
 session_start();
 // Apenas um administrador (CAD ou COEN) pode acessar esta página.

@@ -8,7 +8,6 @@
 }
 
 .dashboard-aside-cotas {
-  min-width: 500px;
   border-right: 1px solid #e0e0e0;
   padding: 1.5rem 1rem 1rem 1rem;
   display: flex;
@@ -26,9 +25,10 @@
 .form-cotas input,
 .form-cotas select,
 .form-cotas button {
-  padding: 0.5rem;
-  font-size: 1rem;
-  margin-top: 0.3rem;
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
 }
 
 .form-cotas button {
@@ -159,4 +159,44 @@ th, td {
     font-weight: bold;
     margin-right: 1rem;
   }
+}
+.form-filtros {
+    margin-bottom: 1em;
+    padding: 1em;
+    background: #f9f9f9;
+    border-radius: 5px;
+
+}
+
+.form-group {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.form-group label {
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.form-group select,
+.form-group input {
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.btn-filtro {
+    padding: 0.5em 1em;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-filtro:hover {
+    background: #0056b3;
 }

@@ -65,17 +65,21 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('./functions/listar_solicitacoes_pendentes.php')
             .then(r => r.json())
             .then(data => {
-                let html = '<table class="table table-striped table-hover"><thead><tr><th>Arquivo / Tipo</th><th>Solicitante</th><th>Cópias</th><th>Páginas</th><th>Colorida</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead><tbody>';
+                let html = '<table class="table table-striped table-hover"><thead><tr><th>Arquivo / Tipo</th><th>Solicitante</th><th>Tipo Solicitante</th><th>Cópias</th><th>Páginas</th><th>Colorida</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead><tbody>';
                 if (data.length === 0) {
-                    html += '<tr><td colspan="8" class="text-center">Nenhuma solicitação pendente.</td></tr>';
+                    html += '<tr><td colspan="9" class="text-center">Nenhuma solicitação aceita encontrada.</td></tr>';
                 } else {
                     data.forEach(s => {
                         let linkArquivo = s.arquivo ? `<a href="./functions/download_arquivo.php?id_solicitacao=${s.id}" target="_blank" title="Baixar ${s.arquivo}"><i class="fas fa-download"></i> ${s.arquivo}</a>` : '<strong><i class="fas fa-store-alt"></i> <em>Solicitação no Balcão</em></strong>';
                         html += `<tr>
-                            <td>${linkArquivo}</td><td>${s.nome_solicitante}</td><td>${s.qtd_copias}</td>
+                            <td>${linkArquivo}</td>
+                            <td>${s.nome_solicitante}</td>
+                            <td>${s.tipo_solicitante}</td>
+                            <td>${s.qtd_copias}</td>
                             <td><input type="number" class="form-control form-control-sm" style="width: 70px;" value="${s.qtd_paginas}" onchange="editarPaginas(${s.id}, this.value)"></td>
                             <td><span class="badge ${s.colorida == 1 ? 'badge-info' : 'badge-secondary'}">${s.colorida == 1 ? 'Sim' : 'Não'}</span></td>
-                            <td>${s.status}</td><td>${s.data}</td>
+                            <td>${s.status}</td>
+                            <td>${s.data}</td>
                             <td class="actions">
                                 <button title="Aceitar" class="btn-accept" onclick="atualizarStatus(${s.id},'Aceita')"><i class="fas fa-check"></i></button>
                                 <button title="Rejeitar" class="btn-reject" onclick="atualizarStatus(${s.id},'Rejeitada')"><i class="fas fa-times"></i></button>
@@ -197,4 +201,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+});
+// MUDANÇA: Adicionado script para o toast de feedback pós-ação
+document.addEventListener('DOMContentLoaded', () => {
+    const toast = document.getElementById('toast-mensagem');
+    if (toast) {
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if(toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 600);
+        }, 5000);
+    }
 });

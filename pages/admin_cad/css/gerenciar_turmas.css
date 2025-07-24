@@ -77,22 +77,6 @@
 .form-cotas button:hover, .form-novo-curso button:hover:hover {
   background-color: #005fa3;
 }
-
-
-
-.mensagem-sucesso {
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
-  color: #155724;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 5px;
-  font-weight: bold;
-  position: relative;
-  min-width: 250px;
-  max-width: 350px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
 /* Filtro da tabela */
 .filter-form {
   display: flex;

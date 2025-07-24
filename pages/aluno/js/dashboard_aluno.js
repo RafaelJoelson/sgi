@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     // --- LÓGICA DE NOTIFICAÇÃO COMPLETA (TÍTULO, SOM E TOAST) ---
     const originalTitle = document.title;
     let notificationInterval = null;
@@ -44,6 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showOnPageToast(message) {
         const container = document.getElementById('toast-notification-container');
+        if (!container) {
+            console.error('Contêiner de toast não encontrado.');
+            return;
+        }
         const toast = document.createElement('div');
         toast.className = 'toast-notification';
         toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
@@ -59,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 5000);
     }
 
-    function handleNewNotification(message) {
+    function handleNewNotification(message, status) {
         showOnPageToast(message);
         if (document.hidden) {
             playNotificationSound();
@@ -67,6 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if ("Notification" in window && Notification.permission === "granted") {
             new Notification("Atualização de Solicitação", { body: message, icon: '../../favicon.ico' });
+        }
+        if (status === 'Aceita') {
+            carregarCota(); // Atualizar cota quando a solicitação é aceita
         }
     }
 
@@ -76,9 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if (data.sucesso && data.notificacoes.length > 0) {
                     data.notificacoes.forEach(notificacao => {
-                        handleNewNotification(notificacao.mensagem);
+                        handleNewNotification(notificacao.mensagem, notificacao.status);
                     });
-                    carregarSolicitacoes(); 
+                    carregarSolicitacoes();
                 }
             })
             .catch(error => console.error('Erro ao buscar notificações:', error));
@@ -86,9 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES DE CARREGAMENTO E FORMULÁRIO ---
     function carregarCota() {
-        fetch('./functions/cota_aluno.php').then(r => r.json()).then(data => {
-            document.getElementById('cota-info').innerText = data.sucesso ? `Cota disponível: ${data.cota_disponivel} páginas` : 'Não foi possível obter a cota.';
-        });
+        fetch('./functions/cota_aluno.php')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('cota-info').innerText = data.sucesso ? `Cota disponível: ${data.cota_disponivel} páginas` : 'Não foi possível obter a cota.';
+            });
     }
 
     function carregarSolicitacoes() {
@@ -117,19 +125,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('form-solicitacao');
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+        const copias = parseInt(document.getElementById('qtd_copias').value);
+        const paginas = parseInt(document.getElementById('qtd_paginas').value);
+        if (copias <= 0 || paginas <= 0) {
+            showOnPageToast('Quantidade de cópias e páginas devem ser maiores que zero.');
+            return;
+        }
         const formData = new FormData(form);
         fetch('./functions/enviar_solicitacao.php', { method: 'POST', body: formData })
-        .then(r => r.json())
-        .then(data => {
-            alert(data.mensagem);
-            if (data.sucesso) {
-                form.reset();
-                document.getElementById('arquivo').disabled = false;
-                document.getElementById('arquivo').setAttribute('required', 'required');
-                carregarSolicitacoes();
-                carregarCota();
-            }
-        });
+            .then(r => r.json())
+            .then(data => {
+                showOnPageToast(data.mensagem);
+                if (data.sucesso) {
+                    form.reset();
+                    document.getElementById('arquivo').disabled = false;
+                    document.getElementById('arquivo').setAttribute('required', 'required');
+                    document.getElementById('preview-copias-paginas').innerText = '';
+                    carregarSolicitacoes();
+                    carregarCota();
+                }
+            });
     });
 
     document.getElementById('solicitar_balcao').addEventListener('change', function () {
@@ -146,14 +161,32 @@ document.addEventListener('DOMContentLoaded', () => {
     btnAtivarNotificacoes.addEventListener('click', () => {
         Notification.requestPermission().then(permission => {
             if (permission === "granted") {
-                alert('Notificações ativadas com sucesso!');
+                showOnPageToast('Notificações ativadas com sucesso!');
                 btnAtivarNotificacoes.style.display = 'none';
             } else {
-                alert('Você bloqueou as notificações. Para ativá-las, altere as configurações do seu navegador.');
+                showOnPageToast('Você bloqueou as notificações. Para ativá-las, altere as configurações do seu navegador.');
             }
         });
     });
-    
+
+    // --- PREVIEW DE CÓPIAS E PÁGINAS ---
+    const qtdCopiasInput = document.getElementById('qtd_copias');
+    const qtdPaginasInput = document.getElementById('qtd_paginas');
+    const previewDiv = document.getElementById('preview-copias-paginas');
+
+    function atualizarPreview() {
+        const copias = parseInt(qtdCopiasInput.value, 10) || 0;
+        const paginas = parseInt(qtdPaginasInput.value, 10) || 0;
+        if (copias > 0 && paginas > 0) {
+            previewDiv.textContent = `Total: ${copias} cópias x ${paginas} páginas = ${copias * paginas} impressões`;
+        } else {
+            previewDiv.textContent = '';
+        }
+    }
+
+    qtdCopiasInput.addEventListener('input', atualizarPreview);
+    qtdPaginasInput.addEventListener('input', atualizarPreview);
+
     // Cargas iniciais e verificação periódica
     carregarCota();
     carregarSolicitacoes();

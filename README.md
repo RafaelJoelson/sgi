@@ -105,7 +105,7 @@ Este sistema tem como objetivo ser implementado no campus para gerenciar cotas d
 1. Clone o repositório para o diretório do seu servidor web:
 
 ```bash
-git clone https://github.com/seu-usuario/sgi.git
+git clone https://github.com/RafaelJoelson/sgi.git
 ````
 
 2. Instale as dependências com o Composer:

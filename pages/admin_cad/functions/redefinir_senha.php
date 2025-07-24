@@ -1,5 +1,5 @@
 <?php
-require_once '../../includes/config.php';
+require_once '../../../includes/config.php';
 session_start();
 
 // 1. VERIFICAÇÃO DE PERMISSÃO
@@ -7,7 +7,7 @@ session_start();
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'CAD') {
     // Se não tiver permissão, pode redirecionar ou enviar um erro.
     // Para formulários AJAX, é melhor enviar um erro, mas como este é um formulário padrão, redirecionamos.
-    header('Location: ../../index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
@@ -15,7 +15,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['matricula']) || empty($_POST['nova_senha'])) {
     // Define uma mensagem de erro e redireciona de volta
     $_SESSION['mensagem_erro'] = 'Dados inválidos para redefinir a senha.';
-    header('Location: dashboard_cad.php');
+    header('Location: ' . BASE_URL . '/pages/admin_cad/dashboard_cad.php');
     exit;
 }
 
@@ -25,7 +25,7 @@ $nova_senha = $_POST['nova_senha'];
 // Validação adicional (ex: comprimento mínimo da senha)
 if (strlen($nova_senha) < 6) {
     $_SESSION['mensagem_erro'] = 'A nova senha deve ter no mínimo 6 caracteres.';
-    header('Location: dashboard_cad.php');
+    header('Location: ' . BASE_URL . '/pages/admin_cad/dashboard_cad.php');
     exit;
 }
 
@@ -53,5 +53,5 @@ try {
 
 // 5. REDIRECIONA DE VOLTA PARA O PAINEL
 // O painel irá ler a mensagem da sessão e exibir o "toast".
-header('Location: dashboard_cad.php');
+header('Location: ' . BASE_URL . '/pages/admin_cad/dashboard_cad.php');
 exit;

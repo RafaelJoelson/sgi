@@ -1,12 +1,12 @@
 <?php
-require_once '../../includes/config.php';
+require_once '../../../includes/config.php';
 session_start();
 
 // 1. VERIFICAÇÃO DE PERMISSÃO
 // Apenas um servidor CAD logado pode executar esta ação.
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'CAD') {
     $_SESSION['mensagem_erro'] = 'Acesso negado.';
-    header('Location: dashboard_cad.php');
+    header('Location: ' . BASE_URL . '/pages/admin_cad/dashboard_cad.php');
     exit;
 }
 
@@ -14,7 +14,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
 $matricula_para_excluir = $_GET['matricula'] ?? null;
 if (empty($matricula_para_excluir)) {
     $_SESSION['mensagem_erro'] = 'Matrícula do aluno não fornecida.';
-    header('Location: dashboard_cad.php');
+    header('Location: ' . BASE_URL . '/pages/admin_cad/dashboard_cad.php');
     exit;
 }
 
@@ -36,5 +36,5 @@ try {
 }
 
 // 4. REDIRECIONAMENTO PADRÃO
-header('Location: dashboard_cad.php');
+header('Location: ' . BASE_URL . '/pages/admin_cad/dashboard_cad.php');
 exit;

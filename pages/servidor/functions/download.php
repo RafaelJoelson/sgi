@@ -41,7 +41,7 @@ try {
     // Constrói o caminho completo e seguro para o arquivo.
     // __DIR__ pega o diretório atual do script (ex: /pages/aluno/)
     // O caminho final será algo como /uploads/nome_do_arquivo.pdf
-    $caminho_completo = realpath(__DIR__ . '/../../../uploads') . '/' . $nome_arquivo;
+    $caminho_completo = realpath(__DIR__ . '/../../uploads') . '/' . $nome_arquivo;
 
     // 4. VERIFICAÇÃO DA EXISTÊNCIA FÍSICA DO ARQUIVO
     if (!file_exists($caminho_completo)) {

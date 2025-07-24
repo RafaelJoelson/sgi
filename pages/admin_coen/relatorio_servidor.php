@@ -28,6 +28,7 @@ $sql = "SELECT s.nome, s.sobrenome, si.data_criacao, si.colorida,
         FROM SolicitacaoImpressao si
         JOIN Servidor s ON si.cpf_solicitante = s.cpf
         WHERE si.tipo_solicitante = 'Servidor'
+          AND si.status = 'Aceita'
           AND si.data_criacao BETWEEN :inicio AND :fim
         ORDER BY s.nome, s.sobrenome, si.data_criacao DESC";
 $stmt = $conn->prepare($sql);
@@ -109,7 +110,7 @@ if (isset($_GET['gerar_pdf']) && $_GET['gerar_pdf'] == '1') {
         <h2>Total por Servidor</h2>
         <table>
             <thead>
-                <tr><th>Servidor</th><th>Dia/Hora</th><th></th>Total P&B</th><th>Total Colorida</th></tr>
+                <tr><th>Servidor</th><th>Dia/Hora</th><th>Total P&B</th><th>Total Colorida</th></tr>
             </thead>
             <tbody>
                 <?php if (empty($relatorio)): ?>
@@ -125,18 +126,18 @@ if (isset($_GET['gerar_pdf']) && $_GET['gerar_pdf'] == '1') {
                     <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="2" style="text-align:right;">Total Geral:</td>
-            <td><?= $total_geral_pb ?></td>
-            <td><?= $total_geral_color ?></td>
-        </tr>
-    </tfoot>
-</table>
-    <div style="margin-top:30px;font-size:11px;color:#555;text-align:right;">
-        Relatório gerado em: <?= date('d/m/Y H:i') ?><br>
-        Usuário: <?= htmlspecialchars($_SESSION['usuario']['nome'] . ' ' . ($_SESSION['usuario']['sobrenome'] ?? '')) ?>
-    </div>
+            <tfoot>
+                <tr>
+                    <td colspan="2" style="text-align:right;">Total Geral:</td>
+                    <td><?= $total_geral_pb ?></td>
+                    <td><?= $total_geral_color ?></td>
+                </tr>
+            </tfoot>
+        </table>
+        <div style="margin-top:30px;font-size:11px;color:#555;text-align:right;">
+            Relatório gerado em: <?= date('d/m/Y H:i') ?><br>
+            Usuário: <?= htmlspecialchars($_SESSION['usuario']['nome'] . ' ' . ($_SESSION['usuario']['sobrenome'] ?? '')) ?>
+        </div>
     </body>
     </html>
     <?php
@@ -173,7 +174,7 @@ require_once '../../includes/header.php';
         <div class="container-imprimir">
             <button type="button" class="btn-menu" onclick="gerarPDF()"><i class="fas fa-file-pdf"></i> Gerar PDF</button>
         </div>
-        <a href="dashboard_coen.php" class="btn-back">&larr; Voltar</a>
+        <a href="dashboard_coen.php" class="btn-back">← Voltar</a>
         </div>
     </aside>
     <main class="dashboard-main">

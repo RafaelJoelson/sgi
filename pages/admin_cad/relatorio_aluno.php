@@ -26,7 +26,15 @@ $curso_id = isset($_GET['curso_id']) && $_GET['curso_id'] !== '' ? (int)$_GET['c
 $periodo = isset($_GET['periodo']) && $_GET['periodo'] !== '' ? $_GET['periodo'] : null;
 $turma_id = isset($_GET['turma_id']) && $_GET['turma_id'] !== '' ? (int)$_GET['turma_id'] : null;
 
-$sql = "SELECT a.nome, a.sobrenome, c.sigla, c.nome_completo, t.periodo, t.id as turma_id, si.data_criacao, (si.qtd_copias * si.qtd_paginas) as total_cotas FROM SolicitacaoImpressao si JOIN Aluno a ON a.cpf = si.cpf_solicitante LEFT JOIN CotaAluno ca ON a.cota_id = ca.id LEFT JOIN Turma t ON ca.turma_id = t.id LEFT JOIN Curso c ON t.curso_id = c.id WHERE si.tipo_solicitante = 'Aluno' AND si.data_criacao BETWEEN :data_ini AND :data_fim";
+$sql = "SELECT a.nome, a.sobrenome, c.sigla, c.nome_completo, t.periodo, t.id as turma_id, si.data_criacao, (si.qtd_copias * si.qtd_paginas) as total_cotas 
+FROM SolicitacaoImpressao si 
+JOIN Aluno a ON a.cpf = si.cpf_solicitante 
+LEFT JOIN CotaAluno ca ON a.cota_id = ca.id 
+LEFT JOIN Turma t ON ca.turma_id = t.id 
+LEFT JOIN Curso c ON t.curso_id = c.id 
+WHERE si.tipo_solicitante = 'Aluno' 
+AND si.status = 'Aceita' 
+AND si.data_criacao BETWEEN :data_ini AND :data_fim";
 $paramsFiltro = [':data_ini' => $data_ini . ' 00:00:00', ':data_fim' => $data_fim . ' 23:59:59'];
 if ($curso_id) { $sql .= " AND c.id = :curso_id"; $paramsFiltro[':curso_id'] = $curso_id; }
 if ($periodo) { $sql .= " AND t.periodo = :periodo"; $paramsFiltro[':periodo'] = $periodo; }

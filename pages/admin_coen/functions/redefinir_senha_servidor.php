@@ -10,14 +10,14 @@ if (!isset($_SESSION['usuario']) ||
     $_SESSION['usuario']['setor_admin'] !== 'COEN') 
 {
     $_SESSION['mensagem_erro'] = 'Acesso negado. Permissão insuficiente.';
-    header('Location: ../../../index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
 // 2. VALIDAÇÃO DO INPUT
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['siape']) || empty($_POST['nova_senha'])) {
     $_SESSION['mensagem_erro'] = 'Dados inválidos para redefinir a senha.';
-    header('Location: ../dashboard_coen.php');
+    header('Location: ' . BASE_URL . '/pages/admin_coen/dashboard_coen.php');
     exit;
 }
 
@@ -27,7 +27,7 @@ $nova_senha = $_POST['nova_senha'];
 // Validação adicional (ex: comprimento mínimo da senha)
 if (strlen($nova_senha) < 6) {
     $_SESSION['mensagem_erro'] = 'A nova senha deve ter no mínimo 6 caracteres.';
-    header('Location: ../dashboard_coen.php');
+    header('Location: ' . BASE_URL . '/pages/admin_coen/dashboard_coen.php');
     exit;
 }
 
@@ -51,5 +51,5 @@ try {
 
 // 5. REDIRECIONAMENTO (SIMPLIFICADO)
 // Redireciona de volta para o painel do COEN.
-header('Location: ../dashboard_coen.php');
+header('Location: ' . BASE_URL . '/pages/admin_coen/dashboard_coen.php');
 exit;

@@ -56,7 +56,7 @@ $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 if (empty($s['arquivo_path'])) {
                                     echo '<strong><i class="fas fa-store-alt"></i> <em>Solicitação no Balcão</em></strong>';
                                 } else {
-                                    echo '<a href="download.php?id_solicitacao=' . htmlspecialchars($s['id']) . '" target="_blank" title="Baixar ' . htmlspecialchars($s['arquivo_path']) . '">';
+                                    echo '<a href="./functions/download.php?id_solicitacao=' . htmlspecialchars($s['id']) . '" target="_blank" title="Baixar ' . htmlspecialchars($s['arquivo_path']) . '">';
                                     echo '<i class="fas fa-download"></i> ' . htmlspecialchars($s['arquivo_path']);
                                     echo '</a>';
                                 }

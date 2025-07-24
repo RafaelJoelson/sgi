@@ -1,15 +1,15 @@
 <?php
-require_once '../../includes/config.php';
+require_once '../../../includes/config.php';
 session_start();
 
 // 1. VERIFICAÇÃO DE PERMISSÃO
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'CAD') {
-    header('Location: ../../index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: form_aluno.php');
+    header('Location: ' . BASE_URL . '/pages/admin_cad/form_aluno.php');
     exit;
 }
 
@@ -26,7 +26,7 @@ $turma_id = filter_input(INPUT_POST, 'turma_id', FILTER_VALIDATE_INT); // Recebe
 // CORREÇÃO: A validação agora verifica 'turma_id' em vez de 'cota_id'
 if (empty($matricula) || empty($nome) || empty($email) || strlen($cpf) !== 11 || empty($senha) || empty($turma_id)) {
     $_SESSION['mensagem_erro'] = 'Todos os campos obrigatórios devem ser preenchidos corretamente.';
-    header('Location: form_aluno.php');
+    header('Location: ' . BASE_URL . '/pages/admin_cad/form_aluno.php');
     exit;
 }
 
@@ -85,12 +85,12 @@ try {
     
     $conn->commit();
     $_SESSION['mensagem_sucesso'] = 'Aluno cadastrado com sucesso!';
-    header('Location: dashboard_cad.php');
+    header('Location: ' . BASE_URL . '/pages/admin_cad/dashboard_cad.php');
     exit;
 
 } catch (Exception $e) {
     if ($conn->inTransaction()) $conn->rollBack();
     $_SESSION['mensagem_erro'] = 'Erro ao cadastrar aluno: ' . $e->getMessage();
-    header('Location: form_aluno.php');
+    header('Location: ' . BASE_URL . '/pages/admin_cad/form_aluno.php');
     exit;
 }
