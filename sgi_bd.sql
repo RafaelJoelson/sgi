@@ -164,8 +164,8 @@ CREATE TABLE `Aluno` (
 --
 
 INSERT INTO `Aluno` (`matricula`, `nome`, `sobrenome`, `cargo`, `email`, `cpf`, `senha`, `ativo`, `cota_id`, `data_fim_validade`) VALUES
-('20250001', 'Gretchen', 'Rainha', 'Líder', 'gretchen.reidaweb@email.com', '12345678901', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 1, '2025-07-30'),
-('20250002', 'Inês', 'Brasil', 'Nenhum', 'ines.brasil.sensual@email.com', '23456789012', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 2, '2025-07-30'),
+('2025000001', 'Gretchen', 'Rainha', 'Líder', 'gretchen.reidaweb@email.com', '12345678901', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 1, '2025-07-30'),
+('2025000002', 'Inês', 'Brasil', 'Nenhum', 'ines.brasil.sensual@email.com', '23456789012', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 2, '2025-07-30'),
 ('20250003', 'Carminha', 'Sincera', 'Vice-líder', 'carminha.sincera.meme@email.com', '34567890123', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 3, '2025-07-30'),
 ('20250004', 'Chaves', 'SemTeto', 'Vice-líder', 'chaves.sem.teto@email.com', '34567890124', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 4, '2025-07-30'),
 ('20250005', 'Nazaré', 'Tedesco', 'Nenhum', 'nazare.confusa.tediosa@email.com', '45678901234', '$2y$10$17dOADFRPti.MK62Y.shK.8ph9JJEFiQVI33hW9wCCKaDaQgU9bJC', 1, 5, '2025-07-30'),
@@ -424,15 +424,15 @@ CREATE TABLE `LogDecrementoCota` (
 --
 
 INSERT INTO `LogDecrementoCota` (`solicitacao_id`, `tipo_usuario`, `referencia`, `qtd_cotas`, `data`) VALUES
-(1, 'Aluno', '20250001', 20, '2025-06-27 10:01:00'),
+(1, 'Aluno', '2025000001', 20, '2025-06-27 10:01:00'),
 (2, 'Aluno', '20250005', 5, '2025-06-27 11:01:00'),
 (4, 'Servidor', '1002', 16, '2025-07-01 09:01:00'),
 (5, 'Servidor', '1002', 4, '2025-06-29 10:31:00'),
 (6, 'Servidor', '1001', 18, '2025-05-30 14:01:00'),
 (8, 'Servidor', '1003', 10, '2025-03-02 08:46:00'),
 (9, 'Servidor', '1003', 6, '2025-02-10 11:21:00'),
-(10, 'Aluno', '20250001', 15, '2024-11-05 14:31:00'),
-(11, 'Aluno', '20250002', 15, '2024-11-10 09:01:00'),
+(10, 'Aluno', '2025000001', 15, '2024-11-05 14:31:00'),
+(11, 'Aluno', '2025000002', 15, '2024-11-10 09:01:00'),
 (12, 'Servidor', '1001', 2, '2024-10-20 11:01:00'),
 (13, 'Servidor', '1003', 50, '2025-07-11 08:01:00'),
 (15, 'Aluno', '20250005', 20, '2025-07-08 10:01:00'),
