@@ -18,7 +18,8 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografi
 // Define o período padrão para o mês corrente
 $data_ini = $_GET['data_ini'] ?? date('Y-m-01');
 $data_fim = $_GET['data_fim'] ?? date('Y-m-d');
-$status_filtro = $_GET['status'] ?? '';
+// MUDANÇA: O filtro de status agora tem 'Aceita' como padrão para refletir o consumo real.
+$status_filtro = $_GET['status'] ?? 'Aceita';
 $tipo_filtro = $_GET['tipo'] ?? '';
 
 // Monta a cláusula WHERE da consulta dinamicamente
@@ -166,6 +167,14 @@ require_once '../../includes/header.php';
             <div class="form-group">
                 <label for="data_fim">Data final</label>
                 <input type="date" id="data_fim" name="data_fim" class="form-control" value="<?= htmlspecialchars($data_fim) ?>">
+            </div>
+            <div class="form-group">
+                <label for="status">Status da Solicitação</label>
+                <select name="status" id="status" class="form-control">
+                    <option value="Aceita" <?= $status_filtro === 'Aceita' ? 'selected' : '' ?>>Apenas Aceitas (Consumo Real)</option>
+                    <option value="Rejeitada" <?= $status_filtro === 'Rejeitada' ? 'selected' : '' ?>>Rejeitadas</option>
+                    <option value="" <?= $status_filtro === '' ? 'selected' : '' ?>>Todas</option>
+                </select>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
         </form>

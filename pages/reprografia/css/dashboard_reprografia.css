@@ -16,6 +16,11 @@
   color: #0080ff;
 }
 
+#tabela-solicitacoes {
+  overflow-y: auto;
+  max-height: 600px;
+}
+
 #tabela-solicitacoes table {
   width: 100%;
   border-collapse: collapse;
