@@ -106,13 +106,14 @@ include_once '../../includes/header.php';
                         <th>Nome</th>
                         <th>Permissão</th>
                         <th>Setor Admin</th>
+                        <th>Situação</th> <!-- Nova coluna -->
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($servidores)): ?>
                         <tr>
-                            <td colspan="5" class="text-center">Nenhum servidor encontrado para os critérios de busca.</td>
+                            <td colspan="6" class="text-center">Nenhum servidor encontrado para os critérios de busca.</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($servidores as $s):
@@ -155,6 +156,11 @@ include_once '../../includes/header.php';
                                     <?php endif; ?>
                                 </td>
                                 <td data-label="Setor"><?= htmlspecialchars($s->setor_admin) ?></td>
+                                <td data-label="Situação">
+                                    <span class="badge-<?= $s->ativo ? 'ativo' : 'inativo' ?>">
+                                        <?= $s->ativo ? 'Ativo' : 'Inativo' ?>
+                                    </span>
+                                </td>
                                 <td data-label="Ações">
                                     <div class="action-buttons">
                                         <?php if ($can_edit): ?>

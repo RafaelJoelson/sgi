@@ -73,7 +73,7 @@ include_once '../../includes/header.php';
             <div class="card">Alunos Ativos: <?= $total_alunos ?></div>
         </section>
         <section class="dashboard-menu">
-            <a class="btn-menu" href="form_aluno.php">Cadastrar novo aluno</a>
+            <a class="btn-menu" href="form_aluno.php">Cadastrar Novo Aluno</a>
             <a class="btn-menu" href="gerenciar_cotas.php">Gerenciar Cotas</a>
             <a class="btn-menu" href="gerenciar_turmas.php">Gerenciar Turmas</a>
             <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
@@ -94,14 +94,14 @@ include_once '../../includes/header.php';
             <label>
                 Tipo de Busca:
                 <select name="tipo_busca" required>
-                    <option value="" disabled <?= empty($tipo_busca) ? 'selected' : '' ?>>Selecione</option>
+                    <option value="" disabled <?= empty($_GET['tipo_busca']) ? 'selected' : '' ?>>Selecione</option>
                     <option value="cpf" <?= $tipo_busca === 'cpf' ? 'selected' : '' ?>>CPF</option>
                     <option value="matricula" <?= $tipo_busca === 'matricula' ? 'selected' : '' ?>>Matrícula</option>
                 </select>
             </label>
             <label>
                 Valor:
-                <input type="text" name="valor_busca" value="<?= htmlspecialchars($valor_busca) ?>" maxlength="11" placeholder="Digite o CPF ou Matrícula" required>
+                <input type="text" name="valor_busca" value="valor_busca <?= htmlspecialchars($valor_busca) ?>" maxlength="11" placeholder="Digite o CPF ou Matrícula" required>
             </label>
             <label>
                 Filtrar por Turma:
@@ -127,13 +127,14 @@ include_once '../../includes/header.php';
                         <th>Nome</th>
                         <th>Cargo</th>
                         <th>Turma</th>
+                        <th>Situação</th> <!-- Nova coluna -->
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($alunos)): ?>
                         <tr>
-                            <td colspan="5" class="text-center">Nenhum aluno encontrado para os critérios de busca.</td>
+                            <td colspan="6" class="text-center">Nenhum aluno encontrado para os critérios de busca.</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($alunos as $aluno): ?>
@@ -142,6 +143,11 @@ include_once '../../includes/header.php';
                                 <td data-label="Nome"><?= htmlspecialchars($aluno->nome . ' ' . $aluno->sobrenome) ?></td>
                                 <td data-label="Cargo"><?= htmlspecialchars($aluno->cargo) ?></td>
                                 <td data-label="Turma" title="<?= htmlspecialchars($aluno->nome_completo . ' - ' . $aluno->periodo) ?>"><?= htmlspecialchars($aluno->sigla . ' - ' . $aluno->periodo) ?></td>
+                                <td data-label="Situação">
+                                    <span class="badge-<?= $aluno->ativo ? 'ativo' : 'inativo' ?>">
+                                        <?= $aluno->ativo ? 'Ativo' : 'Inativo' ?>
+                                    </span>
+                                </td>
                                 <td data-label="Ações">
                                     <div class="action-buttons">
                                         <a href="form_aluno.php?matricula=<?= htmlspecialchars($aluno->matricula) ?>" class="btn-action btn-edit" title="Editar/Renovar"><i class="fas fa-edit"></i></a>

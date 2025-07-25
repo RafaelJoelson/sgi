@@ -465,3 +465,57 @@ th, td {
   text-align: center;
   margin-top: 1em;
 }
+/* Estilos para a coluna Situação */
+td[data-label="Situação"] {
+    text-align: center;
+}
+
+.badge-ativo {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.badge-inativo {
+    background-color: #f44336;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+/* Ajustes para mobile */
+@media (max-width: 600px) {
+    .responsive-table table thead {
+        display: none; /* Esconde o cabeçalho em mobile, já existente */
+    }
+
+    .responsive-table table tbody td {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding-left: 50%;
+        position: relative;
+        box-sizing: border-box;
+    }
+
+    .responsive-table table tbody td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        font-weight: bold;
+    }
+
+    /* Garantir que a coluna Situação seja legível */
+    td[data-label="Situação"] {
+        padding: 10px;
+    }
+
+    .badge-ativo, .badge-inativo {
+        display: inline-block;
+        margin-top: 5px;
+    }
+}

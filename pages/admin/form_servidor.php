@@ -101,7 +101,7 @@ include_once '../../includes/header.php';
             </label>
 
             <label>Data Fim da Validade
-                <input type="date" name="data_fim_validade" value="<?= htmlspecialchars($data_validade_padrao) ?>" <?= $is_super_admin_edit ? 'disabled' : '' ?>>
+                <input type="date" name="data_fim_validade" value="<?= htmlspecialchars($data_validade_padrao) ?>" <?= $is_super_admin_edit ? 'disabled' : '' ?> readonly>
             </label>
 
             <?php if ($modo_edicao): ?>
