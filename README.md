@@ -63,9 +63,9 @@ Este sistema tem como objetivo ser implementado no campus para gerenciar cotas d
 │   ├── servidor/          # Painel e ações do Servidor
 │   ├── reprografia/       # Painel e ações da Reprografia
 │   ├── erros/             # Páginas de erros web.
+│   ├── uploads/           # Arquivos enviados para impressão.
 │   └── utils/             # Página de suporte e manuais
 │       └── documents/     # Manuais em PDF
-├── uploads/               # Arquivos enviados para impressão
 ├── vendor/                # Bibliotecas do Composer (ex: dompdf)
 ├── css/                   # Folhas de estilo
 ├── img/                   # Imagens do sistema
