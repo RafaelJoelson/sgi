@@ -94,14 +94,14 @@ include_once '../../includes/header.php';
             <label>
                 Tipo de Busca:
                 <select name="tipo_busca" required>
-                    <option value="" disabled <?= empty($_GET['tipo_busca']) ? 'selected' : '' ?>>Selecione</option>
+                    <option value="" disabled <?= empty($tipo_busca) ? 'selected' : '' ?>>Selecione</option>
                     <option value="cpf" <?= $tipo_busca === 'cpf' ? 'selected' : '' ?>>CPF</option>
                     <option value="matricula" <?= $tipo_busca === 'matricula' ? 'selected' : '' ?>>Matrícula</option>
                 </select>
             </label>
             <label>
                 Valor:
-                <input type="text" name="valor_busca" value="valor_busca <?= htmlspecialchars($valor_busca) ?>" maxlength="11" placeholder="Digite o CPF ou Matrícula" required>
+                <input type="text" name="valor_busca" <?= htmlspecialchars($valor_busca) ?>" maxlength="11" placeholder="Digite o CPF ou Matrícula" required>
             </label>
             <label>
                 Filtrar por Turma:
