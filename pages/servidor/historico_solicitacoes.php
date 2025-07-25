@@ -22,6 +22,7 @@ $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!-- Vinculando a folha de estilos do servidor (que deve ser similar à do aluno) -->
 <link rel="stylesheet" href="./css/dashboard_servidor.css?v=<?= ASSET_VERSION ?>">
+<link rel="stylesheet" href="./css/historico_solicitacoes.css?v=<?= ASSET_VERSION ?>">
 
 <main class="container">
     <div class="container-principal"> <!-- Um container para o conteúdo -->
@@ -33,7 +34,7 @@ $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         ?>
     <h3>Histórico de Solicitações</h3>
     <div class="tabela-container">
-        <div id="tabela-solicitacoes">
+        <div id="tabela-solicitacoes-historico">
             <table>
                 <thead>
                     <tr>
@@ -72,7 +73,7 @@ $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </tbody>
             </table>
         </div>
-    </div>>
+    </div>
     <!-- O botão "Voltar" agora usa a tag <button> com onclick para receber o estilo correto do CSS -->
     <button onclick="window.location.href='dashboard_servidor.php'">&larr; Voltar ao Painel</button>
 </main>

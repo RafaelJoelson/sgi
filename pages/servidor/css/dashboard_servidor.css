@@ -151,7 +151,8 @@ button[onclick^="window.location.href"]:hover {
     min-height: 600px;
 }
 #tabela-solicitacoes {
-    overflow-x: auto;
+    overflow: auto;
+    max-height: 400px;
     border: 1px solid var(--cor-borda);
     border-radius: var(--raio-borda);
     box-shadow: var(--sombra-card);
@@ -161,6 +162,8 @@ button[onclick^="window.location.href"]:hover {
     width: 100%;
     border-collapse: collapse;
 }
+
+
 
 #tabela-solicitacoes th,
 #tabela-solicitacoes td {

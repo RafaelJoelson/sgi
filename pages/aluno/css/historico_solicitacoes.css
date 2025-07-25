@@ -1,0 +1,56 @@
+#tabela-solicitacoes-historico {
+    overflow: auto;
+    max-height: 550px;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    box-shadow: var(--sombra-card);
+}
+
+#tabela-solicitacoes-historico table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tabela-solicitacoes-historico th,
+#tabela-solicitacoes-historico td {
+    padding: 0.8em 1em;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+#tabela-solicitacoes-historico thead {
+    background-color: var(--cor-fundo-claro);
+}
+
+#tabela-solicitacoes-historico th {
+    font-weight: 700;
+    color: var(--cor-texto-suave);
+}
+
+#tabela-solicitacoes-historico tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#tabela-solicitacoes-historico tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+#tabela-solicitacoes-historico td a {
+    color: var(--cor-primaria-hover);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+#tabela-solicitacoes-historico td a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+
+    #tabela-solicitacoes-historico th,
+    #tabela-solicitacoes-historico td {
+        padding: 0.6em;
+        font-size: 0.9em;
+    }
+}

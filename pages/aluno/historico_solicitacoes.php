@@ -22,6 +22,7 @@ $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!-- Vinculando a mesma folha de estilos do dashboard -->
 <link rel="stylesheet" href="./css/dashboard_aluno.css?v=<?= ASSET_VERSION ?>">
+<link rel="stylesheet" href="./css/historico_solicitacoes.css?v=<?= ASSET_VERSION ?>">
 
 <main class="container">
     <div class="container-principal"> <!-- Um container para o conteúdo -->
@@ -33,7 +34,7 @@ $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         ?>
     <h3>Histórico de Solicitações</h3>
     <div class="tabela-container">
-        <div id="tabela-solicitacoes">
+        <div id="tabela-solicitacoes-historico">
             <table>
                 <thead>
                     <tr>
