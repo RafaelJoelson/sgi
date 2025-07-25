@@ -47,7 +47,7 @@ try {
     $solicitacoes_para_limpar = $stmt_busca->fetchAll(PDO::FETCH_OBJ);
 
     $arquivos_removidos = 0;
-    $uploads_dir = realpath(__DIR__ . '/../uploads');
+    $uploads_dir = realpath(__DIR__ . '/../pages/uploads');
 
     if ($uploads_dir && !empty($solicitacoes_para_limpar)) {
         foreach ($solicitacoes_para_limpar as $sol) {

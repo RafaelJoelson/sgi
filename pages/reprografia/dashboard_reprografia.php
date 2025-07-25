@@ -7,7 +7,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'reprografi
     exit;
 }
 // Limpa arquivos da pasta uploads com mais de 15 dias
-$diretorioUploads = realpath(__DIR__ . '/../../uploads');
+$diretorioUploads = realpath(__DIR__ . '/../uploads');
 if ($diretorioUploads && is_dir($diretorioUploads)) {
     $arquivos = scandir($diretorioUploads);
     $agora = time();
@@ -23,6 +23,34 @@ if ($diretorioUploads && is_dir($diretorioUploads)) {
         }
     }
 }
+function formatBytes($bytes, $precision = 2) {
+    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+    $bytes = max($bytes, 0);
+    $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+    $pow = min($pow, count($units) - 1);
+
+    $bytes /= pow(1024, $pow);
+
+    return round($bytes, $precision) . ' ' . $units[$pow];
+}
+
+function getDirectorySize($path) {
+    $size = 0;
+    foreach (scandir($path) as $file) {
+        if ($file === '.' || $file === '..') continue;
+        $filepath = $path . DIRECTORY_SEPARATOR . $file;
+        if (is_file($filepath)) {
+            $size += filesize($filepath);
+        } elseif (is_dir($filepath)) {
+            $size += getDirectorySize($filepath); // recursivo
+        }
+    }
+    return $size;
+}
+
+$totalSize = getDirectorySize($diretorioUploads);
+$formattedSize = formatBytes($totalSize);
 require_once '../../includes/header.php';
 ?>
 <link rel="stylesheet" href="./css/dashboard_reprografia.css?v=<?= ASSET_VERSION ?>">
@@ -40,10 +68,17 @@ require_once '../../includes/header.php';
             <a href="relatorio_reprografia.php" class="dashboard-menu-link">Relatórios</a>
             <a href="#" id="btn-alterar-dados" class="dashboard-menu-link">Alterar Meus Dados</a>
             <hr>
-            <a href="./functions/limpar_uploads.php" class="dashboard-menu-link"
+            <a href="./functions/limpar_uploads.php" title="Esta ação remove todos os arquivos da pasta uploads. Use com cautela!" class="dashboard-menu-link"
                onclick="return confirm('Tem certeza que deseja limpar a pasta uploads? Esta ação é irreversível!') && confirm('Confirme novamente: deseja realmente apagar TODOS os arquivos da pasta uploads?');">
                 <i class="fas fa-trash-alt"></i> Limpar Pasta Uploads
             </a>
+            <p id="tamanho">
+                <?php echo "Total em Uploads: <strong>$formattedSize</strong>"; ?>
+            </p>
+            <span class="file-hint">
+                <i class="fas fa-info-circle"></i>
+            <span class="hint-text">A pasta Uploads é limpa automaticamente a cada 15 dias. Use este recurso apenas quando for realmente necessário ou durante o encerramento mensal.</span>
+            </span> 
         </nav>
         </div>
     </aside>

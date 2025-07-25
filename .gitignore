@@ -1,3 +1,4 @@
 # Ignorar arquivos de upload de usuários
-/uploads/
+/pages/uploads/
+# Ignorar arquivos de cache
 /vendor/

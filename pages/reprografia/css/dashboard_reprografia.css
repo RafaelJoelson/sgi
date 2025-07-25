@@ -135,7 +135,23 @@
   color: #fff;
   text-decoration: none;
 }
+/* Estilos para a dica */
+.file-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 8px;
+    text-align: justify;
+}
 
+/* Estilos para o ícone */
+.file-hint .fa-info-circle {
+    font-size: 2.4em;
+    color: #4CAF50; /* Cor verde para destacar */
+    cursor: pointer; /* Indicador de interatividade */
+}
 @media (max-width: 900px) {
   #tabela-solicitacoes table, #tabela-solicitacoes thead, #tabela-solicitacoes tbody, #tabela-solicitacoes th, #tabela-solicitacoes td, #tabela-solicitacoes tr {
     display: block;
