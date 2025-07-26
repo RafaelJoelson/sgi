@@ -2,3 +2,4 @@
 /pages/uploads/
 # Ignorar arquivos de cache
 /vendor/
+/.VSCodeCounter
