@@ -29,6 +29,9 @@ try {
 
     if ($reprografia && password_verify($senha, $reprografia['senha'])) {
         // Autenticação bem-sucedida
+
+        session_regenerate_id(true); // Previne Session Fixation
+
         // MUDANÇA: A sessão agora é criada com o ID numérico como identificador principal.
         $_SESSION['usuario'] = [
             'id'        => $reprografia['id'], // Usa o ID auto-incremento como identificador único

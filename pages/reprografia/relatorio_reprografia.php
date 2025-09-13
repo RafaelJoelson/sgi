@@ -23,27 +23,24 @@ $status_filtro = $_GET['status'] ?? 'Aceita';
 $tipo_filtro = $_GET['tipo'] ?? '';
 
 // Monta a cláusula WHERE da consulta dinamicamente
-$where_conditions = "WHERE s.data_criacao BETWEEN :data_ini AND :data_fim";
+$where_conditions = "WHERE si.data_criacao BETWEEN :data_ini AND :data_fim";
 $params = [
     ':data_ini' => $data_ini . ' 00:00:00',
     ':data_fim' => $data_fim . ' 23:59:59'
 ];
 
 if ($status_filtro !== '') {
-    $where_conditions .= " AND s.status = :status";
+    $where_conditions .= " AND si.status = :status";
     $params[':status'] = $status_filtro;
-}
-if ($tipo_filtro !== '') {
-    $where_conditions .= " AND s.tipo_solicitante = :tipo";
-    $params[':tipo'] = $tipo_filtro;
 }
 
 // Consulta que agrupa os totais por tipo de solicitante e cor
-$sql = "SELECT tipo_solicitante, colorida, SUM(qtd_paginas * qtd_copias) AS total_paginas 
-        FROM SolicitacaoImpressao s 
+$sql = "SELECT u.tipo_usuario, si.colorida, SUM(si.qtd_paginas * si.qtd_copias) AS total_paginas 
+        FROM SolicitacaoImpressao si
+        JOIN Usuario u ON si.usuario_id = u.id
         $where_conditions 
-        GROUP BY tipo_solicitante, colorida 
-        ORDER BY tipo_solicitante, colorida";
+        GROUP BY u.tipo_usuario, si.colorida 
+        ORDER BY u.tipo_usuario, si.colorida";
 $stmt = $conn->prepare($sql);
 $stmt->execute($params);
 $dados_relatorio = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -59,7 +56,7 @@ $totais = [
 foreach ($dados_relatorio as $dado) {
     if ((int)$dado['colorida'] === 0) {
         $totais['pb'] += (int)$dado['total_paginas'];
-        if ($dado['tipo_solicitante'] === 'Aluno') {
+        if ($dado['tipo_usuario'] === 'aluno') {
             $totais['aluno_pb'] = (int)$dado['total_paginas'];
         } else {
             $totais['servidor_pb'] = (int)$dado['total_paginas'];
@@ -204,7 +201,7 @@ require_once '../../includes/header.php';
                 <?php else: ?>
                     <?php foreach ($dados_relatorio as $dado): ?>
                         <tr>
-                            <td><?= htmlspecialchars($dado['tipo_solicitante']) ?></td>
+                            <td><?= htmlspecialchars(ucfirst($dado['tipo_usuario'])) ?></td>
                             <td><?= (int)$dado['colorida'] === 1 ? 'Colorida' : 'Preto e Branco' ?></td>
                             <td><?= (int)$dado['total_paginas'] ?></td>
                         </tr>

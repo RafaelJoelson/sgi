@@ -8,16 +8,15 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'aluno') {
 }
 require_once '../../includes/header.php';
 
-$aluno_cpf = $_SESSION['usuario']['cpf'];
+$usuario_id = $_SESSION['usuario']['id'];
 
-// A consulta PHP permanece a mesma, pois já está correta e segura.
 $stmt = $conn->prepare(
     'SELECT id, arquivo_path, qtd_copias, qtd_paginas, status, data_criacao 
      FROM SolicitacaoImpressao 
-     WHERE cpf_solicitante = ? AND tipo_solicitante = "Aluno" 
+     WHERE usuario_id = ?
      ORDER BY data_criacao DESC'
 );
-$stmt->execute([$aluno_cpf]);
+$stmt->execute([$usuario_id]);
 $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!-- Vinculando a mesma folha de estilos do dashboard -->

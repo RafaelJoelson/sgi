@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             $stmt = $conn->prepare("UPDATE Reprografia SET login = :login WHERE id = :id");
             $stmt->execute([':login' => $novo_login, ':id' => $repro_id]);
 
-            $feedback_message = "Login do operador ID {$repro_id} alterado para: <strong>{$novo_login}</strong>.";
+            $feedback_message = "Login do operador ID {$repro_id} alterado para: <strong>" . htmlspecialchars($novo_login) . "</strong>.";
             $feedback_type = 'success';
         }
 
@@ -63,7 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             $senha_padrao = 'Admin@123';
             $hash_padrao = password_hash($senha_padrao, PASSWORD_DEFAULT);
 
-            $stmt = $conn->prepare("UPDATE Servidor SET senha = :senha WHERE is_super_admin = TRUE");
+            $stmt = $conn->prepare(
+                "UPDATE Usuario u JOIN Servidor s ON u.id = s.usuario_id 
+                 SET u.senha = :senha WHERE s.is_super_admin = TRUE"
+            );
             $stmt->execute([':senha' => $hash_padrao]);
             
             $feedback_message = "A senha de todos os Super Administradores foi redefinida para o padrão: <strong>{$senha_padrao}</strong>.";

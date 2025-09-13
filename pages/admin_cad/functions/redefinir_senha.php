@@ -35,7 +35,11 @@ try {
     $hash_senha = password_hash($nova_senha, PASSWORD_DEFAULT);
 
     // Prepara e executa a atualização
-    $stmt = $conn->prepare("UPDATE Aluno SET senha = :senha WHERE matricula = :matricula");
+    $stmt = $conn->prepare(
+        "UPDATE Usuario u JOIN Aluno a ON u.id = a.usuario_id 
+         SET u.senha = :senha 
+         WHERE a.matricula = :matricula"
+    );
     $stmt->execute([
         ':senha' => $hash_senha,
         ':matricula' => $matricula

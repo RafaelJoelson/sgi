@@ -1,4 +1,7 @@
 <?php
+// 1. Inclui o config para ter acesso às constantes
+require_once __DIR__ . '/../../includes/config.php';
+
 // Inclui o autoloader do Composer para carregar o dompdf
 require_once '../../vendor/autoload.php';
 
@@ -6,7 +9,6 @@ require_once '../../vendor/autoload.php';
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-require_once '../../includes/config.php';
 session_start();
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || !in_array($_SESSION['usuario']['setor_admin'], ['CAD', 'COEN'])) {
     header('Location: ../../index.php');
@@ -23,14 +25,15 @@ $default_data_fim = $semestre_vigente ? $semestre_vigente->data_fim : date('Y-m-
 $data_ini = $_GET['data_ini'] ?? $default_data_ini;
 $data_fim = $_GET['data_fim'] ?? $default_data_fim;
 
-$sql = "SELECT s.nome, s.sobrenome, si.data_criacao, si.colorida,
+$sql = "SELECT u.nome, u.sobrenome, si.data_criacao, si.colorida,
                (si.qtd_copias * si.qtd_paginas) as total_cotas
         FROM SolicitacaoImpressao si
-        JOIN Servidor s ON si.cpf_solicitante = s.cpf
-        WHERE si.tipo_solicitante = 'Servidor'
+        JOIN Usuario u ON si.usuario_id = u.id
+        JOIN Servidor s ON u.id = s.usuario_id
+        WHERE u.tipo_usuario = 'servidor'
           AND si.status = 'Aceita'
           AND si.data_criacao BETWEEN :inicio AND :fim
-        ORDER BY s.nome, s.sobrenome, si.data_criacao DESC";
+        ORDER BY u.nome, u.sobrenome, si.data_criacao DESC";
 $stmt = $conn->prepare($sql);
 $stmt->execute([
     ':inicio' => $data_ini . ' 00:00:00',

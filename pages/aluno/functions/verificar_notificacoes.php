@@ -4,12 +4,12 @@ require_once '../../../includes/config.php';
 header('Content-Type: application/json');
 
 // Garante que há um usuário logado com CPF
-if (!isset($_SESSION['usuario']['cpf'])) {
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'aluno') {
     echo json_encode(['sucesso' => false, 'notificacoes' => []]);
     exit;
 }
 
-$cpf_usuario = $_SESSION['usuario']['cpf'];
+$usuario_id = $_SESSION['usuario']['id'];
 
 try {
     // Busca notificações não visualizadas com status da solicitação
@@ -20,11 +20,10 @@ try {
             s.status
         FROM Notificacao n
         LEFT JOIN SolicitacaoImpressao s ON n.solicitacao_id = s.id
-        WHERE n.destinatario_cpf = :cpf 
+        WHERE n.destinatario_id = :id 
           AND n.visualizada = FALSE
-          AND s.tipo_solicitante = 'Aluno'
     ");
-    $stmt->execute([':cpf' => $cpf_usuario]);
+    $stmt->execute([':id' => $usuario_id]);
     $notificacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if ($notificacoes) {

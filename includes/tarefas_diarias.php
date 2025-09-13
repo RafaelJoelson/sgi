@@ -21,12 +21,17 @@ try {
     // --- TAREFA 1: Desativar usuários com validade expirada ---
     echo "Verificando usuários expirados...\n";
     
-    // MUDANÇA: Ao desativar o aluno, também reseta seu cargo para 'Nenhum'.
-    $stmt_desativar_alunos = $conn->prepare("UPDATE Aluno SET ativo = FALSE, cargo = 'Nenhum' WHERE data_fim_validade IS NOT NULL AND data_fim_validade < CURDATE()");
+    // Desativa alunos expirados e reseta seu cargo para 'Nenhum'
+    $stmt_desativar_alunos = $conn->prepare(
+        "UPDATE Usuario u JOIN Aluno a ON u.id = a.usuario_id 
+         SET u.ativo = FALSE, a.cargo = 'Nenhum' 
+         WHERE u.tipo_usuario = 'aluno' AND u.data_fim_validade IS NOT NULL AND u.data_fim_validade < CURDATE()"
+    );
     $stmt_desativar_alunos->execute();
     echo "- " . $stmt_desativar_alunos->rowCount() . " aluno(s) desativado(s) e cargo(s) resetado(s).\n";
 
-    $stmt_desativar_servidores = $conn->prepare("UPDATE Servidor SET ativo = FALSE WHERE data_fim_validade IS NOT NULL AND data_fim_validade < CURDATE() AND is_admin = FALSE");
+    // Desativa servidores (não-admins) expirados
+    $stmt_desativar_servidores = $conn->prepare("UPDATE Usuario u JOIN Servidor s ON u.id = s.usuario_id SET u.ativo = FALSE WHERE u.tipo_usuario = 'servidor' AND u.data_fim_validade IS NOT NULL AND u.data_fim_validade < CURDATE() AND s.is_admin = FALSE");
     $stmt_desativar_servidores->execute();
     echo "- " . $stmt_desativar_servidores->rowCount() . " servidor(es) desativado(s).\n\n";
 

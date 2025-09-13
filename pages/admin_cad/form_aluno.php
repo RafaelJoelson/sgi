@@ -14,7 +14,12 @@ $aluno = null;
 $turma_aluno_id = null;
 
 if ($modo_edicao) {
-    $stmt = $conn->prepare("SELECT * FROM Aluno WHERE matricula = :matricula");
+    // MUDANÇA: Busca dados das tabelas Usuario e Aluno
+    $stmt = $conn->prepare(
+        "SELECT u.*, a.matricula, a.cargo, a.cota_id 
+         FROM Usuario u JOIN Aluno a ON u.id = a.usuario_id 
+         WHERE a.matricula = :matricula"
+    );
     $stmt->execute([':matricula' => $_GET['matricula']]);
     $aluno = $stmt->fetch();
 

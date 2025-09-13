@@ -10,12 +10,12 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
 
 // Lógica de transferência de cotas (sem alterações)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $siape_origem = $_POST['siape_origem'];
-    $siape_destino = $_POST['siape_destino'];
+    $usuario_id_origem = $_POST['usuario_id_origem'];
+    $usuario_id_destino = $_POST['usuario_id_destino'];
     $tipo_cota = $_POST['tipo_cota']; // pb ou color
     $quantidade = intval($_POST['quantidade']);
 
-    if ($siape_origem === $siape_destino || $quantidade <= 0) {
+    if ($usuario_id_origem === $usuario_id_destino || $quantidade <= 0) {
         $_SESSION['mensagem'] = 'Erro: Verifique os dados da transferência.';
         header('Location: gerenciar_cotas_servidor.php');
         exit;
@@ -26,8 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $campo_total = $tipo_cota === 'color' ? 'cota_color_total' : 'cota_pb_total';
         
         // Verifica saldo
-        $stmtSaldo = $conn->prepare("SELECT $campo_total FROM CotaServidor WHERE siape = :siape");
-        $stmtSaldo->execute([':siape' => $siape_origem]);
+        $stmtSaldo = $conn->prepare("SELECT $campo_total FROM CotaServidor WHERE usuario_id = :id");
+        $stmtSaldo->execute([':id' => $usuario_id_origem]);
         $saldo_origem = $stmtSaldo->fetchColumn();
 
         if ($saldo_origem < $quantidade) {
@@ -35,10 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Realiza a transferência
-        $conn->prepare("UPDATE CotaServidor SET $campo_total = $campo_total - :qtd WHERE siape = :siape")
-             ->execute([':qtd' => $quantidade, ':siape' => $siape_origem]);
-        $conn->prepare("UPDATE CotaServidor SET $campo_total = $campo_total + :qtd WHERE siape = :siape")
-             ->execute([':qtd' => $quantidade, ':siape' => $siape_destino]);
+        $conn->prepare("UPDATE CotaServidor SET $campo_total = $campo_total - :qtd WHERE usuario_id = :id")
+             ->execute([':qtd' => $quantidade, ':id' => $usuario_id_origem]);
+        $conn->prepare("UPDATE CotaServidor SET $campo_total = $campo_total + :qtd WHERE usuario_id = :id")
+             ->execute([':qtd' => $quantidade, ':id' => $usuario_id_destino]);
         
         $conn->commit();
         $_SESSION['mensagem'] = 'Transferência realizada com sucesso!';
@@ -58,16 +58,17 @@ $limite = 10;
 $offset = ($pagina - 1) * $limite;
 
 // MUDANÇA: Adicionado "AND s.ativo = TRUE" para contar apenas servidores ativos
-$stmt_count = $conn->query("SELECT COUNT(*) AS total FROM Servidor s JOIN CotaServidor cs ON s.siape = cs.siape WHERE s.is_super_admin = FALSE AND s.ativo = TRUE");
+$stmt_count = $conn->query("SELECT COUNT(*) AS total FROM Servidor s JOIN CotaServidor cs ON s.usuario_id = cs.usuario_id JOIN Usuario u ON s.usuario_id = u.id WHERE s.is_super_admin = FALSE AND u.ativo = TRUE");
 $total_resultados = $stmt_count->fetch()->total ?? 0;
 $total_paginas = ceil($total_resultados / $limite);
 
 // MUDANÇA: Adicionado "AND s.ativo = TRUE" para listar apenas servidores ativos na tabela
-$stmt = $conn->prepare("SELECT s.siape, s.nome, s.sobrenome, cs.cota_pb_total, cs.cota_pb_usada, cs.cota_color_total, cs.cota_color_usada 
-                      FROM Servidor s 
-                      JOIN CotaServidor cs ON s.siape = cs.siape 
-                      WHERE s.is_super_admin = FALSE AND s.ativo = TRUE
-                      ORDER BY s.nome ASC, s.sobrenome ASC 
+$stmt = $conn->prepare("SELECT u.nome, u.sobrenome, s.siape, cs.*
+                      FROM Usuario u
+                      JOIN Servidor s ON u.id = s.usuario_id
+                      JOIN CotaServidor cs ON u.id = cs.usuario_id
+                      WHERE s.is_super_admin = FALSE AND u.ativo = TRUE
+                      ORDER BY u.nome ASC, u.sobrenome ASC 
                       LIMIT :limite OFFSET :offset");
 $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -75,7 +76,7 @@ $stmt->execute();
 $cotas = $stmt->fetchAll();
 
 // MUDANÇA: Adicionado "AND ativo = TRUE" para listar apenas servidores ativos nos selects
-$stmtServidores = $conn->query("SELECT siape, nome, sobrenome FROM Servidor WHERE is_super_admin = FALSE AND ativo = TRUE ORDER BY nome ASC, sobrenome ASC");
+$stmtServidores = $conn->query("SELECT u.id, u.nome, u.sobrenome, s.siape FROM Usuario u JOIN Servidor s ON u.id = s.usuario_id WHERE s.is_super_admin = FALSE AND u.ativo = TRUE ORDER BY u.nome ASC, u.sobrenome ASC");
 $servidores = $stmtServidores->fetchAll();
 
 include_once '../../includes/header.php';
@@ -92,18 +93,18 @@ include_once '../../includes/header.php';
         <?php endif; ?>
         <form method="POST" class="form-cotas" id="form-cotas">
             <label>Servidor Origem
-                <select name="siape_origem" id="siape_origem" required>
+                <select name="usuario_id_origem" id="usuario_id_origem" required>
                     <option value="" disabled selected>Selecione o servidor</option>
                     <?php foreach ($servidores as $s): ?>
-                        <option value="<?= $s->siape ?>"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome . ' (' . $s->siape . ')') ?></option>
+                        <option value="<?= $s->id ?>"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome . ' (' . $s->siape . ')') ?></option>
                     <?php endforeach; ?>
                 </select>
             </label>
             <label>Servidor Destino
-                <select name="siape_destino" id="siape_destino" required>
+                <select name="usuario_id_destino" id="usuario_id_destino" required>
                     <option value="" disabled selected>Selecione o servidor</option>
                     <?php foreach ($servidores as $s): ?>
-                        <option value="<?= $s->siape ?>"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome . ' (' . $s->siape . ')') ?></option>
+                        <option value="<?= $s->id ?>"><?= htmlspecialchars($s->nome . ' ' . $s->sobrenome . ' (' . $s->siape . ')') ?></option>
                     <?php endforeach; ?>
                 </select>
             </label>
@@ -120,13 +121,13 @@ include_once '../../includes/header.php';
         </form>
         <a href="dashboard_coen.php" class="btn-back" style="margin-top:1.5em;">&larr; Voltar</a>
         <script>
-            document.getElementById('siape_origem').addEventListener('change', function() {
+            document.getElementById('usuario_id_origem').addEventListener('change', function() {
                 const origem = this.value;
-                const destinoSelect = document.getElementById('siape_destino');
+                const destinoSelect = document.getElementById('usuario_id_destino');
                 Array.from(destinoSelect.options).forEach(opt => {
                     opt.disabled = (opt.value && opt.value === origem);
                 });
-                if(destinoSelect.value === origem) destinoSelect.value = '';
+                if (destinoSelect.value === origem) destinoSelect.value = '';
             });
         </script>
         </div>

@@ -32,21 +32,29 @@ if (empty($siape) || empty($nome) || empty($email)) {
 }
 
 try {
-    // 3. ATUALIZAÇÃO NO BANCO DE DADOS
-    $stmt = $conn->prepare(
-        'UPDATE Servidor SET 
-            nome = :nome, sobrenome = :sobrenome, email = :email, setor_admin = :setor_admin, 
-            is_admin = :is_admin, data_fim_validade = :data_fim_validade, ativo = :ativo 
-         WHERE siape = :siape'
+    $conn->beginTransaction();
+
+    $stmt_get_id = $conn->prepare("SELECT usuario_id FROM Servidor WHERE siape = :siape");
+    $stmt_get_id->execute([':siape' => $siape]);
+    $usuario_id = $stmt_get_id->fetchColumn();
+    if (!$usuario_id) {
+        throw new Exception("Servidor não encontrado.");
+    }
+
+    // Atualiza a tabela Usuario
+    $stmt_user = $conn->prepare(
+        "UPDATE Usuario SET nome = :nome, sobrenome = :sobrenome, email = :email, ativo = :ativo, data_fim_validade = :data_fim_validade WHERE id = :id"
     );
-    
-    $ok = $stmt->execute([
-        ':nome' => $nome, ':sobrenome' => $sobrenome, ':email' => $email,
-        ':setor_admin' => $setor_admin, ':is_admin' => $is_admin,
-        ':data_fim_validade' => $data_fim_validade, ':ativo' => $ativo, ':siape' => $siape
+    $stmt_user->execute([
+        ':nome' => $nome, ':sobrenome' => $sobrenome, ':email' => $email, ':ativo' => $ativo, ':data_fim_validade' => $data_fim_validade, ':id' => $usuario_id
     ]);
 
-    if ($ok) {
+    // Atualiza a tabela Servidor
+    $stmt_servidor = $conn->prepare("UPDATE Servidor SET is_admin = :is_admin, setor_admin = :setor_admin WHERE usuario_id = :id");
+    $stmt_servidor->execute([':is_admin' => $is_admin, ':setor_admin' => $setor_admin, ':id' => $usuario_id]);
+
+    $conn->commit();
+    if ($stmt_user->rowCount() > 0 || $stmt_servidor->rowCount() > 0) {
         $_SESSION['mensagem_sucesso'] = 'Servidor atualizado com sucesso!';
 
         // 4. VERIFICAÇÃO DE AUTO-ATUALIZAÇÃO
@@ -60,6 +68,7 @@ try {
     }
 
 } catch (PDOException $e) {
+    if ($conn->inTransaction()) $conn->rollBack();
     $_SESSION['mensagem_erro'] = 'Erro de banco de dados: ' . $e->getMessage();
 }
 

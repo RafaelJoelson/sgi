@@ -8,8 +8,8 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
     exit;
 }
 
-// Pega o SIAPE do admin logado para a verificação de autoexclusão na tabela
-$siape_logado = $_SESSION['usuario']['id'];
+// Pega o ID do usuário do admin logado
+$usuario_id_logado = $_SESSION['usuario']['id'];
 
 // Parâmetros de paginação e busca
 $pagina = isset($_GET['pagina']) && is_numeric($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
@@ -22,13 +22,16 @@ $tipo_busca = $_GET['tipo_busca'] ?? '';
 $valor_busca = trim($_GET['valor_busca'] ?? '');
 $filtro_turma = $_GET['turma'] ?? '';
 
-$base_sql = "FROM Aluno a 
+$base_sql = "FROM Usuario u
+             JOIN Aluno a ON u.id = a.usuario_id
              LEFT JOIN CotaAluno ca ON a.cota_id = ca.id
              LEFT JOIN Turma t ON ca.turma_id = t.id
              LEFT JOIN Curso c ON t.curso_id = c.id";
 
+$condicoes[] = "u.tipo_usuario = 'aluno'";
+
 if (!empty($tipo_busca) && !empty($valor_busca)) {
-    if ($tipo_busca === 'cpf') $condicoes[] = "a.cpf = :valor";
+    if ($tipo_busca === 'cpf') $condicoes[] = "u.cpf = :valor";
     elseif ($tipo_busca === 'matricula') $condicoes[] = "a.matricula = :valor";
     $params[':valor'] = $valor_busca;
 }
@@ -46,7 +49,7 @@ $stmt_count->execute($params);
 $total_resultados = $stmt_count->fetch()->total ?? 0;
 $total_paginas = ceil($total_resultados / $limite);
 
-$sql_alunos = "SELECT a.*, t.periodo, c.sigla, c.nome_completo " . $base_sql . " " . $where_clause . " ORDER BY a.nome ASC LIMIT :limite OFFSET :offset";
+$sql_alunos = "SELECT u.nome, u.sobrenome, u.ativo, a.matricula, a.cargo, t.periodo, c.sigla, c.nome_completo " . $base_sql . " " . $where_clause . " ORDER BY u.nome ASC LIMIT :limite OFFSET :offset";
 $stmt = $conn->prepare($sql_alunos);
 foreach ($params as $key => $val) { $stmt->bindValue($key, $val); }
 $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
@@ -56,7 +59,7 @@ $alunos = $stmt->fetchAll();
 
 // Dados para os cards e filtros
 $total_turmas = $conn->query("SELECT COUNT(DISTINCT turma_id) AS total FROM CotaAluno")->fetch()->total ?? 0;
-$total_alunos = $conn->query("SELECT COUNT(*) AS total FROM Aluno WHERE ativo = 1")->fetch()->total ?? 0;
+$total_alunos = $conn->query("SELECT COUNT(*) AS total FROM Usuario WHERE tipo_usuario = 'aluno' AND ativo = 1")->fetch()->total ?? 0;
 $stmt_turmas = $conn->query("SELECT t.id, t.periodo, c.sigla, c.nome_completo FROM Turma t JOIN Curso c ON t.curso_id = c.id ORDER BY c.nome_completo ASC, t.periodo ASC");
 $turmas_disponiveis = $stmt_turmas->fetchAll();
 

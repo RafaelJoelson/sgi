@@ -1,4 +1,7 @@
 <?php
+// 1. Inclui o config para ter acesso às constantes
+require_once __DIR__ . '/../../includes/config.php';
+
 // Inclui o autoloader do Composer para carregar o dompdf
 require_once '../../vendor/autoload.php';
 
@@ -6,7 +9,6 @@ require_once '../../vendor/autoload.php';
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-require_once '../../includes/config.php';
 session_start();
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'CAD') {
     header('Location: ../../index.php');
@@ -26,20 +28,21 @@ $curso_id = isset($_GET['curso_id']) && $_GET['curso_id'] !== '' ? (int)$_GET['c
 $periodo = isset($_GET['periodo']) && $_GET['periodo'] !== '' ? $_GET['periodo'] : null;
 $turma_id = isset($_GET['turma_id']) && $_GET['turma_id'] !== '' ? (int)$_GET['turma_id'] : null;
 
-$sql = "SELECT a.nome, a.sobrenome, c.sigla, c.nome_completo, t.periodo, t.id as turma_id, si.data_criacao, (si.qtd_copias * si.qtd_paginas) as total_cotas 
-FROM SolicitacaoImpressao si 
-JOIN Aluno a ON a.cpf = si.cpf_solicitante 
-LEFT JOIN CotaAluno ca ON a.cota_id = ca.id 
-LEFT JOIN Turma t ON ca.turma_id = t.id 
-LEFT JOIN Curso c ON t.curso_id = c.id 
-WHERE si.tipo_solicitante = 'Aluno' 
-AND si.status = 'Aceita' 
+$sql = "SELECT u.nome, u.sobrenome, c.sigla, c.nome_completo, t.periodo, t.id as turma_id, si.data_criacao, (si.qtd_copias * si.qtd_paginas) as total_cotas 
+FROM SolicitacaoImpressao si
+JOIN Usuario u ON si.usuario_id = u.id
+JOIN Aluno a ON u.id = a.usuario_id
+LEFT JOIN CotaAluno ca ON a.cota_id = ca.id
+LEFT JOIN Turma t ON ca.turma_id = t.id
+LEFT JOIN Curso c ON t.curso_id = c.id
+WHERE u.tipo_usuario = 'aluno'
+AND si.status = 'Aceita'
 AND si.data_criacao BETWEEN :data_ini AND :data_fim";
 $paramsFiltro = [':data_ini' => $data_ini . ' 00:00:00', ':data_fim' => $data_fim . ' 23:59:59'];
 if ($curso_id) { $sql .= " AND c.id = :curso_id"; $paramsFiltro[':curso_id'] = $curso_id; }
 if ($periodo) { $sql .= " AND t.periodo = :periodo"; $paramsFiltro[':periodo'] = $periodo; }
 if ($turma_id) { $sql .= " AND t.id = :turma_id"; $paramsFiltro[':turma_id'] = $turma_id; }
-$sql .= " ORDER BY c.nome_completo, t.periodo, a.nome, si.data_criacao DESC";
+$sql .= " ORDER BY c.nome_completo, t.periodo, u.nome, si.data_criacao DESC";
 $stmt = $conn->prepare($sql);
 $stmt->execute($paramsFiltro);
 $relatorio = $stmt->fetchAll();

@@ -14,7 +14,11 @@ $servidor = null;
 $is_super_admin_edit = false; // Flag para verificar se o perfil editado é super admin
 
 if ($modo_edicao) {
-    $stmt = $conn->prepare("SELECT * FROM Servidor WHERE siape = :siape");
+    $stmt = $conn->prepare(
+        "SELECT u.*, s.siape, s.is_admin, s.is_super_admin, s.setor_admin 
+         FROM Usuario u JOIN Servidor s ON u.id = s.usuario_id 
+         WHERE s.siape = :siape"
+    );
     $stmt->execute([':siape' => $_GET['siape']]);
     $servidor = $stmt->fetch();
     if (!$servidor) {

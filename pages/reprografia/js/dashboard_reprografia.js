@@ -62,43 +62,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES PRINCIPAIS DA PÁGINA ---
     function carregarSolicitacoes(notify = false) {
-        fetch('./functions/listar_solicitacoes_pendentes.php')
+        fetch('./functions/verificar_novas_solicitacoes.php')
             .then(r => r.json())
             .then(data => {
-                let html = '<table class="table table-striped table-hover"><thead><tr><th>Arquivo / Tipo</th><th>Solicitante</th><th>Tipo Solicitante</th><th>Cópias</th><th>Páginas</th><th>Colorida</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead><tbody>';
-                if (data.length === 0) {
-                    html += '<tr><td colspan="9" class="text-center">Nenhuma solicitação aceita encontrada.</td></tr>';
-                } else {
-                    data.forEach(s => {
-                        let linkArquivo = s.arquivo ? `<a href="./functions/download_arquivo.php?id_solicitacao=${s.id}" target="_blank" title="Baixar ${s.arquivo}"><i class="fas fa-download"></i> ${s.arquivo}</a>` : '<strong><i class="fas fa-store-alt"></i> <em>Solicitação no Balcão</em></strong>';
-                        html += `<tr>
-                            <td>${linkArquivo}</td>
-                            <td>${s.nome_solicitante}</td>
-                            <td>${s.tipo_solicitante}</td>
-                            <td>${s.qtd_copias}</td>
-                            <td><input type="number" class="form-control form-control-sm" style="width: 70px;" value="${s.qtd_paginas}" onchange="editarPaginas(${s.id}, this.value)"></td>
-                            <td><span class="badge ${s.colorida == 1 ? 'badge-info' : 'badge-secondary'}">${s.colorida == 1 ? 'Sim' : 'Não'}</span></td>
-                            <td>${s.status}</td>
-                            <td>${s.data}</td>
-                            <td class="actions">
-                                <button title="Aceitar" class="btn-accept" onclick="atualizarStatus(${s.id},'Aceita')"><i class="fas fa-check"></i></button>
-                                <button title="Rejeitar" class="btn-reject" onclick="atualizarStatus(${s.id},'Rejeitada')"><i class="fas fa-times"></i></button>
-                            </td>
-                        </tr>`;
+                // Exibe toast e notificação se houver novas solicitações
+                if (notify && data.sucesso && data.novas > 0) {
+                    const mensagem = `Você recebeu ${data.novas} nova(s) solicitação(ões) pendente(s)!`;
+                    handleNewNotification(mensagem);
+                }
+                // Carrega a tabela normalmente usando o endpoint unificado
+                fetch('./functions/listar_pendentes.php')
+                    .then(r => r.json())
+                    .then(data => {
+                        let html = '<table class="table table-striped table-hover"><thead><tr><th>Arquivo / Tipo</th><th>Solicitante</th><th>Tipo</th><th>Cópias</th><th>Páginas</th><th>Colorida</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead><tbody>';
+                        if (!data.sucesso || data.solicitacoes.length === 0) {
+                            html += '<tr><td colspan="9" class="text-center">Nenhuma solicitação aceita encontrada.</td></tr>';
+                        } else {
+                            data.solicitacoes.forEach(s => {
+                                let linkArquivo = s.arquivo_path ? `<a href="./functions/download_arquivo.php?id_solicitacao=${s.id}" target="_blank" title="Baixar ${s.arquivo_path}"><i class="fas fa-download"></i> ${s.arquivo_path}</a>` : '<strong><i class="fas fa-store-alt"></i> <em>Solicitação no Balcão</em></strong>';
+                                html += `<tr>
+                                    <td>${linkArquivo}</td>
+                                    <td>${s.nome} ${s.sobrenome}</td>
+                                    <td>${s.tipo_usuario}</td>
+                                    <td>${s.qtd_copias}</td>
+                                    <td><input type="number" class="form-control form-control-sm" style="width: 70px;" value="${s.qtd_paginas}" onchange="editarPaginas(${s.id}, this.value)"></td>
+                                    <td><span class="badge ${s.colorida == 1 ? 'badge-info' : 'badge-secondary'}">${s.colorida == 1 ? 'Sim' : 'Não'}</span></td>
+                                    <td>${s.status}</td>
+                                    <td>${s.data_formatada}</td>
+                                    <td class="actions">
+                                        <button title="Aceitar" class="btn-accept" onclick="atualizarStatus(${s.id},'Aceita')"><i class="fas fa-check"></i></button>
+                                        <button title="Rejeitar" class="btn-reject" onclick="atualizarStatus(${s.id},'Rejeitada')"><i class="fas fa-times"></i></button>
+                                    </td>
+                                </tr>`;
+                            });
+                        }
+                        html += '</tbody></table>';
+                        document.getElementById('tabela-solicitacoes').innerHTML = html;
                     });
-                }
-                html += '</tbody></table>';
-                document.getElementById('tabela-solicitacoes').innerHTML = html;
-
-                const idsAtuais = data.map(s => s.id);
-                if (notify && ultimosIds.length > 0) {
-                    const novasSolicitacoes = idsAtuais.filter(id => !ultimosIds.includes(id));
-                    if (novasSolicitacoes.length > 0) {
-                        const mensagem = `Você recebeu ${novasSolicitacoes.length} nova(s) solicitação(ões)!`;
-                        handleNewNotification(mensagem);
-                    }
-                }
-                ultimosIds = idsAtuais;
             });
     }
 

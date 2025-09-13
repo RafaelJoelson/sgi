@@ -41,6 +41,14 @@ if ($ativo == 0) {
 try {
     $conn->beginTransaction();
 
+    // Busca o usuario_id correspondente à matrícula para usar nas atualizações
+    $stmt_get_id = $conn->prepare("SELECT usuario_id FROM Aluno WHERE matricula = :matricula");
+    $stmt_get_id->execute([':matricula' => $matricula]);
+    $usuario_id = $stmt_get_id->fetchColumn();
+    if (!$usuario_id) {
+        throw new Exception("Aluno com a matrícula informada não encontrado.");
+    }
+
     $stmt_cota = $conn->prepare("SELECT id FROM CotaAluno WHERE turma_id = :turma_id");
     $stmt_cota->execute([':turma_id' => $turma_id]);
     $cota_id = $stmt_cota->fetchColumn();
@@ -52,22 +60,25 @@ try {
     }
 
     if ($cargo === 'Líder' || $cargo === 'Vice-líder') {
-        $stmt_check_cargo = $conn->prepare("SELECT COUNT(*) FROM Aluno WHERE cota_id = :cota_id AND cargo = :cargo AND matricula != :matricula");
-        $stmt_check_cargo->execute([':cota_id' => $cota_id, ':cargo' => $cargo, ':matricula' => $matricula]);
+        $stmt_check_cargo = $conn->prepare("SELECT COUNT(*) FROM Aluno WHERE cota_id = :cota_id AND cargo = :cargo AND usuario_id != :usuario_id");
+        $stmt_check_cargo->execute([':cota_id' => $cota_id, ':cargo' => $cargo, ':usuario_id' => $usuario_id]);
         if ($stmt_check_cargo->fetchColumn() > 0) {
             throw new Exception("A turma selecionada já possui um {$cargo}.");
         }
     }
 
-    $stmt_update = $conn->prepare(
-        "UPDATE Aluno SET 
-            nome = :nome, sobrenome = :sobrenome, email = :email, cargo = :cargo, 
-            cota_id = :cota_id, data_fim_validade = :validade, ativo = :ativo
-         WHERE matricula = :matricula"
+    // Atualiza a tabela Usuario
+    $stmt_update_user = $conn->prepare(
+        "UPDATE Usuario SET nome = :nome, sobrenome = :sobrenome, email = :email, ativo = :ativo, data_fim_validade = :validade WHERE id = :id"
     );
-    $stmt_update->execute([
-        ':nome' => $nome, ':sobrenome' => $sobrenome, ':email' => $email, ':cargo' => $cargo,
-        ':cota_id' => $cota_id, ':validade' => $data_fim_validade, ':ativo' => $ativo, ':matricula' => $matricula
+    $stmt_update_user->execute([
+        ':nome' => $nome, ':sobrenome' => $sobrenome, ':email' => $email, ':ativo' => $ativo, ':validade' => $data_fim_validade, ':id' => $usuario_id
+    ]);
+
+    // Atualiza a tabela Aluno
+    $stmt_update_aluno = $conn->prepare("UPDATE Aluno SET cargo = :cargo, cota_id = :cota_id WHERE usuario_id = :id");
+    $stmt_update_aluno->execute([
+        ':cargo' => $cargo, ':cota_id' => $cota_id, ':id' => $usuario_id
     ]);
     
     $conn->commit();

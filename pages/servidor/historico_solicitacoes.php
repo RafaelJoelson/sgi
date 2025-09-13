@@ -8,16 +8,16 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor')
 }
 require_once '../../includes/header.php';
 
-$cpf_servidor = $_SESSION['usuario']['cpf'];
+$usuario_id = $_SESSION['usuario']['id'];
 
 // A consulta PHP já está correta, buscando o 'id' para o link de download.
 $stmt = $conn->prepare(
     'SELECT id, arquivo_path, qtd_copias, qtd_paginas, colorida, status, data_criacao 
      FROM SolicitacaoImpressao 
-     WHERE cpf_solicitante = ? AND tipo_solicitante = "Servidor" 
+     WHERE usuario_id = ?
      ORDER BY data_criacao DESC'
 );
-$stmt->execute([$cpf_servidor]);
+$stmt->execute([$usuario_id]);
 $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!-- Vinculando a folha de estilos do servidor (que deve ser similar à do aluno) -->

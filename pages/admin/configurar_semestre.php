@@ -36,17 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ano'])) {
                 $stmt_update = $conn->prepare("UPDATE SemestreLetivo SET data_inicio = :inicio, data_fim = :fim WHERE id = :id");
                 $stmt_update->execute([':inicio' => $data_inicio, ':fim' => $data_fim, ':id' => $semestre_existente->id]);
                 
-                $usuarios_afetados = 0;
                 // 2. Sincroniza a validade dos usuários, se a data de fim mudou
+                $usuarios_afetados = 0;
                 if ($antiga_data_fim !== $data_fim) {
-                    // MUDANÇA: Adicionado "AND ativo = TRUE" para atualizar apenas usuários ativos
-                    $stmt_sync_alunos = $conn->prepare("UPDATE Aluno SET data_fim_validade = :nova_data WHERE data_fim_validade = :antiga_data AND ativo = TRUE");
-                    $stmt_sync_alunos->execute([':nova_data' => $data_fim, ':antiga_data' => $antiga_data_fim]);
-                    $usuarios_afetados += $stmt_sync_alunos->rowCount();
-
-                    $stmt_sync_servidores = $conn->prepare("UPDATE Servidor SET data_fim_validade = :nova_data WHERE data_fim_validade = :antiga_data AND ativo = TRUE");
-                    $stmt_sync_servidores->execute([':nova_data' => $data_fim, ':antiga_data' => $antiga_data_fim]);
-                    $usuarios_afetados += $stmt_sync_servidores->rowCount();
+                    $stmt_sync_usuarios = $conn->prepare("UPDATE Usuario SET data_fim_validade = :nova_data WHERE data_fim_validade = :antiga_data AND ativo = TRUE");
+                    $stmt_sync_usuarios->execute([':nova_data' => $data_fim, ':antiga_data' => $antiga_data_fim]);
+                    $usuarios_afetados = $stmt_sync_usuarios->rowCount();
                 }
 
                 $acao = "Atualizou semestre $ano/$semestre_num. Validade de $usuarios_afetados usuários ativos foi sincronizada.";

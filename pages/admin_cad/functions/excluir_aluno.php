@@ -20,7 +20,10 @@ if (empty($matricula_para_excluir)) {
 
 try {
     // 3. EXECUÇÃO DA EXCLUSÃO
-    $stmt = $conn->prepare("DELETE FROM Aluno WHERE matricula = :matricula");
+    // A exclusão na tabela 'Usuario' irá remover em cascata o registro da tabela 'Aluno'
+    $stmt = $conn->prepare(
+        "DELETE u FROM Usuario u JOIN Aluno a ON u.id = a.usuario_id WHERE a.matricula = :matricula"
+    );
     $stmt->execute([':matricula' => $matricula_para_excluir]);
 
     if ($stmt->rowCount() > 0) {
