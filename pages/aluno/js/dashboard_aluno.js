@@ -150,7 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputPaginas = document.getElementById('qtd_paginas');
         const chkBalcao = document.getElementById('solicitar_balcao');
 
-        // Lógica para auto-preencher páginas do PDF
+        // Lógica para auto-preencher páginas do PDF (removida para evitar problemas com arquivos grandes)
+        /*
         inputArquivo.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -170,13 +171,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 inputPaginas.readOnly = false;
             }
         });
+        */
 
         // Lógica para solicitação no balcão
         chkBalcao.addEventListener('change', function() {
             const isChecked = this.checked;
             inputArquivo.disabled = isChecked;
             inputArquivo.required = !isChecked;
-            inputPaginas.readOnly = isChecked;
+            inputPaginas.readOnly = false; // Removido para ser sempre editável
             if (isChecked) {
                 inputArquivo.value = ''; // Limpa qualquer arquivo selecionado
                 inputPaginas.value = 1;
@@ -191,11 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const btnSubmit = formSolicitacao.querySelector('button[type="submit"]');
             const formData = new FormData(formSolicitacao);
-            
-            // Garante que o valor de um campo readonly seja enviado
-            if (inputPaginas.readOnly) {
-                formData.set('qtd_paginas', inputPaginas.value);
-            }
 
             btnSubmit.disabled = true;
             btnSubmit.textContent = 'Enviando...';
