@@ -63,14 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (target.classList.contains('btn-redefinir')) {
             const siape = target.dataset.siape;
-            document.getElementById('siape-modal').value = siape;
-            document.getElementById('modal-redefinir').style.display = 'block';
+            document.getElementById('siape-modal-servidor').value = siape;
+            document.getElementById('modal-redefinir-servidor').style.display = 'block';
         }
 
         if (target.classList.contains('btn-excluir-servidor')) {
             const siape = target.dataset.siape;
             const nome = target.dataset.nome;
-            document.getElementById('nome-servidor-excluir').textContent = nome;
+            document.getElementById('nome-item-excluir').textContent = nome;
             document.getElementById('btn-confirmar-exclusao').href = `../admin/excluir_servidor.php?siape=${siape}`;
             document.getElementById('modal-excluir').style.display = 'block';
         }

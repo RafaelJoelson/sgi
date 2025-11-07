@@ -111,8 +111,8 @@ include_once '../../includes/header.php';
                             <td data-label="Ações">
                                 <div class="action-buttons">
                                     <a href="form_servidor.php?siape=<?= htmlspecialchars($servidor->siape) ?>" class="btn-action btn-edit" title="Editar/Renovar"><i class="fas fa-edit"></i></a>
-                                    <a type="button" class="btn-action btn-redefinir btn-edit" data-id="<?= htmlspecialchars($servidor->siape) ?>" title="Redefinir Senha"><i class="fas fa-key"></i></a>
-                                    <button type="button" class="btn-action btn-delete btn-excluir btn-exc" data-id="<?= htmlspecialchars($servidor->siape) ?>" data-nome="<?= htmlspecialchars($servidor->nome) ?>" data-tipo="servidor" title="Excluir Servidor"><i class="fas fa-trash-alt"></i></button>
+                                    <button type="button" class="btn-action btn-redefinir btn-edit" data-siape="<?= htmlspecialchars($servidor->siape) ?>" title="Redefinir Senha"><i class="fas fa-key"></i></button>
+                                    <button type="button" class="btn-action btn-delete btn-excluir-servidor btn-exc" data-siape="<?= htmlspecialchars($servidor->siape) ?>" data-nome="<?= htmlspecialchars($servidor->nome) ?>" data-tipo="servidor" title="Excluir Servidor"><i class="fas fa-trash-alt"></i></button>
                                 </div>
                             </td>
                         </tr>
@@ -133,5 +133,5 @@ include_once '../../includes/header.php';
         <div id="modal-excluir" class="modal"><div class="modal-content"><span class="close">×</span><h2>Confirmar Exclusão</h2><p>Você tem certeza que deseja excluir <strong id="nome-item-excluir"></strong>?</p><p>Esta ação é irreversível.</p><div class="modal-actions"><button type="button" class="btn-secondary btn-cancelar-exclusao">Cancelar</button><a href="#" id="btn-confirmar-exclusao" class="btn-danger">Sim, Excluir</a></div></div></div>
     </main>
 </div>
-<script src="../admin_cad/js/dashboard_cad.js?v=<?= ASSET_VERSION ?>"></script> <!-- Reutilizando JS -->
+<script src="js/dashboard_coen.js?v=<?= ASSET_VERSION ?>"></script>
 <?php include_once '../../includes/footer.php'; ?>

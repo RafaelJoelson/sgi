@@ -4,13 +4,14 @@ define('SITE_NAME', 'Sistema de Gerenciamento de Impressão');
 define('SITE_DESCRIPTION', 'SGI - Instituto Federal do Sudeste de Minas Gerais - Campus São João del-Rei');
 define('CURRENT_YEAR', date('Y'));
 // Versão dos arquivos CSS e JS para controle de cache
-define('ASSET_VERSION', '2.6.6'); // Atualize essa versão quando fizer alterações significativas
+define('ASSET_VERSION', '2.6.8'); // Atualize essa versão quando fizer alterações significativas
 define('HORARIO_FUNC_INICIO', 0); // Horário de funcionamento da reprografia
 define('HORARIO_FUNC_FIM', 23); // Horário de funcionamento da reprografia
 // Caminho base do site (ajuste se estiver em subpasta)
-define('BASE_URL', '/sgi'); // ou '/' se estiver na raiz
 define('PROJECT_ROOT', dirname(__DIR__)); // Define o caminho absoluto da raiz do projeto
 
+// Caminho base do site (ajuste se estiver em subpasta)
+define('BASE_URL', '/sgi'); // ou '/' se estiver na raiz
 // Configurações do banco de dados
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
