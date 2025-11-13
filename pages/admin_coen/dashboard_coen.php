@@ -111,7 +111,7 @@ include_once '../../includes/header.php';
                             <td data-label="Ações">
                                 <div class="action-buttons">
                                     <a href="form_servidor.php?siape=<?= htmlspecialchars($servidor->siape) ?>" class="btn-action btn-edit" title="Editar/Renovar"><i class="fas fa-edit"></i></a>
-                                    <button type="button" class="btn-action btn-redefinir btn-edit" data-siape="<?= htmlspecialchars($servidor->siape) ?>" title="Redefinir Senha"><i class="fas fa-key"></i></button>
+                                    <a type="button" class="btn-action btn-redefinir btn-edit" data-siape="<?= htmlspecialchars($servidor->siape) ?>" title="Redefinir Senha"><i class="fas fa-key"></i></a>
                                     <button type="button" class="btn-action btn-delete btn-excluir-servidor btn-exc" data-siape="<?= htmlspecialchars($servidor->siape) ?>" data-nome="<?= htmlspecialchars($servidor->nome) ?>" data-tipo="servidor" title="Excluir Servidor"><i class="fas fa-trash-alt"></i></button>
                                 </div>
                             </td>

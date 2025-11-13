@@ -58,8 +58,13 @@ try {
         if (!$uploads_dir || !is_dir($uploads_dir)) {
             mkdir($uploads_dir, 0777, true);
         }
-        $extensao = pathinfo($arquivo['name'], PATHINFO_EXTENSION);
-        $nome_arquivo_final = uniqid('aluno_' . $usuario_id . '_', true) . '.' . $extensao;
+        
+        // Nova lógica para nomear o arquivo para evitar conflitos, preservando o nome original.
+        // Formato: [id_do_usuario]_[timestamp]_[nome_original_do_arquivo]
+        $nome_original = basename($arquivo['name']);
+        $timestamp = time();
+        $nome_arquivo_final = $usuario_id . '_' . $timestamp . '_' . $nome_original;
+        
         $caminho_destino = $uploads_dir . '/' . $nome_arquivo_final;
 
         if (!move_uploaded_file($arquivo['tmp_name'], $caminho_destino)) {

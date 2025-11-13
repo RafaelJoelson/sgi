@@ -1,22 +1,43 @@
 <?php
 require_once '../../../includes/config.php';
-header('Content-Type: application/json');
 session_start();
+
+// 1. VERIFICAÇÃO DE PERMISSÃO
 // Apenas um administrador (CAD ou COEN) pode acessar esta página.
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || empty($_SESSION['usuario']['is_admin'])) {
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || !in_array($_SESSION['usuario']['setor_admin'], ['CAD', 'COEN'])) {
     $_SESSION['mensagem_erro'] = 'Acesso negado.';
     header('Location: ' . BASE_URL . '/index.php'); // Redirecionamento seguro
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['siape'])) {
-    $siape = trim($_POST['siape']);
-    $stmt = $conn->prepare('DELETE FROM Servidor WHERE siape = :siape');
-    if ($stmt->execute([':siape' => $siape])) {
-        echo json_encode(['mensagem' => 'Servidor excluído com sucesso.']);
-    } else {
-        echo json_encode(['mensagem' => 'Erro ao excluir servidor.']);
-    }
+// 2. VALIDAÇÃO DO INPUT
+$siape_para_excluir = $_GET['siape'] ?? null;
+if (empty($siape_para_excluir)) {
+    $_SESSION['mensagem_erro'] = 'SIAPE do servidor não fornecido.';
+    header('Location: ' . BASE_URL . '/pages/admin/mansgi.php');
     exit;
 }
-echo json_encode(['mensagem' => 'Requisição inválida.']);
+
+try {
+    // 3. EXECUÇÃO DA EXCLUSÃO
+    // A exclusão na tabela 'Usuario' irá remover em cascata o registro da tabela 'Servidor'
+    $stmt = $conn->prepare(
+        "DELETE u FROM Usuario u JOIN Servidor s ON u.id = s.usuario_id WHERE s.siape = :siape"
+    );
+    $stmt->execute([':siape' => $siape_para_excluir]);
+
+    if ($stmt->rowCount() > 0) {
+        $_SESSION['mensagem_sucesso'] = 'Servidor (SIAPE: ' . htmlspecialchars($siape_para_excluir) . ') foi excluído com sucesso.';
+    } else {
+        $_SESSION['mensagem_erro'] = 'Servidor não encontrado ou já foi excluído.';
+    }
+
+} catch (PDOException $e) {
+    // Em caso de erro no banco de dados, registra o erro e informa o usuário.
+    error_log("Erro ao excluir servidor: " . $e->getMessage());
+    $_SESSION['mensagem_erro'] = 'Ocorreu um erro de banco de dados ao tentar excluir o servidor.';
+}
+
+// 4. REDIRECIONAMENTO PADRÃO
+header('Location: ' . BASE_URL . '/pages/admin/mansgi.php');
+exit;
