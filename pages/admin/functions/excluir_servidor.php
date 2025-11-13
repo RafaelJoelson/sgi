@@ -3,10 +3,10 @@ require_once '../../../includes/config.php';
 session_start();
 
 // 1. VERIFICAÇÃO DE PERMISSÃO
-// Apenas um administrador (CAD ou COEN) pode acessar esta página.
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || !in_array($_SESSION['usuario']['setor_admin'], ['CAD', 'COEN'])) {
+// Apenas um administrador (COEN) pode acessar esta página.
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' || $_SESSION['usuario']['setor_admin'] !== 'COEN') {
     $_SESSION['mensagem_erro'] = 'Acesso negado.';
-    header('Location: ' . BASE_URL . '/index.php'); // Redirecionamento seguro
+    header('Location: ' . BASE_URL . '/pages/admin_coen/dashboard_coen.php');
     exit;
 }
 
@@ -14,7 +14,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['tipo'] !== 'servidor' 
 $siape_para_excluir = $_GET['siape'] ?? null;
 if (empty($siape_para_excluir)) {
     $_SESSION['mensagem_erro'] = 'SIAPE do servidor não fornecido.';
-    header('Location: ' . BASE_URL . '/pages/admin/mansgi.php');
+    header('Location: ' . BASE_URL . '/pages/admin_coen/dashboard_coen.php');
     exit;
 }
 
@@ -39,5 +39,5 @@ try {
 }
 
 // 4. REDIRECIONAMENTO PADRÃO
-header('Location: ' . BASE_URL . '/pages/admin/mansgi.php');
+header('Location: ' . BASE_URL . '/pages/admin_coen/dashboard_coen.php');
 exit;

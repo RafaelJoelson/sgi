@@ -63,25 +63,28 @@ include_once '../../includes/header.php';
         <?php endif; ?>
 
         <form action="<?= $modo_edicao ? './functions/processar_edicao_servidor.php' : './functions/processar_cadastro_servidor.php' ?>" method="POST" class="form-servidor">
+        <div class="form-section">   
             <?php if ($modo_edicao): ?>
-                <input type="hidden" name="siape" value="<?= htmlspecialchars($servidor->siape) ?>">
-            <?php endif; ?>
+                    <input type="hidden" name="siape" value="<?= htmlspecialchars($servidor->siape) ?>">
+                <?php endif; ?>
 
-            <label>*SIAPE
-                <input type="text" name="siape" placeholder="Somente números" maxlength="7" pattern="\d{7}" title="Digite os 7 números do SIAPE" required value="<?= $servidor->siape ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
-            </label>
-            <label>*Nome
-                <input type="text" name="nome" required value="<?= $servidor->nome ?? '' ?>" <?= $is_super_admin_edit ? 'disabled' : '' ?>>
-            </label>
-            <label>*Sobrenome
-                <input type="text" name="sobrenome" required value="<?= $servidor->sobrenome ?? '' ?>" <?= $is_super_admin_edit ? 'disabled' : '' ?>>
-            </label>
-            <label>*E-mail
-                <input type="email" name="email" placeholder="email@mail.com" required value="<?= $servidor->email ?? '' ?>" <?= $is_super_admin_edit ? 'disabled' : '' ?>>
-            </label>
-            <label>*CPF
-                <input type="text" name="cpf" required placeholder="Somente números" maxlength="11" pattern="\d{11}" title="Digite os 11 números do CPF" value="<?= $servidor->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
-            </label>
+                <label>*SIAPE
+                    <input type="text" name="siape" placeholder="Somente números" maxlength="7" pattern="\d{7}" title="Digite os 7 números do SIAPE" required value="<?= $servidor->siape ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+                </label>
+                <label>*Nome
+                    <input type="text" name="nome" required value="<?= $servidor->nome ?? '' ?>" <?= $is_super_admin_edit ? 'disabled' : '' ?>>
+                </label>
+                <label>*Sobrenome
+                    <input type="text" name="sobrenome" required value="<?= $servidor->sobrenome ?? '' ?>" <?= $is_super_admin_edit ? 'disabled' : '' ?>>
+                </label>
+                <label>*E-mail
+                    <input type="email" name="email" placeholder="email@mail.com" required value="<?= $servidor->email ?? '' ?>" <?= $is_super_admin_edit ? 'disabled' : '' ?>>
+                </label>
+                <label>*CPF
+                    <input type="text" name="cpf" required placeholder="Somente números" maxlength="11" pattern="\d{11}" title="Digite os 11 números do CPF" value="<?= $servidor->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+                </label>
+        </div>
+        <div class="form-section">
             <?php if (!$modo_edicao): ?>
                 <label>Senha
                     <input type="password" name="senha" required minlength="6">
@@ -116,6 +119,7 @@ include_once '../../includes/header.php';
             <?php endif; ?>
 
             <button type="submit" <?= $is_super_admin_edit ? 'disabled' : '' ?>><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Servidor' ?></button>
+        </div>
         </form>
         <a class="btn-back" href="javascript:history.back()">&larr; Voltar</a>
     </div>

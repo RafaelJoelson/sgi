@@ -55,16 +55,17 @@ try {
 
     $conn->commit();
     if ($stmt_user->rowCount() > 0 || $stmt_servidor->rowCount() > 0) {
-        $_SESSION['mensagem_sucesso'] = 'Servidor atualizado com sucesso!';
-
-        // 4. VERIFICAÇÃO DE AUTO-ATUALIZAÇÃO
-        if ($siape === $_SESSION['usuario']['id'] && ($ativo == 0 || $is_admin == 0)) {
-            session_destroy();
-            header('Location: ../../index.php?logout=autoedicao');
-            exit;
-        }
+        $_SESSION['mensagem_sucesso'] = 'Servidor atualizado com sucesso!';        
     } else {
-        $_SESSION['mensagem_erro'] = 'Nenhuma alteração foi feita ou ocorreu um erro.';
+        // Se nenhuma linha foi afetada, não é necessariamente um erro, pode ser que nada mudou.
+        // Uma mensagem de "aviso" ou simplesmente redirecionar sem mensagem pode ser melhor.
+        // Por enquanto, vamos manter sem mensagem para não confundir o usuário.
+    }
+    // 4. VERIFICAÇÃO DE AUTO-ATUALIZAÇÃO
+    if (isset($_SESSION['usuario']) && $usuario_id === $_SESSION['usuario']['id'] && ($ativo == 0 || $is_admin == 0)) {
+        session_destroy();
+        header('Location: ' . BASE_URL . '/index.php?logout=autoedicao');
+        exit;
     }
 
 } catch (PDOException $e) {

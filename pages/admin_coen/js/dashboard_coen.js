@@ -68,10 +68,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (target.classList.contains('btn-excluir-servidor')) {
-            const siape = target.dataset.siape;
             const nome = target.dataset.nome;
+            const url = target.dataset.url; // Pega a URL correta do atributo data-url
             document.getElementById('nome-item-excluir').textContent = nome;
-            document.getElementById('btn-confirmar-exclusao').href = `../admin/excluir_servidor.php?siape=${siape}`;
+            document.getElementById('btn-confirmar-exclusao').href = url; // Define o link do botão de confirmação
             document.getElementById('modal-excluir').style.display = 'block';
         }
 

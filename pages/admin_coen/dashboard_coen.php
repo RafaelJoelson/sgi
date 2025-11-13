@@ -62,7 +62,7 @@ include_once '../../includes/header.php';
             <div class="card">Servidores Ativos: <?= $total_servidores_ativos ?></div>
         </section>
         <section class="dashboard-menu">
-            <a class="btn-menu" href="form_servidor.php">Cadastrar Novo Servidor</a>
+            <a class="btn-menu" href="../admin/form_servidor.php">Cadastrar Novo Servidor</a>
             <a class="btn-menu" href="gerenciar_cotas_servidor.php">Gerenciar Cotas</a>
             <a class="btn-menu" href="../admin/configurar_semestre.php">Configurar Semestre Letivo</a>
             <a class="btn-menu" href="relatorio_servidor.php">Relatório de Impressões</a>
@@ -110,9 +110,14 @@ include_once '../../includes/header.php';
                             <td data-label="Situação"><span class="badge-<?= $servidor->ativo ? 'ativo' : 'inativo' ?>"><?= $servidor->ativo ? 'Ativo' : 'Inativo' ?></span></td>
                             <td data-label="Ações">
                                 <div class="action-buttons">
-                                    <a href="form_servidor.php?siape=<?= htmlspecialchars($servidor->siape) ?>" class="btn-action btn-edit" title="Editar/Renovar"><i class="fas fa-edit"></i></a>
+                                    <a href="../admin/form_servidor.php?siape=<?= htmlspecialchars($servidor->siape) ?>" class="btn-action btn-edit" title="Editar/Renovar"><i class="fas fa-edit"></i></a>
                                     <a type="button" class="btn-action btn-redefinir btn-edit" data-siape="<?= htmlspecialchars($servidor->siape) ?>" title="Redefinir Senha"><i class="fas fa-key"></i></a>
-                                    <button type="button" class="btn-action btn-delete btn-excluir-servidor btn-exc" data-siape="<?= htmlspecialchars($servidor->siape) ?>" data-nome="<?= htmlspecialchars($servidor->nome) ?>" data-tipo="servidor" title="Excluir Servidor"><i class="fas fa-trash-alt"></i></button>
+                                    <button type="button" class="btn-action btn-delete btn-excluir-servidor btn-exc" 
+                                            data-siape="<?= htmlspecialchars($servidor->siape) ?>" 
+                                            data-nome="<?= htmlspecialchars($servidor->nome) ?>" 
+                                            data-tipo="servidor" 
+                                            data-url="../admin/functions/excluir_servidor.php?siape=<?= htmlspecialchars($servidor->siape) ?>"
+                                            title="Excluir Servidor"><i class="fas fa-trash-alt"></i></button>
                                 </div>
                             </td>
                         </tr>

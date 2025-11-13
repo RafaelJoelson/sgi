@@ -64,26 +64,28 @@ include_once '../../includes/header.php';
     <?php endif; ?>
 
     <form action="<?= $modo_edicao ? './functions/processar_edicao_aluno.php' : './functions/processar_cadastro_aluno.php' ?>" method="POST" class="form-aluno">
+    <div class="form-section">    
         <?php if ($modo_edicao): ?>
-            <input type="hidden" name="matricula" value="<?= htmlspecialchars($aluno->matricula) ?>">
-        <?php endif; ?>
+                <input type="hidden" name="matricula" value="<?= htmlspecialchars($aluno->matricula) ?>">
+            <?php endif; ?>
 
-        <label>*Matrícula
-            <input type="text" name="matricula" placeholder="Somente números" maxlength="10" pattern="\d{10}" title="Digite os 10 números da matrícula" required value="<?= $aluno->matricula ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
-        </label>
-        <label>*Nome
-            <input type="text" name="nome" required value="<?= $aluno->nome ?? '' ?>">
-        </label>
-        <label>*Sobrenome
-            <input type="text" name="sobrenome" required value="<?= $aluno->sobrenome ?? '' ?>">
-        </label>
-        <label>*E-mail
-            <input type="email" name="email" placeholder="email@mail.com" required value="<?= $aluno->email ?? '' ?>">
-        </label>
-        <label>*CPF
-            <input type="text" name="cpf" placeholder="Somente números" required maxlength="11" pattern="\d{11}" title="Digite os 11 números do CPF" value="<?= $aluno->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
-        </label>
-
+            <label>*Matrícula
+                <input type="text" name="matricula" placeholder="Somente números" maxlength="10" pattern="\d{10}" title="Digite os 10 números da matrícula" required value="<?= $aluno->matricula ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+            </label>
+            <label>*Nome
+                <input type="text" name="nome" required value="<?= $aluno->nome ?? '' ?>">
+            </label>
+            <label>*Sobrenome
+                <input type="text" name="sobrenome" required value="<?= $aluno->sobrenome ?? '' ?>">
+            </label>
+            <label>*E-mail
+                <input type="email" name="email" placeholder="email@mail.com" required value="<?= $aluno->email ?? '' ?>">
+            </label>
+            <label>*CPF
+                <input type="text" name="cpf" placeholder="Somente números" required maxlength="11" pattern="\d{11}" title="Digite os 11 números do CPF" value="<?= $aluno->cpf ?? '' ?>" <?= $modo_edicao ? 'readonly' : '' ?>>
+            </label>
+    </div>
+    <div class="form-section">
         <?php if (!$modo_edicao): ?>
             <label>Senha
                 <input type="password" name="senha" required minlength="6">
@@ -121,6 +123,7 @@ include_once '../../includes/header.php';
         <?php endif; ?>
 
         <button type="submit"><?= $modo_edicao ? 'Salvar Alterações' : 'Cadastrar Aluno' ?></button>
+    </div>
     </form>
     <a class="btn-back" href="dashboard_cad.php">&larr; Voltar</a>
 </div>

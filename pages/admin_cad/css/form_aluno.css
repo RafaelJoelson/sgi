@@ -1,14 +1,13 @@
-/* Container principal do formulário */
+/* Estilos para o formulário de cadastro de aluno */
+
 main {
-  width: 100%;
-  max-width: 600px;
+  width: 90%;
   margin: 2rem auto;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   padding: 2rem 1.5rem 1.5rem 1.5rem;
 }
-
 /* Título */
 main h1 {
   font-size: 1.5em;
@@ -24,13 +23,25 @@ main h1 {
   font-size: 0.95em;
   text-align: center;
 }
-
+/* Conteúdo */
+.container-principal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 /* Formulário */
 .form-aluno {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1.1rem;
-  width: 100%;
+  width: 90%;
+}
+
+.form-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .form-aluno label {
@@ -87,14 +98,14 @@ main h1 {
 }
 
 /* Responsividade */
-@media (max-width: 600px) {
+@media (max-width: 1300px) {
   main {
     padding: 1rem 0.3rem 1rem 0.3rem;
-    border-radius: 0;
-    box-shadow: none;
   }
   .form-aluno {
     gap: 0.7rem;
+    display: flex;
+    align-items: stretch;
   }
   .form-aluno input,
   .form-aluno select,
@@ -107,6 +118,11 @@ main h1 {
     margin: 1rem 0 0 0;
     font-size: 1em;
     padding: 0.5rem 0;
+  }
+}
+@media (max-width: 786px) {
+  .form-aluno {
+    flex-direction: column;
   }
 }
 .aluno-mensagem-sucesso,

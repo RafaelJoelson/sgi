@@ -1,8 +1,7 @@
 /* form_servidor.css - visual idêntico ao form_servidor.css, adaptado para formulário de servidor (SGI) */
 
 main {
-  width: 100%;
-  max-width: 600px;
+  width: 90%;
   margin: 2rem auto;
   background: #fff;
   border-radius: 12px;
@@ -24,11 +23,24 @@ main h1 {
   text-align: center;
 }
 
+.container-principal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .form-servidor {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1.1rem;
-  width: 100%;
+  width: 90%;
+}
+
+.form-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .form-servidor label {
@@ -117,14 +129,14 @@ main h1 {
   color: #fff;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1300px) {
   main {
     padding: 1rem 0.3rem 1rem 0.3rem;
-    border-radius: 0;
-    box-shadow: none;
   }
   .form-servidor {
     gap: 0.7rem;
+    display: flex;
+    align-items: stretch;
   }
   .form-servidor input,
   .form-servidor select,
@@ -137,6 +149,11 @@ main h1 {
     margin: 1rem 0 0 0;
     font-size: 1em;
     padding: 0.5rem 0;
+  }
+}
+@media (max-width: 786px) {
+  .form-servidor {
+    flex-direction: column;
   }
 }
 
