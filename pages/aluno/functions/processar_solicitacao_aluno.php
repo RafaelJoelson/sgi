@@ -35,7 +35,7 @@ if (!$solicitar_balcao && (empty($arquivo) || $arquivo['error'] !== UPLOAD_ERR_O
 try {
     $conn->beginTransaction();
 
-    // 1. Verifica a cota da turma
+    // 1. Verifica a cota da turma (apenas para verificação, SEM decrementar)
     if (!$cota_id) throw new Exception('Você não está associado a nenhuma turma com cota.');
 
     $stmt_cota = $conn->prepare("SELECT cota_total, cota_usada FROM CotaAluno WHERE id = :cota_id FOR UPDATE");
@@ -59,8 +59,6 @@ try {
             mkdir($uploads_dir, 0777, true);
         }
         
-        // Nova lógica para nomear o arquivo para evitar conflitos, preservando o nome original.
-        // Formato: [id_do_usuario]_[timestamp]_[nome_original_do_arquivo]
         $nome_original = basename($arquivo['name']);
         $timestamp = time();
         $nome_arquivo_final = $usuario_id . '_' . $timestamp . '_' . $nome_original;
@@ -72,10 +70,10 @@ try {
         }
     }
 
-    // 3. Insere a solicitação
+    // 3. Insere a solicitação (com status 'Nova', SEM decrementar cotas ainda)
     $stmt_insert = $conn->prepare(
         "INSERT INTO SolicitacaoImpressao (usuario_id, arquivo_path, qtd_copias, qtd_paginas, colorida, status)
-         VALUES (:uid, :path, :copias, :paginas, 0, 'Nova')" // Aluno sempre PB (colorida = 0)
+         VALUES (:uid, :path, :copias, :paginas, 0, 'Nova')"
     );
     $stmt_insert->execute([
         ':uid' => $usuario_id,
@@ -85,9 +83,7 @@ try {
     ]);
     $solicitacao_id = $conn->lastInsertId();
 
-    // 4. Atualiza a cota usada
-    $stmt_update_cota = $conn->prepare("UPDATE CotaAluno SET cota_usada = cota_usada + :usado WHERE id = :id");
-    $stmt_update_cota->execute([':usado' => $cotas_solicitadas, ':id' => $cota_id]);
+    // 4. REMOVIDO: Não decrementar cotas aqui. As cotas serão decrementadas apenas quando a reprografia ACEITAR a solicitação.
 
     // 5. Cria notificação para o aluno
     $mensagem_notificacao = "Sua solicitação (#{$solicitacao_id}) foi enviada com sucesso e está aguardando análise.";
@@ -109,3 +105,4 @@ try {
 
     echo json_encode(['sucesso' => false, 'mensagem' => 'Erro: ' . $e->getMessage()]);
 }
+?>

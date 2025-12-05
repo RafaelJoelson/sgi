@@ -40,11 +40,11 @@ try {
         throw new Exception("Solicitação não encontrada.");
     }
 
-    // 4. RE-VERIFICAÇÃO DE COTA (A MUDANÇA CRÍTICA)
+    $total_paginas = (int)$s['qtd_copias'] * (int)$s['qtd_paginas'];
+
+    // 4. RE-VERIFICAÇÃO DE COTA (apenas se for aceitar)
     if ($status === 'Aceita') {
-        $total_paginas = (int)$s['qtd_copias'] * (int)$s['qtd_paginas'];
-        
-        if ($s['tipo_solicitante'] === 'Aluno') {
+        if ($s['tipo_solicitante'] === 'aluno') {
             $stmt_cota = $conn->prepare('SELECT c.cota_total, c.cota_usada FROM Aluno a JOIN CotaAluno c ON a.cota_id = c.id JOIN Usuario u ON a.usuario_id = u.id WHERE u.cpf = ?');
             $stmt_cota->execute([$s['cpf_solicitante']]);
             $cota = $stmt_cota->fetch(PDO::FETCH_ASSOC);
@@ -54,7 +54,7 @@ try {
             if ($total_paginas > $cota_disponivel) {
                 throw new Exception("Cota do aluno insuficiente. Disponível: {$cota_disponivel}, Necessário: {$total_paginas}.");
             }
-        } elseif ($s['tipo_solicitante'] === 'Servidor') {
+        } elseif ($s['tipo_solicitante'] === 'servidor') {
             $stmt_cota = $conn->prepare('SELECT cs.* FROM Servidor s JOIN CotaServidor cs ON s.usuario_id = cs.usuario_id JOIN Usuario u ON s.usuario_id = u.id WHERE u.cpf = ?');
             $stmt_cota->execute([$s['cpf_solicitante']]);
             $cota = $stmt_cota->fetch(PDO::FETCH_ASSOC);
@@ -79,9 +79,9 @@ try {
     $stmt_update->execute([':status' => $status, ':reprografia_id' => $reprografia_id, ':id' => $id]);
 
     if ($stmt_update->rowCount() > 0) {
+        // 6. DECREMENTA COTAS SE FOR ACEITA
         if ($status === 'Aceita') {
-            $total_paginas = (int)$s['qtd_copias'] * (int)$s['qtd_paginas'];
-            if ($s['tipo_solicitante'] === 'Aluno') {
+            if ($s['tipo_solicitante'] === 'aluno') {
                 $aluno_stmt = $conn->prepare("SELECT a.matricula, a.cota_id FROM Aluno a JOIN Usuario u ON a.usuario_id = u.id WHERE u.cpf = ?");
                 $aluno_stmt->execute([$s['cpf_solicitante']]);
                 $aluno_data = $aluno_stmt->fetch(PDO::FETCH_ASSOC);
@@ -89,7 +89,7 @@ try {
                     $conn->prepare("UPDATE CotaAluno SET cota_usada = cota_usada + ? WHERE id = ?")->execute([$total_paginas, $aluno_data['cota_id']]);
                     $conn->prepare("INSERT INTO LogDecrementoCota (solicitacao_id, usuario_id, qtd_cotas) VALUES (?, ?, ?)")->execute([$id, $s['usuario_id'], $total_paginas]);
                 }
-            } elseif ($s['tipo_solicitante'] === 'Servidor') {
+            } elseif ($s['tipo_solicitante'] === 'servidor') {
                 $servidor_stmt = $conn->prepare("SELECT s.siape FROM Servidor s JOIN Usuario u ON s.usuario_id = u.id WHERE u.cpf = ?");
                 $servidor_stmt->execute([$s['cpf_solicitante']]);
                 $siape = $servidor_stmt->fetchColumn();
@@ -101,7 +101,7 @@ try {
             }
         }
 
-        // 6. CRIAÇÃO DA NOTIFICAÇÃO PARA O SOLICITANTE
+        // 7. CRIAÇÃO DA NOTIFICAÇÃO PARA O SOLICITANTE
         $nome_arquivo = $s['arquivo_path'] ? basename($s['arquivo_path']) : 'Solicitação no Balcão';
         $mensagem = "Sua solicitação para '{$nome_arquivo}' foi {$status}.";
         
@@ -109,7 +109,7 @@ try {
         $stmt_notificacao->execute([':sol_id' => $id, ':dest_id' => $s['usuario_id'], ':msg' => $mensagem]);
         
         $conn->commit();
-        echo json_encode(['sucesso' => true, 'mensagem' => 'Status atualizado e notificação enviada com sucesso!']);
+        echo json_encode(['sucesso' => true, 'mensagem' => 'Status atualizado com sucesso!']);
 
     } else {
         $conn->rollBack();
@@ -123,3 +123,4 @@ try {
     error_log("Erro ao atualizar status: " . $e->getMessage());
     echo json_encode(['sucesso' => false, 'mensagem' => 'Erro: ' . $e->getMessage()]);
 }
+?>

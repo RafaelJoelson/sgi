@@ -35,7 +35,7 @@ if (!$solicitar_balcao && (empty($arquivo) || $arquivo['error'] !== UPLOAD_ERR_O
 try {
     $conn->beginTransaction();
 
-    // 1. Verifica a cota do servidor
+    // 1. Verifica a cota do servidor (apenas verificação, SEM decrementar)
     $stmt_cota = $conn->prepare("SELECT * FROM CotaServidor WHERE usuario_id = :id FOR UPDATE");
     $stmt_cota->execute([':id' => $usuario_id]);
     $cota = $stmt_cota->fetch();
@@ -46,10 +46,8 @@ try {
     
     if ($colorida) {
         $cota_restante = $cota->cota_color_total - $cota->cota_color_usada;
-        $campo_update = 'cota_color_usada';
     } else {
         $cota_restante = $cota->cota_pb_total - $cota->cota_pb_usada;
-        $campo_update = 'cota_pb_usada';
     }
 
     if ($cotas_solicitadas > $cota_restante) {
@@ -62,8 +60,6 @@ try {
         $uploads_dir = realpath(__DIR__ . '/../../uploads');
         if (!$uploads_dir || !is_dir($uploads_dir)) mkdir($uploads_dir, 0777, true);
         
-        // Nova lógica para nomear o arquivo para evitar conflitos, preservando o nome original.
-        // Formato: [id_do_usuario]_[timestamp]_[nome_original_do_arquivo]
         $nome_original = basename($arquivo['name']);
         $timestamp = time();
         $nome_arquivo_final = $usuario_id . '_' . $timestamp . '_' . $nome_original;
@@ -75,7 +71,7 @@ try {
         }
     }
 
-    // 3. Insere a solicitação
+    // 3. Insere a solicitação (com status 'Nova', SEM decrementar cotas ainda)
     $stmt_insert = $conn->prepare(
         "INSERT INTO SolicitacaoImpressao (usuario_id, arquivo_path, qtd_copias, qtd_paginas, colorida, status)
          VALUES (:uid, :path, :copias, :paginas, :colorida, 'Nova')"
@@ -89,9 +85,7 @@ try {
     ]);
     $solicitacao_id = $conn->lastInsertId();
 
-    // 4. Atualiza a cota usada
-    $stmt_update_cota = $conn->prepare("UPDATE CotaServidor SET $campo_update = $campo_update + :usado WHERE usuario_id = :id");
-    $stmt_update_cota->execute([':usado' => $cotas_solicitadas, ':id' => $usuario_id]);
+    // 4. REMOVIDO: Não decrementar cotas aqui. As cotas serão decrementadas apenas quando a reprografia ACEITAR a solicitação.
 
     // 5. Cria notificação para o servidor
     $mensagem_notificacao = "Sua solicitação (#{$solicitacao_id}) foi enviada com sucesso e está aguardando análise.";
@@ -112,3 +106,4 @@ try {
 
     echo json_encode(['sucesso' => false, 'mensagem' => 'Erro: ' . $e->getMessage()]);
 }
+?>
